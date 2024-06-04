@@ -9,7 +9,7 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, guest }) => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
 
   const emailInputRef = useRef(null);
   const nameInputRef = useRef(null);
@@ -41,36 +41,40 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, guest }) => {
 
   const handleChange = async () => {
     const data = new FormData();
-    data.append("file", image);
+    data.append("image", image);
     data.append("name", name);
     data.append("email", email);
     data.append("phone", phone);
-    data.append("isGuest", guest);
     let url = "";
+    console.log("data is", Array.from(data.entries()));
     if (updateData) {
-      url = "/user/updateUser/" + updateData.id;
-      await axios
-        .put(url, data)
-        .then((res) => {
-          setAdded((prev) => !prev);
-          onClose()
-        })
-        .catch((err) => {
-          // setLoader(false)
-            setError(err.response.data.data.error);
-        });
+      url = `/user/updateUser/${updateData.id}`;
+      try {
+        const res = await axios.put(url, data);
+        console.log("Updated user details:", res.data.data);
+        setAdded((prev) => !prev);
+        onClose();
+      } catch (err) {
+        console.error("Error updating user:", err);
+        setError(err.response?.data?.data?.error || "An error occurred");
+      }
     } else {
       url = "/user/addUser";
-      await axios
-        .post(url, data)
-        .then((res) => {
-          setAdded((prev) => !prev);
-          onClose()
-        })
-        .catch((err) => {
-          // setLoader(false)
-            setError(err.response.data.data.error);
+      data.append("isGuest", guest);
+      try {
+        const res = await axios.post(url, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         });
+
+        console.log("New user added:", res.data.data);
+        setAdded((prev) => !prev);
+        onClose();
+      } catch (err) {
+        console.error("Error adding user:", err);
+        setError(err.response?.data?.data?.error || "An error occurred");
+      }
     }
   };
 
@@ -122,7 +126,7 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, guest }) => {
           bg={"white"}
         />
       </div>
-      {error && (<p className="text-orange w-80 mt-2">{error}</p>)}
+      {error && <p className="text-orange w-80 mt-2">{error}</p>}
 
       <div
         className="flex justify-center my-2 sm:mt-10 sm:mb-14"

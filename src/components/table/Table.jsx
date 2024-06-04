@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Table = ({
   tableHeader,
-  data,
+  data= [],
   setData,
   cell2,
   cell3,
@@ -60,6 +60,9 @@ const Table = ({
     setCurrentPage(page);
   };
 
+  if (!data) {
+    return null; // Or some loading indicator
+  }
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
