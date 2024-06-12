@@ -9,7 +9,7 @@ const AddHotelForm = ({onClose, image, setAddHotel}) => {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [totalRooms, setTotalRooms] = useState(1); // New state for totalRooms
-  const [rooms, setRooms] = useState([{ roomType: "", roomNumber: "", totalBeds: "", beds: [{ bedNumber: "" }] }]);
+  const [rooms, setRooms] = useState([{  roomNumber: "", totalBeds: "", beds: [{ bedNumber: "", bedType: "" }] }]);
   const [error, setError] = useState(false)
 
   const emailInputRef = useRef(null);
@@ -21,7 +21,7 @@ const AddHotelForm = ({onClose, image, setAddHotel}) => {
     data.append("file", image);
     data.append("name", name);
     data.append("location", location);
-    data.append("totalRooms", totalRooms); // Include totalRooms in the data payload
+    data.append("totalRooms", totalRooms); 
     data.append("rooms", JSON.stringify(rooms));
     let url = "/hotel/addHotel";
     await axios

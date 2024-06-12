@@ -4,6 +4,7 @@ import User from "../assets/sidebar/userIcon.svg"
 import Store from '../assets/sidebar/storeIcon.svg'
 import Setting from '../assets/sidebar/settingsIcon.svg'
 import Logout from '../assets/sidebar/logout.svg'
+import Package from '../assets/sidebar/packageIcon.svg'
 
 export default [
  
@@ -17,6 +18,12 @@ export default [
       name: "Users",
       link: "/admin/user",
       icon: User,
+      select: false,
+    },
+    {
+      name: "Packages",
+      link: "/admin/package",
+      icon: Package,
       select: false,
     },
     {

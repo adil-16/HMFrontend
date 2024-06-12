@@ -19,6 +19,7 @@ import Booking from "./pages/Hotel/booking";
 import Bookings from "./pages/Booking/booking";
 import Settings from "./pages/Settings/Settings";
 import HotelDetails from "./pages/Hotel/BookBed";
+import Package from "./pages/Package/Package";
 
 export const AuthContext = React.createContext();
 
@@ -107,6 +108,7 @@ function App() {
           <Route path="/admin" element={Outlet(<Dashboard />)} />
           <Route path="/admin/user" element={Outlet(<User />)} />
           <Route path="/admin/hotel" element={Outlet(<Store />)} />
+          <Route path="/admin/package" element={Outlet(<Package/>)} />
           <Route path="/admin/hotel/:id" element={Outlet(<HotelDetails />)} />
           <Route path="/admin/booking" element={Outlet(<Booking />)} />
           <Route path="/admin/Allbookings" element={Outlet(<Bookings />)} />

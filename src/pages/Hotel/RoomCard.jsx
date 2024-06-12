@@ -11,7 +11,7 @@ const RoomCard = ({ room }) => {
       <div>
         {room.beds?.map((bed, index) => (
           <div key={index} className="flex justify-between items-center mb-2">
-            <p>Bed Number: {bed.bedNumber}</p>
+            <p>Bed Number: {bed.bedNumber} ({bed.bedType})</p>
             {!bed.isBooked ?
             <button className="bg-orange text-white px-3 py-1 rounded-md hover:border-white">Book Now</button>
             :

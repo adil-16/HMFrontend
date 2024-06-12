@@ -4,7 +4,7 @@ const RoomTypeForm = ({ rooms, setRooms }) => {
   useEffect(() => {
     // Set default values for rooms if they are empty on form open
     if (rooms.length === 0) {
-      setRooms([{ roomType: "", roomNumber: "", totalBeds: "", beds: [{ bedNumber: "" }] }]);
+      setRooms([{  roomNumber: "", totalBeds: "", beds: [{ bedNumber: "", bedType: "" }] }]);
     }
   }, [rooms, setRooms]);
 
@@ -23,7 +23,7 @@ const RoomTypeForm = ({ rooms, setRooms }) => {
   };
 
   const addRoom = () => {
-    setRooms([...rooms, { roomType: "", roomNumber: "", totalBeds: "", beds: [{ bedNumber: "" }] }]);
+    setRooms([...rooms, {  roomNumber: "", totalBeds: "", beds: [{ bedNumber: "", bedType: "" }] }]);
   };
 
   const removeRoom = (index) => {
@@ -38,9 +38,9 @@ const RoomTypeForm = ({ rooms, setRooms }) => {
   const addBed = (roomIndex) => {
     const newRooms = [...rooms];
     if (!newRooms[roomIndex].beds) {
-      newRooms[roomIndex].beds = [{ bedNumber: "" }];
+      newRooms[roomIndex].beds = [{ bedNumber: "", bedType: "" }];
     } else {
-      newRooms[roomIndex].beds.push({ bedNumber: "" });
+      newRooms[roomIndex].beds.push({ bedNumber: "", bedType: "" });
     }
     setRooms(newRooms);
   };
@@ -62,14 +62,14 @@ const RoomTypeForm = ({ rooms, setRooms }) => {
         {rooms.map((room, roomIndex) => (
           <div key={roomIndex} className="mb-4">
             <div className="flex gap-x-1 mt-2">
-              <input
+              {/* <input
                 type="text"
                 className={`border border-blue3 bg-white text-black focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
                 placeholder="Room Type"
                 name="roomType"
                 value={room.roomType}
                 onChange={(e) => handleRoomChange(roomIndex, e)}
-              />
+              /> */}
               <input
                 type="text"
                 placeholder="Room Number"
@@ -102,6 +102,14 @@ const RoomTypeForm = ({ rooms, setRooms }) => {
                     placeholder="Bed Number"
                     name="bedNumber"
                     value={bed.bedNumber}
+                    onChange={(e) => handleBedChange(roomIndex, bedIndex, e)}
+                  />
+                  <input
+                    type="text"
+                    className={`border border-blue3 text-black bg-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
+                    placeholder="Bed Type"
+                    name="bedType"
+                    value={bed.bedType}
                     onChange={(e) => handleBedChange(roomIndex, bedIndex, e)}
                   />
                   <div
