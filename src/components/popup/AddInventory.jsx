@@ -48,6 +48,10 @@ const AddInventoryPopup = ({ onClose }) => {
   try {
     const ledgerResponse=await axios.post("http://localhost:8000/ledger/createLedger",ledgerObject)
     console.log(ledgerResponse,"ledger response")
+    let totalCredit=roomDetails.reduce((acc,r)=>{
+      acc+=r.total
+      return acc
+    },0)
       let poformObject={
         supplierID:supplier,
         hotelID:hotel,
@@ -64,7 +68,10 @@ const AddInventoryPopup = ({ onClose }) => {
           quad:roomDetails[1].rate,
           triple:roomDetails[2].rate,
           double:roomDetails[3].rate
-        }
+        },
+        role:"cash",
+        debit:totalCredit,
+        credit:0
       }
       const poformResponse=await axios.post("http://localhost:8000/poform/createPoform",poformObject)
       console.log(poformResponse,"poform response")
