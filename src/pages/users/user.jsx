@@ -5,11 +5,13 @@ import TableTop from "../../components/TableTop/TableTop";
 import AddUser from "../../components/popup/addUser";
 import DeleteUser from "../../components/popup/DeleteUser";
 import axios from "../../axios";
+import ShowLedgerPopup from "../../components/popup/ShowLedger";
 
 const User = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [showLedgerPopup, setShowLedgerPopup] = useState(false);
 
   const [customerAdded, setCustomerAdded] = useState(false);
   const [updateData, setUpdateData] = useState(null);
@@ -40,6 +42,11 @@ const User = () => {
     getUsers();
   }, [customerAdded]);
 
+  const handleShowLedger = (fromDate, toDate) => {
+    console.log("Show Ledger for dates:", fromDate, toDate);
+    // You can navigate to the ledger page or fetch data here
+  };
+
   return (
     <div className="w-full">
       <TopBar title="Users" />
@@ -67,6 +74,7 @@ const User = () => {
             setShowEditPopup={setShowEditPopup}
             setUpdateData={setUpdateData}
             setShowDeletePopup={setShowDeletePopup}
+            setShowLedgerPopup={setShowLedgerPopup}
           />
         </div>
       </div>
@@ -77,7 +85,7 @@ const User = () => {
             onClose={() => setShowPopup(false)}
             heading="Add Customer"
             setAdded={setCustomerAdded}
-            guest = {false}
+            guest={false}
           />
         </>
       )}
@@ -102,6 +110,13 @@ const User = () => {
             id={updateData.id}
           />
         </>
+      )}
+
+      {showLedgerPopup && (
+        <ShowLedgerPopup
+          onClose={() => setShowLedgerPopup(false)}
+          onSubmit={handleShowLedger}
+        />
       )}
     </div>
   );

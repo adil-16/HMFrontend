@@ -32,6 +32,9 @@ const SearchFiels = ({
           } else if (search == "hotel/booking") {
             setData(res.data.data.bookings);
             console.log("search item are", res.data.data.bookings);
+          } else if (search === "legder"){
+            setData(res.data.data.legder);
+            console.log("search item are", res.data.data.legder);
           }
         })
         .catch((err) => {
