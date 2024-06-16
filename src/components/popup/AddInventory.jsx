@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Cross from "../../assets/cross.svg";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import axios from "../../axios";
-
+import { v4 as uuidv4 } from 'uuid';
 const AddInventoryPopup = ({ onClose }) => {
     const [supplier, setSupplier] = useState("");
     const [suppliers, setSuppliers] = useState([]);
@@ -78,15 +78,16 @@ const AddInventoryPopup = ({ onClose }) => {
     
       const filterHotel=hotels.filter(hot=>hot.id==hotel)
       let roomCounter = 1; 
-  const rooms= roomDetails.reduce((acc, roomDetail) => {
+    const rooms= roomDetails.reduce((acc, roomDetail) => {
+
     const numRooms = parseInt(roomDetail.rooms);
     for (let i = 1; i <= numRooms; i++) {
-      const roomNumber = roomCounter++;
+      const roomNumber = uuidv4()
       const beds = [];
       for (let j = 1; j <= roomDetail.beds; j++) {
         beds.push({
           bedNumber: j,
-          bedRate: roomDetail.rate, 
+          bedRate: roomDetail.rate || 0, 
         });
       }
       acc.push({
