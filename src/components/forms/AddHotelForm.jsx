@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { InputDefault } from "../../components/inputFields/inputFiels";
 import RoomTypeForm from "./RoomType";
-import SubmitButton from "../../components/buttons/SubmitButton";
+import SubmitButton from "../../components/buttons/SubmitButtonHotel";
 import axios from '../../axios'
 
 const AddHotelForm = ({onClose, image, setAddHotel}) => {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
-  const [totalRooms, setTotalRooms] = useState(1); // New state for totalRooms
-  const [rooms, setRooms] = useState([{  roomNumber: "", totalBeds: "", beds: [{ bedNumber: "", bedType: "" }] }]);
+  const [totalRooms, setTotalRooms] = useState(1); 
+  const [rooms, setRooms] = useState([{ roomType:"", roomNumber: "", totalBeds: "", beds: [{ bedNumber: "", bedRate: "" }] }]);
   const [error, setError] = useState(false)
 
   const emailInputRef = useRef(null);

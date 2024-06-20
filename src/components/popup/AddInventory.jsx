@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Cross from "../../assets/cross.svg";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import axios from "../../axios";
+import { v4 as uuidv4 } from 'uuid';
 
 const AddInventoryPopup = ({ onClose }) => {
   const [supplier, setSupplier] = useState("");
@@ -19,33 +20,123 @@ const AddInventoryPopup = ({ onClose }) => {
   ]);
   const [grandTotal, setGrandTotal] = useState(0);
 
-  useEffect(() => {
-    const getData = async () => {
-      await axios
-        .get("/user/getSuppliers")
-        .then((res) => {
-          setSuppliers(res.data.suppliers);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+  async function onSubmitInventory() {
 
-      await axios
-        .get("/user/getHotels")
-        .then((res) => {
-          setHotels(res.data.hotels);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    let ledgerObject = {
+      title: "Rooms",
+      credit: grandTotal,
+      debit: 0,
+      balance: 0 - grandTotal,
+      role: "supplier",
+      supId: supplier,
+      hotelId: hotel,
     };
-    getData();
+    console.log("ledger object is", ledgerObject)
+    try {
+      const ledgerResponse = await axios.post(
+        "/ledger/createLedger",
+        ledgerObject
+      );
+      console.log(ledgerResponse, "ledger response");
+      let poformObject = {
+        supplierID: supplier,
+        hotelID: hotel,
+        checkin,
+        checkout,
+        rooms: {
+          shared: roomDetails[0].rooms,
+          quad: roomDetails[1].rooms,
+          triple: roomDetails[2].rooms,
+          double: roomDetails[3].rooms,
+        },
+        bedRates: {
+          shared: roomDetails[0].rate,
+          quad: roomDetails[1].rate,
+          triple: roomDetails[2].rate,
+          double: roomDetails[3].rate,
+        },
+        role: "cash",
+        debit: grandTotal,
+        credit: 0,
+      };
+      const poformResponse = await axios.post(
+        "http://localhost:8000/poform/createPoform",
+        poformObject
+      );
+      console.log(poformResponse, "poform response");
+
+      const filterHotel = hotels.filter((hot) => hot.id == hotel);
+      let roomCounter = 1;
+      const rooms = roomDetails.reduce((acc, roomDetail) => {
+        const numRooms = parseInt(roomDetail.rooms);
+        for (let i = 1; i <= numRooms; i++) {
+          const roomNumber = uuidv4()
+          const beds = [];
+          for (let j = 1; j <= roomDetail.beds; j++) {
+            beds.push({
+              bedNumber: j,
+              bedRate: roomDetail.rate,
+            });
+          }
+          acc.push({
+            roomType: roomDetail.type,
+            roomNumber: roomNumber.toString(),
+            totalBeds: roomDetail.beds,
+            beds: beds,
+          });
+        }
+        return acc;
+      }, []);
+
+      let hotelObject = {
+        location: filterHotel[0].location,
+        name: filterHotel[0].name,
+        totalRooms: rooms.length,
+        rooms,
+      };
+      const hotelUpdateResponse = await axios.put(
+        `http://localhost:8000/hotel/updateHotel/${hotel}`,
+        hotelObject
+      );
+      console.log(hotelUpdateResponse, "hotel response");
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getSuppliers = async () => {
+    await axios
+      .get("/user/getSuppliers")
+      .then((res) => {
+        console.log("data is", res.data);
+        setSuppliers(res.data.data.suppliers); // Update to set the suppliers list
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const getHotels = async () => {
+    await axios
+      .get("/hotel/getHotels")
+      .then((res) => {
+        console.log("data is hotels ", res.data);
+        setHotels(res.data.data.hotels);
+        // setCity(hotel.city)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    getSuppliers();
+    getHotels();
   }, []);
 
   useEffect(() => {
     if (hotel) {
       const selectedHotel = hotels.find((h) => h.id === hotel);
-      setCity(selectedHotel?.city || "");
+      setCity(selectedHotel?.location || "");
     } else {
       setCity("");
     }
@@ -91,7 +182,6 @@ const AddInventoryPopup = ({ onClose }) => {
     }, 0);
     setGrandTotal(total);
   }, [roomDetails]);
-  
 
   useEffect(() => {
     let diffDays = 0;
@@ -101,10 +191,10 @@ const AddInventoryPopup = ({ onClose }) => {
       const diffTime = Math.abs(checkoutDate - checkinDate);
       diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     }
-    setRoomDetails(prevRoomDetails => 
-      prevRoomDetails.map(detail => ({
+    setRoomDetails((prevRoomDetails) =>
+      prevRoomDetails.map((detail) => ({
         ...detail,
-        nights: diffDays
+        nights: diffDays,
       }))
     );
   }, [checkin, checkout]);
@@ -138,11 +228,9 @@ const AddInventoryPopup = ({ onClose }) => {
               className="border border-blue3 bg-black text-white rounded-md p-2 w-full"
             >
               <option value="">Select Supplier</option>
-              {suppliers?.map((supplier) => (
-                <option key={supplier.id} value={supplier.id}>
-                  {supplier.name}
-                </option>
-              ))}
+              {suppliers?.length>0 ? suppliers.map((sup,index)=>{
+                return <option key={index} value={sup.id}>{sup.name}</option>
+              }) :"No supplier to show!"}
             </select>
             <label className="font-Nunitoo font-medium text-orange text-18 py-2 mt-2">
               Hotel Name
@@ -153,11 +241,9 @@ const AddInventoryPopup = ({ onClose }) => {
               className="border border-blue3 bg-black text-white rounded-md p-2 w-full"
             >
               <option value="">Select Hotel</option>
-              {hotels?.map((hotel) => (
-                <option key={hotel.id} value={hotel.id}>
-                  {hotel.name}
-                </option>
-              ))}
+              {hotels?.length>0 ? hotels.map(hotel=>{
+                return <option value={hotel.id}>{hotel.name}</option>
+              }) :"No hotel to show!"}
             </select>
             <label className="font-Nunitoo font-medium text-orange text-18 py-2 mt-2">
               City
@@ -165,6 +251,7 @@ const AddInventoryPopup = ({ onClose }) => {
             <input
               type="text"
               value={city}
+              // onChange={(e) => setCity(e.target.value)}
               readOnly
               className="border border-blue3 bg-black text-white rounded-md p-2 w-full"
             />
@@ -250,7 +337,7 @@ const AddInventoryPopup = ({ onClose }) => {
           </p>
         </div>
         <div className="flex justify-end mt-4">
-          <SubmitButton text="Submit" />
+          <SubmitButton text="Submit" onSubmitInventory={onSubmitInventory}/>
         </div>
       </div>
     </div>

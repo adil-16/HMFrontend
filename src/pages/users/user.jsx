@@ -6,6 +6,7 @@ import AddUser from "../../components/popup/addUser";
 import DeleteUser from "../../components/popup/DeleteUser";
 import axios from "../../axios";
 import ShowLedgerPopup from "../../components/popup/ShowLedger";
+import { useNavigate } from "react-router-dom";
 
 const User = () => {
   const [showPopup, setShowPopup] = useState(false);
@@ -15,6 +16,8 @@ const User = () => {
 
   const [customerAdded, setCustomerAdded] = useState(false);
   const [updateData, setUpdateData] = useState(null);
+  const [selectedSupplierId, setSelectedSupplierId] = useState(null);
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
 
   const [tableHeader, setTableHeader] = useState([
     "Customer",
@@ -25,6 +28,7 @@ const User = () => {
   const [selectedNo, setSelectedNo] = useState(0);
 
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUsers = async () => {
@@ -43,9 +47,36 @@ const User = () => {
   }, [customerAdded]);
 
   const handleShowLedger = (fromDate, toDate) => {
-    console.log("Show Ledger for dates:", fromDate, toDate);
-    // You can navigate to the ledger page or fetch data here
-  };
+  console.log("Show Ledger for dates:", fromDate, toDate);
+
+  axios
+    .get(`ledger/filterLedger/${selectedSupplierId}`, {
+      params: {
+        from: fromDate,
+        to: toDate,
+      },
+    })
+    .then((res) => {
+      console.log("Filtered Ledger Data: ", res.data);
+      const totalBalance = res.data.ledgers.length > 0 ? res.data.ledgers[0].totalBalance : 0;
+      navigate("/admin/ledger", { 
+        state: {
+          ledgerData: res.data.ledgers,
+          supplierName: selectedSupplier, 
+          totalBalance,
+          fromDate,
+          toDate,
+        },
+       });
+      console.log("res data", res.data.ledgers)
+      console.log("balance", totalBalance)
+
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
 
   return (
     <div className="w-full">
@@ -74,7 +105,11 @@ const User = () => {
             setShowEditPopup={setShowEditPopup}
             setUpdateData={setUpdateData}
             setShowDeletePopup={setShowDeletePopup}
-            setShowLedgerPopup={setShowLedgerPopup}
+            setShowLedgerPopup={(id,name) => {
+              setSelectedSupplierId(id);
+              setSelectedSupplier(name);
+              setShowLedgerPopup(true);
+            }}
           />
         </div>
       </div>

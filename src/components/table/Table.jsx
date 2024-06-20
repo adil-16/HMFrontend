@@ -19,12 +19,17 @@ const Table = ({
   setShowDeletePopup,
   setShowLedgerPopup,
 }) => {
+  
   const navigate = useNavigate();
   const [url] = useState(import.meta.env.VITE_API_URL);
 
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  const handleShowLedger = (id,name) => {
+    setShowLedgerPopup(id,name);
+  };
 
   const selectAllData = () => {
     let dataCopy = [...data];
@@ -174,10 +179,7 @@ const Table = ({
                       />
                       <button
                         className="bg-orange text-white py-1 px-2 rounded-md ml-6"
-                        onClick={() => {
-                          setUpdateData(val);
-                          setShowLedgerPopup(true);
-                        }}
+                        onClick={() => handleShowLedger(val.id, val.name)}
                       >
                         Show Ledger
                       </button>
@@ -228,46 +230,39 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
 
   const selectAllData = () => {
     let dataCopy = [...data];
-    data.map((val, index) => {
-      if (!selectAll) {
-        dataCopy[index].isSelected = true;
-        setData(dataCopy); // Update the state with the modified data
-        setSelectedNo(dataCopy.length);
-      } else {
-        dataCopy[index].isSelected = false;
-        setData(dataCopy); // Update the state with the modified data
-        setSelectedNo(0);
+    dataCopy.forEach((val, index) => {
+      if (val.entries && val.entries.length > 0) {
+        val.entries.forEach((entry) => {
+          entry.isSelected = !selectAll;
+        });
       }
     });
-
-    setSelectAll((prev) => !prev);
-  };
-  const navigateToInventory = ({ value }) => {
-    navigate(link, { state: { name: value } });
+    setData(dataCopy);
+    setSelectAll(!selectAll);
   };
 
-  const selectData = (index) => {
-    let dataCopy = [...data]; // Make a shallow copy of data
-    dataCopy[index].isSelected = !dataCopy[index].isSelected;
-    setData(dataCopy); // Update the state with the modified data
-    setSelectedNo((prev) => (dataCopy[index].isSelected ? prev + 1 : prev - 1));
-    if (link) {
-      console.log("in if", dataCopy[index].name);
-      navigateToInventory({ value: dataCopy[index].name }); // Pass an object with 'value' property
-    }
+  const selectData = (dataIndex, entryIndex) => {
+    let dataCopy = [...data];
+    dataCopy[dataIndex].entries[entryIndex].isSelected = !dataCopy[dataIndex].entries[entryIndex].isSelected;
+    setData(dataCopy);
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  if (!data) {
-    return null; // Or some loading indicator
+  if (data.length === 0) {
+    return <div>No data available</div>;
   }
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const flattenedEntries = data.flatMap((entry, index) =>
+    entry.entries.map((subEntry) => ({ ...subEntry, parentIndex: index }))
+  );
+
+  const totalPages = Math.ceil(flattenedEntries.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = flattenedEntries.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="w-full">
@@ -298,17 +293,18 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
           <tbody>
             {/* rows */}
             {currentItems.map((val, ind) => {
-              const dataIndex = indexOfFirstItem + ind;
+              const dataIndex = val.parentIndex;
+              const entryIndex = ind;
               return (
                 <tr className="border-b border-blue5" key={dataIndex}>
                   <td className="p-2 text-left w-8 lg:w-20">
-                    <div onClick={() => selectData(dataIndex)}>
+                  <div onClick={() => selectData(dataIndex, entryIndex)}>
                       <CheckboxLabel check={val.isSelected} bg="white" />
                     </div>
                   </td>
                   {/* cell 2 */}
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5">
-                    {val.date}
+                  {new Date(val.createdAt).toLocaleDateString()}
                   </td>
                   {/* 3rd cell */}
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5">
@@ -320,7 +316,7 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
                   </td>
                   {/* 5th cell */}
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                    {val.particulars}
+                    {val.title}
                   </td>
                   {/* 6th cell */}
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">

@@ -20,7 +20,7 @@ const ShowLedgerPopup = ({ onClose, onSubmit }) => {
           src={Cross}
           alt="cross-icon"
           onClick={onClose}
-          className="absolute top-4 right-4 w-6 h-6 sm:w-8 sm:h-8 cursor-pointer bg-orange rounded-full p-1"
+          className="absolute top-4 right-4 w-6 h-6 sm:w-8 sm:h-8 cursor-pointer bg-orange rounded-full"
         />
         <div className="mb-6 text-center">
           <h2 className="text-xl font-semibold text-orange">Select Dates</h2>
