@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Cross from "../../assets/cross.svg";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import axios from "../../axios";
-import { v4 as uuidv4 } from 'uuid';
 
 const AddInventoryPopup = ({ onClose }) => {
   const [supplier, setSupplier] = useState("");
@@ -19,9 +18,10 @@ const AddInventoryPopup = ({ onClose }) => {
     { type: "Double", rooms: "", beds: 0, rate: "", nights: 0, total: "" },
   ]);
   const [grandTotal, setGrandTotal] = useState(0);
+  const[hotelRooms,setHotelRooms]=useState([])
+
 
   async function onSubmitInventory() {
-
     let ledgerObject = {
       title: "Rooms",
       credit: grandTotal,
@@ -31,7 +31,7 @@ const AddInventoryPopup = ({ onClose }) => {
       supId: supplier,
       hotelId: hotel,
     };
-    console.log("ledger object is", ledgerObject)
+    console.log("ledger object is", ledgerObject);
     try {
       const ledgerResponse = await axios.post(
         "/ledger/createLedger",
@@ -65,40 +65,21 @@ const AddInventoryPopup = ({ onClose }) => {
       );
       console.log(poformResponse, "poform response");
 
-      const filterHotel = hotels.filter((hot) => hot.id == hotel);
+      let filterHotel = hotels.filter((hot) => hot.id == hotel);
       let roomCounter = 1;
-      const rooms = roomDetails.reduce((acc, roomDetail) => {
-        const numRooms = parseInt(roomDetail.rooms);
-        for (let i = 1; i <= numRooms; i++) {
-          const roomNumber = uuidv4()
-          const beds = [];
-          for (let j = 1; j <= roomDetail.beds; j++) {
-            beds.push({
-              bedNumber: j,
-              bedRate: roomDetail.rate,
-            });
-          }
-          acc.push({
-            roomType: roomDetail.type,
-            roomNumber: roomNumber.toString(),
-            totalBeds: roomDetail.beds,
-            beds: beds,
-          });
-        }
-        return acc;
-      }, []);
 
       let hotelObject = {
         location: filterHotel[0].location,
         name: filterHotel[0].name,
-        totalRooms: rooms.length,
-        rooms,
+        totalRooms: 0,
+        roomDetails,
       };
       const hotelUpdateResponse = await axios.put(
-        `http://localhost:8000/hotel/updateHotel/${hotel}`,
+        `http://localhost:8000/hotel/editHotel/${hotel}`,
         hotelObject
       );
       console.log(hotelUpdateResponse, "hotel response");
+      setHotelRooms(hotelUpdateResponse.data.data.hotel.rooms);
       onClose();
     } catch (error) {
       console.log(error);
@@ -228,9 +209,15 @@ const AddInventoryPopup = ({ onClose }) => {
               className="border border-blue3 bg-black text-white rounded-md p-2 w-full"
             >
               <option value="">Select Supplier</option>
-              {suppliers?.length>0 ? suppliers.map((sup,index)=>{
-                return <option key={index} value={sup.id}>{sup.name}</option>
-              }) :"No supplier to show!"}
+              {suppliers?.length > 0
+                ? suppliers.map((sup, index) => {
+                    return (
+                      <option key={index} value={sup.id}>
+                        {sup.name}
+                      </option>
+                    );
+                  })
+                : "No supplier to show!"}
             </select>
             <label className="font-Nunitoo font-medium text-orange text-18 py-2 mt-2">
               Hotel Name
@@ -241,9 +228,11 @@ const AddInventoryPopup = ({ onClose }) => {
               className="border border-blue3 bg-black text-white rounded-md p-2 w-full"
             >
               <option value="">Select Hotel</option>
-              {hotels?.length>0 ? hotels.map(hotel=>{
-                return <option value={hotel.id}>{hotel.name}</option>
-              }) :"No hotel to show!"}
+              {hotels?.length > 0
+                ? hotels.map((hotel) => {
+                    return <option value={hotel.id}>{hotel.name}</option>;
+                  })
+                : "No hotel to show!"}
             </select>
             <label className="font-Nunitoo font-medium text-orange text-18 py-2 mt-2">
               City
@@ -337,7 +326,7 @@ const AddInventoryPopup = ({ onClose }) => {
           </p>
         </div>
         <div className="flex justify-end mt-4">
-          <SubmitButton text="Submit" onSubmitInventory={onSubmitInventory}/>
+          <SubmitButton text="Submit" onSubmitInventory={onSubmitInventory} />
         </div>
       </div>
     </div>

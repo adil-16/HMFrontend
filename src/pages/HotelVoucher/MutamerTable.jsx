@@ -37,7 +37,7 @@ const MutamerTable = ({ data }) => {
         </thead>
         <tbody>
           {/* rows */}
-          {data.map((val, ind) => {
+          {data?.map((val, ind) => {
             return (
               <tr className="border-b border-blue5" key={ind}>
                 {/* cell 2 */}

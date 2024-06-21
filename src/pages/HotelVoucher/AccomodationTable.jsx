@@ -5,7 +5,7 @@ const AccomodationTable = ({ data }) => {
 
   useEffect(() => {
     let total = 0;
-    data.forEach((val) => {
+    data?.forEach((val) => {
       total += parseInt(val.nights);
     });
     setNights(total);
@@ -47,7 +47,7 @@ const AccomodationTable = ({ data }) => {
         </thead>
         <tbody>
           {/* rows */}
-          {data.map((val, ind) => {
+          {data?.map((val, ind) => {
             return (
               <tr className="border-b border-blue5" key={ind}>
                 {/* cell 2 */}

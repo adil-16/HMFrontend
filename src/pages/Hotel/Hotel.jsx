@@ -4,7 +4,7 @@ import TableTop from "../../components/TableTop/TableTop";
 import AddHotel from "../../components/popup/AddHotel";
 
 import AddUser from "../../components/popup/addUser";
-import BookRoom from "../../components/popup/BookRoom";
+// import BookRoom from "../../components/popup/BookRoom";
 import HotelCard from "./HotelCard";
 import axios from "../../axios";
 
@@ -70,19 +70,7 @@ const Store = () => {
         </>
       )}
 
-      {/* book room */}
-      {book && (
-        <>
-          <BookRoom
-            onClose={() => setBook(false)}
-            heading="Book Room"
-            id={hotelId}
-            addHotel={setAddHotel}
-            setShowAddUser={setShowAddUser}
-            added={added}
-          />
-        </>
-      )}
+      
 
       {/* add user */}
 

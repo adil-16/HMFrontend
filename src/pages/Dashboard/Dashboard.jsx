@@ -6,6 +6,7 @@ import ReportCard from "../../components/cards/ReportCard";
 import Graphs from "../../components/chart/Graphs";
 import AddInventoryPopup from "../../components/popup/AddInventory";
 import CashVoucherPopup from "../../components/popup/CashVoucher";
+import HotelVoucherPopup from "../../components/popup/HotelVoucher"
 import axios from "../../axios";
 import ShowLedgerPopup from "../../components/popup/ShowLedger";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [showLedgerPopup, setShowLedgerPopup] = useState(false);
   const [showCashVoucherPopup, setShowCashVoucherPopup] = useState(false);
+  const [showHotelVoucherPopup, setShowHotelVoucherPopup] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -96,6 +98,12 @@ const Dashboard = () => {
         >
           Cash Vouchers
         </button>
+        <button
+          onClick={() => setShowHotelVoucherPopup(true)}
+          className="bg-orange text-white px-4 py-2 rounded-lg ml-6"
+        >
+          + Create Hotel Voucher
+        </button>
 
         <div className="flex flex-wrap justify-between items-center mt-6">
           <p className="font-Nunitoo text-white font-semibold text-24">
@@ -125,6 +133,9 @@ const Dashboard = () => {
       )}
       {showCashVoucherPopup && (
         <CashVoucherPopup onClose={() => setShowCashVoucherPopup(false)} />
+      )}
+        {showHotelVoucherPopup && (
+        <HotelVoucherPopup onClose={() => setShowHotelVoucherPopup(false)} />
       )}
     </div>
   );
