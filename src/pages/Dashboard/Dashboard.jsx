@@ -6,9 +6,9 @@ import ReportCard from "../../components/cards/ReportCard";
 import Graphs from "../../components/chart/Graphs";
 import AddInventoryPopup from "../../components/popup/AddInventory";
 import CashVoucherPopup from "../../components/popup/CashVoucher";
-import HotelVoucherPopup from "../../components/popup/HotelVoucher"
+import HotelVoucherPopup from "../../components/popup/HotelVoucher";
+import ShowLedgerPopup from "../../components/popup/ShowLedger"; // Import ShowLedgerPopup
 import axios from "../../axios";
-import ShowLedgerPopup from "../../components/popup/ShowLedger";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
@@ -24,45 +24,40 @@ const Dashboard = () => {
 
   useEffect(() => {
     const getData = async () => {
-      await axios
-        .get("/dashboard/getDash")
-        .then((res) => {
-          console.log("data is", res.data.data);
-          setCards(res.data.data.cards);
-          setRooms(res.data.data.rooms);
-          setBookedRooms(res.data.data.roomBooked);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await axios.get("/dashboard/getDash");
+        console.log("data is", res.data);
+        const { cards, rooms, roomBooked } = res.data.data;
+        setCards(cards);
+        setRooms(rooms);
+        setBookedRooms(roomBooked);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
     };
     getData();
   }, []);
 
-  const handleShowLedger = (fromDate, toDate) => {
-    console.log("Show Ledger for dates:", fromDate, toDate);
-
-    axios
-      .get(`ledger/getAdminLedger/?role=cash`)
-      .then((res) => {
-        console.log("Filtered Ledger Data: ", res.data);
-        const totalBalance =
-          res.data.ledgers.length > 0 ? res.data.ledgers[0].totalBalance : 0;
-        navigate("/admin/ledger", {
-          state: {
-            ledgerData: res.data.ledgers,
-            supplierName: "Cash",
-            totalBalance,
-            fromDate,
-            toDate,
-          },
-        });
-        console.log("res data", res.data.ledgers);
-        console.log("balance", totalBalance);
-      })
-      .catch((err) => {
-        console.error(err);
+  const handleShowLedger = async (fromDate, toDate) => {
+    try {
+      const response = await axios.get(`ledger/getAdminLedger/?role=cash`);
+      console.log("Filtered Ledger Data: ", response.data);
+      const totalBalance =
+        response.data.ledgers.length > 0 ? response.data.ledgers[0].totalBalance : 0;
+      navigate("/admin/ledger", {
+        state: {
+          ledgerData: response.data.ledgers,
+          supplierName: "Cash",
+          totalBalance,
+          fromDate,
+          toDate,
+        },
       });
+      console.log("res data", response.data.ledgers);
+      console.log("balance", totalBalance);
+    } catch (error) {
+      console.error("Error filtering ledgers:", error);
+    }
   };
 
   return (
@@ -74,20 +69,20 @@ const Dashboard = () => {
         </p>
 
         <div className="flex flex-wrap justify-between my-6">
-          {cards.map((val, ind) => {
-            return <DashboardCard data={val} key={ind} />;
-          })}
+          {cards.map((val, ind) => (
+            <DashboardCard data={val} key={ind} />
+          ))}
         </div>
 
         <button
-          onClick={() => setIsPopupOpen(true)} // Open the popup on button click
+          onClick={() => setIsPopupOpen(true)}
           className="bg-orange text-white px-4 py-2 rounded-lg"
         >
           + Add Inventory
         </button>
 
         <button
-          onClick={() => setShowLedgerPopup(true)} // Open the popup on button click
+          onClick={() => setShowLedgerPopup(true)}
           className="bg-orange text-white px-4 py-2 rounded-lg ml-6"
         >
           Show Cash Ledger
@@ -121,9 +116,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {isPopupOpen && (
-        <AddInventoryPopup onClose={() => setIsPopupOpen(false)} />
-      )}
+      {isPopupOpen && <AddInventoryPopup onClose={() => setIsPopupOpen(false)} />}
 
       {showLedgerPopup && (
         <ShowLedgerPopup
@@ -131,10 +124,12 @@ const Dashboard = () => {
           onSubmit={handleShowLedger}
         />
       )}
+
       {showCashVoucherPopup && (
         <CashVoucherPopup onClose={() => setShowCashVoucherPopup(false)} />
       )}
-        {showHotelVoucherPopup && (
+
+      {showHotelVoucherPopup && (
         <HotelVoucherPopup onClose={() => setShowHotelVoucherPopup(false)} />
       )}
     </div>

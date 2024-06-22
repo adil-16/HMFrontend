@@ -9,7 +9,7 @@ const AddHotelForm = ({onClose, image, setAddHotel}) => {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [totalRooms, setTotalRooms] = useState(1); 
-  const [rooms, setRooms] = useState([{ roomType:"", roomNumber: "", totalBeds: "", beds: [{ bedNumber: "", bedRate: "" }] }]);
+  const [rooms, setRooms] = useState([{ roomType:"", totalBeds: "", beds: [{ bedRate: "" }] }]);
   const [error, setError] = useState(false)
 
   const emailInputRef = useRef(null);

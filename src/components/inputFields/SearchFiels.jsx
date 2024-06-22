@@ -19,6 +19,11 @@ const SearchFiels = ({
       } else {
         url = `/${search}/search/${value}`;
       }
+      if (value.trim() === "") {
+        url = "/user/getUsers"; 
+      } else {
+        url = `/${search}/search/${value}`;
+      }
       await axios
         .get(url)
         .then((res) => {

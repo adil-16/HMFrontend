@@ -16,8 +16,9 @@ const User = () => {
 
   const [customerAdded, setCustomerAdded] = useState(false);
   const [updateData, setUpdateData] = useState(null);
-  const [selectedSupplierId, setSelectedSupplierId] = useState(null);
-  const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null);
 
   const [tableHeader, setTableHeader] = useState([
     "Customer",
@@ -38,45 +39,42 @@ const User = () => {
           setData(res.data.data.user);
         })
         .catch((err) => {
-          // //   setCategoryapi(true)
-          // setLoader(false)
-          //   setError(err.response.data.data.error);
+          // Handle error
+          console.error(err);
         });
     };
     getUsers();
   }, [customerAdded]);
 
   const handleShowLedger = (fromDate, toDate) => {
-  console.log("Show Ledger for dates:", fromDate, toDate);
+    console.log("Show Ledger for dates:", fromDate, toDate);
 
-  axios
-    .get(`ledger/filterLedger/${selectedSupplierId}`, {
-      params: {
-        from: fromDate,
-        to: toDate,
-      },
-    })
-    .then((res) => {
-      console.log("Filtered Ledger Data: ", res.data);
-      const totalBalance = res.data.ledgers.length > 0 ? res.data.ledgers[0].totalBalance : 0;
-      navigate("/admin/ledger", { 
-        state: {
-          ledgerData: res.data.ledgers,
-          supplierName: selectedSupplier, 
-          totalBalance,
-          fromDate,
-          toDate,
+    axios
+      .get(`ledger/filterLedger/${selectedUserId}`, {
+        params: {
+          from: fromDate,
+          to: toDate,
         },
-       });
-      console.log("res data", res.data.ledgers)
-      console.log("balance", totalBalance)
-
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};
-
+      })
+      .then((res) => {
+        console.log("Filtered Ledger Data: ", res.data);
+        const totalBalance = res.data.ledgers.length > 0 ? res.data.ledgers[0].totalBalance : 0;
+        navigate("/admin/ledger", { 
+          state: {
+            ledgerData: res.data.ledgers,
+            userName: selectedUser, 
+            totalBalance,
+            fromDate,
+            toDate,
+          },
+        });
+        console.log("res data", res.data.ledgers)
+        console.log("balance", totalBalance)
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   return (
     <div className="w-full">
@@ -105,9 +103,10 @@ const User = () => {
             setShowEditPopup={setShowEditPopup}
             setUpdateData={setUpdateData}
             setShowDeletePopup={setShowDeletePopup}
-            setShowLedgerPopup={(id,name) => {
-              setSelectedSupplierId(id);
-              setSelectedSupplier(name);
+            setShowLedgerPopup={(id, name, role) => {
+              setSelectedUserId(id);
+              setSelectedUser(name);
+              setSelectedRole(role);
               setShowLedgerPopup(true);
             }}
           />
@@ -115,36 +114,30 @@ const User = () => {
       </div>
 
       {showPopup && (
-        <>
-          <AddUser
-            onClose={() => setShowPopup(false)}
-            heading="Add Customer"
-            setAdded={setCustomerAdded}
-            guest={false}
-          />
-        </>
+        <AddUser
+          onClose={() => setShowPopup(false)}
+          heading="Add Customer"
+          setAdded={setCustomerAdded}
+          guest={false}
+        />
       )}
 
       {showEditPopup && (
-        <>
-          <AddUser
-            onClose={() => setShowEditPopup(false)}
-            heading="Update Customer"
-            setAdded={setCustomerAdded}
-            updateData={updateData}
-          />
-        </>
+        <AddUser
+          onClose={() => setShowEditPopup(false)}
+          heading="Update Customer"
+          setAdded={setCustomerAdded}
+          updateData={updateData}
+        />
       )}
 
       {showDeletePopup && (
-        <>
-          <DeleteUser
-            onClose={() => setShowDeletePopup(false)}
-            heading="Delete Customer"
-            setAdded={setCustomerAdded}
-            id={updateData.id}
-          />
-        </>
+        <DeleteUser
+          onClose={() => setShowDeletePopup(false)}
+          heading="Delete Customer"
+          setAdded={setCustomerAdded}
+          id={updateData.id}
+        />
       )}
 
       {showLedgerPopup && (

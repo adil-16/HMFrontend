@@ -7,6 +7,8 @@ const CashVoucherPopup = ({ onClose }) => {
     const [voucherType, setVoucherType] = useState("Cash Payment Voucher");
     const [suppliers, setSuppliers] = useState([]);
     const [selectedSupplier, setSelectedSupplier] = useState("");
+    const [customers, setCustomers] = useState([]);
+    const [selectedCustomer, setSelectedCustomer] = useState("");
     const [customer, setCustomer] = useState("");
     const [title, setTitle] = useState("");
     const [amount, setAmount] = useState("");
@@ -25,6 +27,21 @@ const CashVoucherPopup = ({ onClose }) => {
     useEffect(() => {
       getSuppliers();
     }, []);
+
+    const getCustomers = async () => {
+      await axios
+        .get("/user/getCustomers")
+        .then((res) => {
+          console.log("data is", res.data);
+          setCustomers(res.data.data.customers); 
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    useEffect(() => {
+      getCustomers();
+    }, []);
   
     const handleSubmit = async () => {
       const data = {
@@ -37,14 +54,14 @@ const CashVoucherPopup = ({ onClose }) => {
       if (voucherType === "Cash Payment Voucher") {
         data.supId = selectedSupplier;
       } else {
-        data.customer = customer;
+        data.cusId = selectedCustomer;
       }
   
       try {
         const url =
           voucherType === "Cash Payment Voucher"
             ? "/payment-voucher/debitpayment"
-            : "/receipt-voucher/debitreceipt";
+            : "/payment-voucher/debitreceipt";
         const response = await axios.post(url, data);
         console.log("Voucher submitted:", response.data);
         onClose();
@@ -103,15 +120,19 @@ const CashVoucherPopup = ({ onClose }) => {
 
         {voucherType === "Cash Receipt Voucher" && (
           <div className="mt-3">
-            <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
-              Customer
-            </label>
-            <input
-              type="text"
-              value={customer}
-              onChange={(e) => setCustomer(e.target.value)}
-              className="block w-full bg-white border text-black border-gray py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
-            />
+          <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
+            Customer
+          </label>
+          <select
+            value={selectedCustomer}
+            onChange={(e) => setSelectedCustomer(e.target.value)}
+            className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+          >
+            <option value="">Select Customer</option>
+            {customers?.length>0 ? customers.map((sup,index)=>{
+              return <option key={index} value={sup.id}>{sup.name}</option>
+            }) :"No customer to show!"}
+          </select>
           </div>
         )}
 

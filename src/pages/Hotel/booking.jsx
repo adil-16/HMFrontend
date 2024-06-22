@@ -5,7 +5,7 @@ import BookingCard from './BookingCard'
 import {useLocation } from "react-router-dom";
 import axios from '../../axios'
 
-const booking = () => {
+const bookingHotel = () => {
   
   const locationn = useLocation();
   const initialUserState = locationn.state ? locationn.state.id : null; // Handle null or undefined state
@@ -42,4 +42,4 @@ const booking = () => {
   )
 }
 
-export default booking
+export default bookingHotel;

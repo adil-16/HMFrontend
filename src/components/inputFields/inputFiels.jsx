@@ -1,8 +1,17 @@
 import React from "react";
 
-export function InputDefault({ value, setValue, inputRef, handleKeyDown, nextRef, Placeholder, bg, py }) {
+export function InputDefault({ value, setValue, inputRef, nextRef, Placeholder, bg, py }) {
   const handleChange = (e) => {
     setValue(e.target.value);
+  };
+  const handleKeyDown = (e, nextRef) => {
+    if (e.key === "Enter") {
+      if (nextRef && nextRef.current) {
+        nextRef.current.focus();
+      } else {
+        handleSubmit();
+      }
+    }
   };
 
   return (

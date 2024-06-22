@@ -26,12 +26,6 @@ export default [
       select: false,
     },
     {
-      name: "Bookings",
-      link: "/admin/Allbookings",
-      icon: User,
-      select: false,
-    },
-    {
       name: "Settings",
       link: "/admin/settings",
       icon: Setting,

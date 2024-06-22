@@ -5,30 +5,6 @@ import { LedgerTable } from "../../components/table/Table";
 import LedgerTop from "./LedgerTop";
 import { useLocation } from "react-router-dom";
 
-// const ledgerData = [
-//     {
-//         date: "01-07-2023",
-//         type: "Hotel",
-//         trans: "UB-12321",
-//         particulars: "Mr. Abid Markazia x 30",
-//         inv: "INV-12321",
-//         cheque: "CH-12321",
-//         debit: "20000",
-//         credit: "0",
-//         balance: "20000",
-//       },
-//       {
-//         date: "01-07-2023",
-//         type: "Hotel",
-//         trans: "UB-12321",
-//         particulars: "Mr. Abid Markazia x 30",
-//         inv: "INV-12321",
-//         cheque: "CH-12321",
-//         debit: "0",
-//         credit: "1000",
-//         balance: "20000",
-//       },
-// ]
 const Ledger = () => {
   const [selectedNo, setSelectedNo] = useState(0);
   const [data, setData] = useState([]);
@@ -73,7 +49,7 @@ const Ledger = () => {
     <div className="w-full">
       <TopBar title="Ledgers" />
       {/* body */}
-      <div className="p-1 sm:p-4 py-6">
+      <div className="p-1 sm:p-8 py-6">
         <TableTop
           selectedNo={selectedNo}
           setData={setData}

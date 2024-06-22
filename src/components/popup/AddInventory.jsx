@@ -230,7 +230,7 @@ const AddInventoryPopup = ({ onClose }) => {
               <option value="">Select Hotel</option>
               {hotels?.length > 0
                 ? hotels.map((hotel) => {
-                    return <option value={hotel.id}>{hotel.name}</option>;
+                    return <option key={hotel.id} value={hotel.id}>{hotel.name}</option>;
                   })
                 : "No hotel to show!"}
             </select>

@@ -1,16 +1,26 @@
 import React, { useState } from "react";
 import Cross from "../../assets/cross.svg";
-import { useNavigate } from "react-router-dom";
+import axios from "../../axios";
 
 const ShowLedgerPopup = ({ onClose, onSubmit }) => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    onSubmit(fromDate, toDate);
-    onClose();
-    navigate("/admin/ledger"); 
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.get(`ledger/filterAdminLedger`, {
+        params: { from: fromDate, to: toDate },
+      });
+
+      if (response.status !== 200) {
+        throw new Error("Failed to filter ledgers");
+      }
+
+      onSubmit(fromDate, toDate); // Pass fromDate and toDate to onSubmit callback
+      onClose();
+    } catch (error) {
+      console.error("Error filtering ledgers:", error);
+    }
   };
 
   return (
@@ -26,7 +36,9 @@ const ShowLedgerPopup = ({ onClose, onSubmit }) => {
           <h2 className="text-xl font-semibold text-orange">Select Dates</h2>
         </div>
         <div className="mb-6">
-          <label className="block text-sm font-medium text-orange mb-2">From:</label>
+          <label className="block text-sm font-medium text-orange mb-2">
+            From:
+          </label>
           <input
             type="date"
             value={fromDate}

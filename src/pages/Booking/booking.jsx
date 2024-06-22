@@ -6,7 +6,7 @@ import Searchh from '../../assets/search.svg'
 import {useLocation } from "react-router-dom";
 import axios from '../../axios'
 
-const booking = () => {
+const Booking = () => {
   
   const locationn = useLocation();
   const initialUserState = locationn.state ? locationn.state.id : null; // Handle null or undefined state
@@ -57,4 +57,4 @@ const booking = () => {
   )
 }
 
-export default booking
+export default Booking;

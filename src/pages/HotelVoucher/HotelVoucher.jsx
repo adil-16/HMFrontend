@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate} from "react-router-dom";
 import TopBar from "../../components/bars/TopBar";
 import HotelVoucherTop from "./HotelVoucherTop";
 import MutamerTable from "./MutamerTable";
@@ -52,8 +52,14 @@ const generateVoucherNumber = (index) => {
   return `V-${index + 1}`;
 };
 
+const generateInvoiceId = (index) => {
+  return `${index + 1}`;
+};
+
 const HotelVoucher = () => {
   const location = useLocation();
+  // const history = useHistory();
+  const navigate = useNavigate();
   const { voucher, accomodationsData } = location.state || {};
   
 
@@ -108,13 +114,26 @@ const HotelVoucher = () => {
       checkin: accommodation.checkin,
       checkout: accommodation.checkout,
       nights: nightDifference,
+      rate: accommodation.bedRate,
+      roomQuantity: accommodation.noOfBeds,
     };
   });
+
+  const handleShowInvoice = () => {
+    const invoiceId = generateInvoiceId(0);
+    navigate(`/admin/hotel-invoice/${invoiceId}`, { state: { voucher: voucher, accomodationsData: accomodationData } });
+  };
   
 
   return (
     <div className="w-full flex flex-col pb-5">
       <TopBar title="Hotel Voucher" />
+      <button
+          className="ml-auto mr-8 mt-4 bg-orange text-white font-bold py-2 px-4 rounded"
+          onClick={handleShowInvoice}
+        >
+          Show Invoice
+        </button>
 
       <div className="p-1 sm:p-4 py-6">
         <HotelVoucherTop headName={voucher.customer.name} voucher={generateVoucherNumber(0)} />
