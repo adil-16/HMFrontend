@@ -21,7 +21,7 @@ const User = () => {
   const [selectedRole, setSelectedRole] = useState(null);
 
   const [tableHeader, setTableHeader] = useState([
-    "Customer",
+    "User",
     "Phone Number",
     "Role",
   ]);
@@ -90,26 +90,30 @@ const User = () => {
           search="user"
         />
         <div className="mx-1">
-          <Table
-            tableHeader={tableHeader}
-            data={data}
-            setData={setData}
-            cell2="email"
-            cell3="phone"
-            cell4="role"
-            selectedNo={selectedNo}
-            setSelectedNo={setSelectedNo}
-            setShowPopup={setShowPopup}
-            setShowEditPopup={setShowEditPopup}
-            setUpdateData={setUpdateData}
-            setShowDeletePopup={setShowDeletePopup}
-            setShowLedgerPopup={(id, name, role) => {
-              setSelectedUserId(id);
-              setSelectedUser(name);
-              setSelectedRole(role);
-              setShowLedgerPopup(true);
-            }}
-          />
+          {data.length === 0 ? (
+            <p className="text-center text-gray-500">No users to show</p>
+          ) : (
+            <Table
+              tableHeader={tableHeader}
+              data={data}
+              setData={setData}
+              cell2="email"
+              cell3="phone"
+              cell4="role"
+              selectedNo={selectedNo}
+              setSelectedNo={setSelectedNo}
+              setShowPopup={setShowPopup}
+              setShowEditPopup={setShowEditPopup}
+              setUpdateData={setUpdateData}
+              setShowDeletePopup={setShowDeletePopup}
+              setShowLedgerPopup={(id, name, role) => {
+                setSelectedUserId(id);
+                setSelectedUser(name);
+                setSelectedRole(role);
+                setShowLedgerPopup(true);
+              }}
+            />
+          )}
         </div>
       </div>
 

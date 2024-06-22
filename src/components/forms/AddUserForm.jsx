@@ -13,7 +13,7 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, guest }) => {
   const [passportNumber, setPassportNumber] = useState("");
   const [passengers, setPassengers] = useState([]);
   const [age, setAge] = useState(0);
-  const [gender, setGender] = useState("male"); 
+  const [gender, setGender] = useState("male");
   const [error, setError] = useState(false);
 
   const emailInputRef = useRef(null);
@@ -54,8 +54,7 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, guest }) => {
   }, []);
 
   const handleSubmit = async () => {
-
-    console.log("passenegers", passengers)
+    console.log("passengers", passengers);
     const data = new FormData();
     data.append("image", image);
     data.append("name", name);
@@ -65,10 +64,11 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, guest }) => {
     data.append("gender", gender);
     if (role === "customer") {
       data.append("customerType", customerType);
-      data.append("passportNumber", passportNumber);
-      data.append("passengers", JSON.stringify(passengers)); 
       data.append("age", age);
-     
+      if (customerType === "guest") {
+        data.append("passportNumber", passportNumber);
+        data.append("passengers", JSON.stringify(passengers));
+      }
     }
 
     let url = "";
@@ -83,12 +83,11 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, guest }) => {
       }
     } else {
       url = "/user/addUser";
-      // data.append("isGuest", guest);
       const formDataObject = {};
-    for (let pair of data.entries()) {
-      formDataObject[pair[0]] = pair[1];
-    }
-    console.log("Form Data:", formDataObject);
+      for (let pair of data.entries()) {
+        formDataObject[pair[0]] = pair[1];
+      }
+      console.log("Form Data:", formDataObject);
       try {
         const res = await axios.post(url, data, {
           headers: {
@@ -105,7 +104,10 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, guest }) => {
   };
 
   return (
-    <div className="mx-4 md:ml-14 md:mr-48 h-full overflow-y-auto" style={{ maxHeight: "600px", overflowY: "scroll",  paddingRight: "100px" }}>
+    <div
+      className="mx-4 md:ml-14 md:mr-48 h-full overflow-y-auto"
+      style={{ maxHeight: "600px", overflowY: "scroll", paddingRight: "100px" }}
+    >
       <div>
         <label className="font-Nunitoo font-medium text-orange text-14 py-2">
           Full Name
@@ -151,21 +153,21 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, guest }) => {
         />
       </div>
       <div className="mt-3">
-            <label className="font-Nunitoo font-medium text-orange text-14 py-2">
-              Gender
-            </label>
-            <select
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
-              onKeyDown={(e) => handleKeyDown(e, null)}
-              ref={genderInputRef}
-              className="bg-white border border-gray text-black ml-2 py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
-            >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
+        <label className="font-Nunitoo font-medium text-orange text-14 py-2">
+          Gender
+        </label>
+        <select
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+          onKeyDown={(e) => handleKeyDown(e, null)}
+          ref={genderInputRef}
+          className="bg-white border border-gray text-black ml-2 py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
+        >
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
 
       <div className="mt-3">
         <label className="font-Nunitoo font-medium text-orange text-14 py-2">
@@ -202,22 +204,6 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, guest }) => {
               <option value="b2b">B2B</option>
             </select>
           </div>
-
-          <div className="mt-3">
-            <label className="font-Nunitoo font-medium text-orange text-14 py-2">
-              Passport Number
-            </label>
-            <InputDefault
-              value={passportNumber}
-              setValue={setPassportNumber}
-              handleKeyDown={(e) => handleKeyDown(e, ageInputRef)}
-              inputRef={passportNumberInputRef}
-              nextRef={ageInputRef}
-              Placeholder="A12345673"
-              bg={"white"}
-            />
-          </div>
-
           <div className="mt-3">
             <label className="font-Nunitoo font-medium text-orange text-14 py-2">
               Age
@@ -234,9 +220,29 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, guest }) => {
             />
           </div>
 
-          
+          {customerType === "guest" && (
+            <>
+              <div className="mt-3">
+                <label className="font-Nunitoo font-medium text-orange text-14 py-2">
+                  Passport Number
+                </label>
+                <InputDefault
+                  value={passportNumber}
+                  setValue={setPassportNumber}
+                  handleKeyDown={(e) => handleKeyDown(e, ageInputRef)}
+                  inputRef={passportNumberInputRef}
+                  nextRef={ageInputRef}
+                  Placeholder="A12345673"
+                  bg={"white"}
+                />
+              </div>
 
-          <PassengerForm passengers={passengers} setPassengers={setPassengers} />
+              <PassengerForm
+                passengers={passengers}
+                setPassengers={setPassengers}
+              />
+            </>
+          )}
         </>
       )}
       {error && <p className="text-orange w-80 mt-2">{error}</p>}

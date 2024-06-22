@@ -48,15 +48,19 @@ const Store = () => {
           setData={setData}
           search="hotel"
         />
-        <div className="flex flex-wrap justify-start gap-10 m-1">
-          {data?.map((val, ind) => (
-            <HotelCard
-              data={val}
-              key={ind}
-              setBook={setBook}
-              setHotelId={setHotelId}
-            />
-          ))}
+         <div className="flex flex-wrap justify-start gap-10 m-1">
+          {data && data.length === 0 ? (
+            <p className="text-center text-gray-500">No Hotels to show</p>
+          ) : (
+            data?.map((val, ind) => (
+              <HotelCard
+                data={val}
+                key={ind}
+                setBook={setBook}
+                setHotelId={setHotelId}
+              />
+            ))
+          )}
         </div>
       </div>
 
@@ -69,8 +73,6 @@ const Store = () => {
           />
         </>
       )}
-
-      
 
       {/* add user */}
 

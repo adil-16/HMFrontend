@@ -7,9 +7,16 @@ import Graphs from "../../components/chart/Graphs";
 import AddInventoryPopup from "../../components/popup/AddInventory";
 import CashVoucherPopup from "../../components/popup/CashVoucher";
 import HotelVoucherPopup from "../../components/popup/HotelVoucher";
-import ShowLedgerPopup from "../../components/popup/ShowLedger"; // Import ShowLedgerPopup
+import ShowLedgerPopup from "../../components/popup/ShowLedger"; 
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
+
+
+const cleanData = (data) => data.map(item => ({
+  ...item,
+  count: Math.max(item.count, 0),
+  value: Math.max(item.value, 0)
+}));
 
 const Dashboard = () => {
   const [cards, setCards] = useState([]);
@@ -20,7 +27,11 @@ const Dashboard = () => {
   const [showLedgerPopup, setShowLedgerPopup] = useState(false);
   const [showCashVoucherPopup, setShowCashVoucherPopup] = useState(false);
   const [showHotelVoucherPopup, setShowHotelVoucherPopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+
+
+  
 
   useEffect(() => {
     const getData = async () => {
@@ -29,14 +40,23 @@ const Dashboard = () => {
         console.log("data is", res.data);
         const { cards, rooms, roomBooked } = res.data.data;
         setCards(cards);
-        setRooms(rooms);
-        setBookedRooms(roomBooked);
+        setRooms(cleanData(rooms));
+        setBookedRooms(cleanData(roomBooked));
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+        setIsLoading(false);
       }
     };
     getData();
   }, []);
+
+  useEffect(() => {
+    const loginStatus = localStorage.getItem('login');
+    if (!loginStatus) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const handleShowLedger = async (fromDate, toDate) => {
     try {
@@ -59,7 +79,9 @@ const Dashboard = () => {
       console.error("Error filtering ledgers:", error);
     }
   };
-
+  if (isLoading) {
+    return <div>Loading...</div>; 
+  }
   return (
     <div className="w-full">
       <TopBar title="Dashboard" />

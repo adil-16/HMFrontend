@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { InputDefault } from "../../components/inputFields/inputFiels";
 import PasswordField from "../../components/inputFields/passwordField";
 import ImageField from "../../components/inputFields/ImageField";
-import SubmitButton from "../buttons/SubmitButton";
+import SubmitButton from "../buttons/SubmitButtonHotel";
 import axios from "../../axios";
 import { AuthContext } from "../../App";
 
