@@ -100,14 +100,14 @@ const Dashboard = () => {
           onClick={() => setIsPopupOpen(true)}
           className="bg-orange text-white px-4 py-2 rounded-lg"
         >
-          + Add Inventory
+          Add Inventory
         </button>
 
         <button
           onClick={() => setShowHotelVoucherPopup(true)}
           className="bg-white text-black px-4 py-2 rounded-lg ml-6"
         >
-          + Create Hotel Voucher
+          Create Hotel Voucher
         </button>
 
         <button

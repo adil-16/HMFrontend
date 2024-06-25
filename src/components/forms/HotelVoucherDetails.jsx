@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "../../axios";
 
 const HotelVoucherForm = ({ rooms, setRooms }) => {
+  const roomTypes = ["Shared", "Quatre", "Triple", "Double"];
   const [hotels, setHotels] = useState([]);
 
   useEffect(() => {
@@ -67,14 +68,19 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
             </div>
 
             <div className="flex gap-x-1 mt-2">
-              <input
-                type="text"
-                className={`border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
-                placeholder="Room Type"
+              <select
+                className="border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14"
                 name="roomType"
                 value={room.roomType}
                 onChange={(e) => handleRoomChange(roomIndex, e)}
-              />
+              >
+                <option value=""> Room Type</option>
+                {roomTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
               <input
                 type="date"
                 className={`border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
