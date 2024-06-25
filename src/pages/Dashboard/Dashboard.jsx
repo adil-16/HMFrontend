@@ -67,7 +67,7 @@ const Dashboard = () => {
       navigate("/admin/ledger", {
         state: {
           ledgerData: response.data.ledgers,
-          supplierName: "Cash",
+          userName: "Cash Account",
           totalBalance,
           fromDate,
           toDate,
