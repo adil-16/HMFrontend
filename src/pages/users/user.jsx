@@ -48,9 +48,10 @@ const User = () => {
 
   const handleShowLedger = (fromDate, toDate) => {
     console.log("Show Ledger for dates:", fromDate, toDate);
+    const currentDate = new Date().toISOString().split("T")[0];
 
     axios
-      .get(`ledger/filterLedger/${selectedUserId}`, {
+      .get(`/ledger/filterLedger/${selectedUserId}`, {
         params: {
           from: fromDate,
           to: toDate,
@@ -66,6 +67,7 @@ const User = () => {
             totalBalance,
             fromDate,
             toDate,
+            printDate: currentDate,
           },
         });
         console.log("res data", res.data.ledgers)

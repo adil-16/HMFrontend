@@ -10,7 +10,7 @@ const AccomodationTable = ({ data }) => {
 
     data.forEach((val) => {
       totalNights += parseInt(val.nights);
-      const amount = parseInt(val.roomQuantity) * parseFloat(val.roomRate);
+      const amount = parseInt(val.roomQuantity) * parseFloat(val.roomRate) * totalNights;
       totalAmt += amount;
     });
 

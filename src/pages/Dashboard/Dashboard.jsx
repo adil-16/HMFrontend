@@ -54,13 +54,13 @@ const Dashboard = () => {
   useEffect(() => {
     const loginStatus = localStorage.getItem('login');
     if (!loginStatus) {
-      navigate('/login');
+      navigate('/');
     }
   }, [navigate]);
 
   const handleShowLedger = async (fromDate, toDate) => {
     try {
-      const response = await axios.get(`ledger/getAdminLedger/?role=cash`);
+      const response = await axios.get(`/ledger/getAdminLedger/?role=cash`);
       console.log("Filtered Ledger Data: ", response.data);
       const totalBalance =
         response.data.ledgers.length > 0 ? response.data.ledgers[0].totalBalance : 0;
@@ -86,15 +86,15 @@ const Dashboard = () => {
     <div className="w-full">
       <TopBar title="Dashboard" />
       <div className="p-1 sm:p-4 py-6 mr-3">
-        <p className="font-Nunitoo text-white font-semibold text-16 sm:text-24">
+        <p className="font-Nunitoo text-white font-semibold text-16 sm:text-24 mb-8">
           Welcome Back, Admin
         </p>
 
-        <div className="flex flex-wrap justify-between my-6">
+        {/* <div className="flex flex-wrap justify-between my-6">
           {cards.map((val, ind) => (
             <DashboardCard data={val} key={ind} />
           ))}
-        </div>
+        </div> */}
 
         <button
           onClick={() => setIsPopupOpen(true)}
@@ -104,10 +104,17 @@ const Dashboard = () => {
         </button>
 
         <button
+          onClick={() => setShowHotelVoucherPopup(true)}
+          className="bg-white text-black px-4 py-2 rounded-lg ml-6"
+        >
+          + Create Hotel Voucher
+        </button>
+
+        <button
           onClick={() => setShowLedgerPopup(true)}
           className="bg-orange text-white px-4 py-2 rounded-lg ml-6"
         >
-          Show Cash Ledger
+          Cash Account Ledger
         </button>
         <button
           onClick={() => setShowCashVoucherPopup(true)}
@@ -115,12 +122,7 @@ const Dashboard = () => {
         >
           Cash Vouchers
         </button>
-        <button
-          onClick={() => setShowHotelVoucherPopup(true)}
-          className="bg-orange text-white px-4 py-2 rounded-lg ml-6"
-        >
-          + Create Hotel Voucher
-        </button>
+        
 
         <div className="flex flex-wrap justify-between items-center mt-6">
           <p className="font-Nunitoo text-white font-semibold text-24">
@@ -131,7 +133,7 @@ const Dashboard = () => {
         <Graphs rooms={rooms} />
 
         <div className="flex flex-col sm:flex-row w-auto">
-          <ReportCard rooms={cards} />
+          {/* <ReportCard rooms={cards} /> */}
           <div className="flex justify-center">
             <PieChartt usersData={bookedRooms} screenWidth={screenWidth} />
           </div>

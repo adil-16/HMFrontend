@@ -13,10 +13,11 @@ const Ledger = () => {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const location = useLocation();
   const {
-    supplierName = "N/A",
+    userName = "N/A",
     totalBalance = 0,
     fromDate = "N/A",
     toDate = "N/A",
+    printDate = "N/A"
   } = location.state || {};
   const ledgerData = location.state?.ledgerData || [];
   
@@ -61,11 +62,11 @@ const Ledger = () => {
 
         <LedgerTop
           accountCode="0312156"
-          accountTitle={supplierName}
+          accountTitle={userName}
           balance= {totalBalance}
           periodFrom= {fromDate}
           periodTo= {toDate}
-          printDate= {fromDate}
+          printDate= {printDate}
           currency="PKR"
         />
         <div className="mx-1">

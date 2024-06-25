@@ -20,6 +20,8 @@ const AddInventoryPopup = ({ onClose }) => {
   const [grandTotal, setGrandTotal] = useState(0);
   const[hotelRooms,setHotelRooms]=useState([])
 
+  let debit= 0;
+  let credit = 0 - grandTotal;
 
   async function onSubmitInventory() {
     let ledgerObject = {
@@ -30,6 +32,7 @@ const AddInventoryPopup = ({ onClose }) => {
       role: "supplier",
       supId: supplier,
       hotelId: hotel,
+      totalBalance: debit - credit,
     };
     console.log("ledger object is", ledgerObject);
     try {
@@ -60,7 +63,7 @@ const AddInventoryPopup = ({ onClose }) => {
         credit: 0,
       };
       const poformResponse = await axios.post(
-        "http://localhost:8000/poform/createPoform",
+        "/poform/createPoform",
         poformObject
       );
       console.log(poformResponse, "poform response");
@@ -75,7 +78,7 @@ const AddInventoryPopup = ({ onClose }) => {
         roomDetails,
       };
       const hotelUpdateResponse = await axios.put(
-        `http://localhost:8000/hotel/editHotel/${hotel}`,
+        `/hotel/editHotel/${hotel}`,
         hotelObject
       );
       console.log(hotelUpdateResponse, "hotel response");
@@ -141,7 +144,7 @@ const AddInventoryPopup = ({ onClose }) => {
     const bedTypes = {
       Shared: 5,
       Quad: 4,
-      Triple: 4,
+      Triple: 3,
       Double: 2,
     };
     return rooms * (bedTypes[type] || 0);

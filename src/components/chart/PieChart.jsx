@@ -10,7 +10,7 @@ export default function PieChartt({ usersData, screenWidth }) {
   return (
     <div className="w-auto md:w-full border border-white rounded-lg m-4">
      <p className="font-sans font-semibold  text-orange text-24 m-4  ml-16">
-        Booking Details
+        Booked Beds
       </p>
      
 
