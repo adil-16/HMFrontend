@@ -310,15 +310,7 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                     {val.title}
                   </td>
-                  {/* 6th cell */}
-                  <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                    {val.inv}
-                  </td>
-                  {/* 7th cell */}
-                  <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                    {val.cheque}
-                  </td>
-                  {/* 8th cell */}
+                  
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                     {val.debit}
                   </td>

@@ -29,8 +29,6 @@ const Ledger = () => {
     "Type",
     "Trans.#",
     "Particulars",
-    "Inv/Ref",
-    "Cheque No",
     "Debit",
     "Credit",
     "Balance",
