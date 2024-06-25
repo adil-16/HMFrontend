@@ -114,13 +114,13 @@ const Dashboard = () => {
           onClick={() => setShowLedgerPopup(true)}
           className="bg-orange text-white px-4 py-2 rounded-lg ml-6"
         >
-          Cash Account Ledger
+          Ledger Reports
         </button>
         <button
           onClick={() => setShowCashVoucherPopup(true)}
           className="bg-orange text-white px-4 py-2 rounded-lg ml-6"
         >
-          Cash Vouchers
+          Payment/ Receipt Vouchers
         </button>
         
 
