@@ -8,8 +8,10 @@ const TableTop = ({
   setShowPopup,
   type,
   button = "",
+  search,
+  setData,
 }) => {
-  // const [Search, setSearch] = useState(" ");
+  const [Search, setSearch] = useState(" ");
   return (
     <div className="py-4 flex flex-wrap items-center justify-between">
       <div className="flex flex-wrap items-center">
@@ -24,7 +26,7 @@ const TableTop = ({
           </p>
         )}
       </div>
-      {/* <SearchFiels
+      <SearchFiels
         value={Search}
         setValue={setSearch}
         Bg="white"
@@ -33,7 +35,7 @@ const TableTop = ({
         iconn={Searchh}
         search={search}
         setData={setData}
-      /> */}
+      />
     </div>
   );
 };

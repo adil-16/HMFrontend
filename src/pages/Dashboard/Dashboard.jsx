@@ -7,16 +7,16 @@ import Graphs from "../../components/chart/Graphs";
 import AddInventoryPopup from "../../components/popup/AddInventory";
 import CashVoucherPopup from "../../components/popup/CashVoucher";
 import HotelVoucherPopup from "../../components/popup/HotelVoucher";
-import ShowLedgerPopup from "../../components/popup/ShowLedger"; 
+import ShowLedgerPopup from "../../components/popup/ShowLedger";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
 
-
-const cleanData = (data) => data.map(item => ({
-  ...item,
-  count: Math.max(item.count, 0),
-  value: Math.max(item.value, 0)
-}));
+const cleanData = (data) =>
+  data.map((item) => ({
+    ...item,
+    count: Math.max(item.count, 0),
+    value: Math.max(item.value, 0),
+  }));
 
 const Dashboard = () => {
   const [cards, setCards] = useState([]);
@@ -29,9 +29,6 @@ const Dashboard = () => {
   const [showHotelVoucherPopup, setShowHotelVoucherPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-
-
-  
 
   useEffect(() => {
     const getData = async () => {
@@ -52,9 +49,9 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    const loginStatus = localStorage.getItem('login');
+    const loginStatus = localStorage.getItem("login");
     if (!loginStatus) {
-      navigate('/');
+      navigate("/");
     }
   }, [navigate]);
 
@@ -63,7 +60,9 @@ const Dashboard = () => {
       const response = await axios.get(`/ledger/getAdminLedger/?role=cash`);
       console.log("Filtered Ledger Data: ", response.data);
       const totalBalance =
-        response.data.ledgers.length > 0 ? response.data.ledgers[0].totalBalance : 0;
+        response.data.ledgers.length > 0
+          ? response.data.ledgers[0].totalBalance
+          : 0;
       navigate("/admin/ledger", {
         state: {
           ledgerData: response.data.ledgers,
@@ -80,7 +79,7 @@ const Dashboard = () => {
     }
   };
   if (isLoading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
   return (
     <div className="w-full">
@@ -111,7 +110,7 @@ const Dashboard = () => {
         </button>
 
         <button
-          onClick={() => setShowLedgerPopup(true)}
+          onClick={() => navigate("/admin/ledger-report")}
           className="bg-orange text-white px-4 py-2 rounded-lg ml-6"
         >
           Ledger Reports
@@ -122,7 +121,6 @@ const Dashboard = () => {
         >
           Payment/ Receipt Vouchers
         </button>
-        
 
         <div className="flex flex-wrap justify-between items-center mt-6">
           <p className="font-Nunitoo text-white font-semibold text-24">
@@ -140,7 +138,9 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {isPopupOpen && <AddInventoryPopup onClose={() => setIsPopupOpen(false)} />}
+      {isPopupOpen && (
+        <AddInventoryPopup onClose={() => setIsPopupOpen(false)} />
+      )}
 
       {showLedgerPopup && (
         <ShowLedgerPopup

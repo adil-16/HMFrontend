@@ -23,6 +23,7 @@ import Ledger from "./pages/Ledger/Ledger";
 import HotelVoucher from "./pages/HotelVoucher/HotelVoucher";
 import HotelInvoice from "./pages/HotelInvoice/HotelVoucher"
 import PaymentVoucher from "./pages/PaymentVoucher/PaymentVoucher";
+import LedgerReport from "./pages/LedgerReports/LedgerReport";
 
 export const AuthContext = React.createContext();
 
@@ -119,6 +120,7 @@ function App() {
           <Route path="/admin/hotel-voucher/:id" element={Outlet(<HotelVoucher />)} />
           <Route path="/admin/hotel-invoice/:id" element={Outlet(<HotelInvoice />)} />
           <Route path="/admin/payment-voucher" element={Outlet(<PaymentVoucher />)} />
+          <Route path="/admin/ledger-report" element={Outlet(<LedgerReport/>)} />
         </Routes>
       </AuthContext.Provider>
     </BrowserRouter>

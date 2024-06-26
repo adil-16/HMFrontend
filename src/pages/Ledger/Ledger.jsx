@@ -65,7 +65,7 @@ const Ledger = () => {
           periodFrom= {fromDate}
           periodTo= {toDate}
           printDate= {printDate}
-          currency="PKR"
+          currency="SAR"
         />
         <div className="mx-1">
           <LedgerTable
