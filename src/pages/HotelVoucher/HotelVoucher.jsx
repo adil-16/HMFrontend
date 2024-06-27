@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 import TopBar from "../../components/bars/TopBar";
 import HotelVoucherTop from "./HotelVoucherTop";
@@ -61,6 +61,19 @@ const HotelVoucher = () => {
   // const history = useHistory();
   const navigate = useNavigate();
   const { voucher, accomodationsData } = location.state || {};
+  const [totalPassengers, setTotalPassengers] = useState(0);
+  const [guest, setGuest] = useState("");
+
+
+  useEffect(() => {
+    const count = mutamerData?.length;
+    setTotalPassengers(count);
+  }, [voucher]);
+
+  useEffect(() => {
+    const guestname = mutamerData[0]?.name;
+    setGuest(guestname);
+  }, [voucher]);
   
 
   console.log("acc data", accomodationsData)
@@ -96,7 +109,8 @@ const HotelVoucher = () => {
   })) || [];
 
   // Combine customer and passengers into mutamerData array
-  const mutamerData = [customerData, ...passengersData];
+  const mutamerData = voucher.customer.customerType !== "b2b" ? [customerData, ...passengersData] : [...passengersData];
+
 
   const accomodationData = accomodationsData?.map((accommodation) => {
     const checkinDate = new Date(accommodation.checkin);
@@ -120,8 +134,9 @@ const HotelVoucher = () => {
   });
 
   const handleShowInvoice = () => {
+    const currentDate = new Date().toISOString().split("T")[0];
     const invoiceId = generateInvoiceId(0);
-    navigate(`/admin/hotel-invoice/${invoiceId}`, { state: { voucher: voucher, accomodationsData: accomodationData } });
+    navigate(`/admin/hotel-invoice/${invoiceId}`, { state: { voucher: voucher, accomodationsData: accomodationData, count: totalPassengers, printDate: currentDate, guest: guest } });
   };
   
 

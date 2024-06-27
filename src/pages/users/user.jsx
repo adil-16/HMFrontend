@@ -90,7 +90,7 @@ const User = () => {
           selectedNo={selectedNo}
           setData={setData}
           type="Customers"
-          button="+ Add Customer"
+          button="Add User"
           setShowPopup={setShowPopup}
           search="user"
         />

@@ -44,7 +44,7 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
   };
 
   return (
-    <div style={{ maxHeight: "200px", overflowY: "scroll" }}>
+    <div>
       <form onSubmit={handleSubmit}>
         {rooms.map((room, roomIndex) => (
           <div key={roomIndex} className="mb-4">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const AccomodationTable = ({ data }) => {
+const AccomodationTable = ({ data, handleCost }) => {
   const [nights, setNights] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
 
@@ -16,6 +16,7 @@ const AccomodationTable = ({ data }) => {
 
     setNights(totalNights);
     setTotalAmount(totalAmt);
+    handleCost(totalAmt);
   }, [data]);
 
   return (
@@ -27,16 +28,10 @@ const AccomodationTable = ({ data }) => {
               Hotel Name
             </th>
             <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
-              Room Type
+              Room Info
             </th>
             <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
-              Room Quantity
-            </th>
-            <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
-              Room Rate
-            </th>
-            <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
-              Total Amount
+              Meals
             </th>
             <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
               Checkin
@@ -45,8 +40,19 @@ const AccomodationTable = ({ data }) => {
               Checkout
             </th>
             <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
-              Nights
+              Nts
             </th>
+            <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
+              Qty
+            </th>
+            <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
+              Rate
+            </th>
+            <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
+              Room Total
+            </th>
+            
+            
           </tr>
         </thead>
         <tbody>
@@ -59,16 +65,10 @@ const AccomodationTable = ({ data }) => {
                   {val.hotel}
                 </td>
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                  {val.roomType}
+                   {val.roomType} bed
                 </td>
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                  {val.roomQuantity}
-                </td>
-                <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                  {val.roomRate}
-                </td>
-                <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                  {totalAmt.toFixed(2)} {/* Display totalAmount for each row */}
+                   {val.meal} 
                 </td>
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                   {val.checkin}
@@ -79,13 +79,24 @@ const AccomodationTable = ({ data }) => {
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                   {val.nights}
                 </td>
+                <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
+                  {val.roomQuantity}
+                </td>
+                <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
+                  {val.roomRate}
+                </td>
+                <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
+                  {totalAmt.toFixed(2)} {/* Display totalAmount for each row */}
+                </td>
+                
+                
               </tr>
             );
           })}
         </tbody>
       </table>
 
-      <div className="w-full flex flex-row justify-end gap-x-1.5 items-center py-4 sm:pr-5 pr-3">
+      {/* <div className="w-full flex flex-row justify-end gap-x-1.5 items-center py-4 sm:pr-5 pr-3">
         <p className="font-bold text-darkGray text-14 sm:text-16 ">
           Total Amount:
         </p>
@@ -95,7 +106,7 @@ const AccomodationTable = ({ data }) => {
         </p>
         <p className="font-medium text-white text-14 sm:text-16">{nights}</p>
         
-      </div>
+      </div> */}
     </div>
   );
 };
