@@ -95,39 +95,43 @@ const Dashboard = () => {
           ))}
         </div> */}
 
-        <button
-          onClick={() => setIsPopupOpen(true)}
-          className="bg-orange text-white px-4 py-2 rounded-lg"
-        >
-          Add Inventory
-        </button>
+<div className="flex flex-wrap justify-start gap-2 mb-4">
+  <button
+    onClick={() => setIsPopupOpen(true)}
+    className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+  >
+    Add Inventory
+  </button>
 
-        <button
-          onClick={() => setShowHotelVoucherPopup(true)}
-          className="bg-white text-black px-4 py-2 rounded-lg ml-6"
-        >
-          Create Hotel Voucher
-        </button>
+  <button
+    onClick={() => setShowHotelVoucherPopup(true)}
+    className="bg-white text-black px-4 py-2 rounded-lg w-full sm:w-auto"
+  >
+    Create Hotel Voucher
+  </button>
 
-        <button
-          onClick={() => navigate("/admin/ledger-report")}
-          className="bg-orange text-white px-4 py-2 rounded-lg ml-6"
-        >
-          Ledger Reports
-        </button>
-        <button
-          onClick={() => setShowCashVoucherPopup(true)}
-          className="bg-orange text-white px-4 py-2 rounded-lg ml-6"
-        >
-          Payment/ Receipt Vouchers
-        </button>
+  <button
+    onClick={() => navigate("/admin/ledger-report")}
+    className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+  >
+    Ledger Reports
+  </button>
 
-        <button
-          onClick={() => navigate("/admin/customer-reports")}
-          className="bg-orange text-white px-4 py-2 rounded-lg lg:ml-6"
-        >
-          Arrival/Departure Reports
-        </button>
+  <button
+    onClick={() => setShowCashVoucherPopup(true)}
+    className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+  >
+    Payment/Receipt Vouchers
+  </button>
+
+  <button
+    onClick={() => navigate("/admin/customer-reports")}
+    className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+  >
+    Arrival/Departure Reports
+  </button>
+</div>
+
 
         <div className="flex flex-wrap justify-between items-center mt-6">
           <p className="font-Nunitoo text-white font-semibold text-24">
