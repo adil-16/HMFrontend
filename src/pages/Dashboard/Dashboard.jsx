@@ -122,6 +122,13 @@ const Dashboard = () => {
           Payment/ Receipt Vouchers
         </button>
 
+        <button
+          onClick={() => navigate("/admin/customer-reports")}
+          className="bg-orange text-white px-4 py-2 rounded-lg lg:ml-6"
+        >
+          Arrival/Departure Reports
+        </button>
+
         <div className="flex flex-wrap justify-between items-center mt-6">
           <p className="font-Nunitoo text-white font-semibold text-24">
             Reports Overview

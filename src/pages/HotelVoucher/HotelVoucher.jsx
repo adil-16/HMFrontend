@@ -64,6 +64,8 @@ const HotelVoucher = () => {
   const [totalPassengers, setTotalPassengers] = useState(0);
   const [guest, setGuest] = useState("");
 
+  console.log("acc data", accomodationsData)
+
 
   useEffect(() => {
     const count = mutamerData?.length;
@@ -76,7 +78,7 @@ const HotelVoucher = () => {
   }, [voucher]);
   
 
-  console.log("acc data", accomodationsData)
+
 
   if (!voucher) {
     return <div>No voucher data found</div>;
@@ -112,7 +114,9 @@ const HotelVoucher = () => {
   const mutamerData = voucher.customer.customerType !== "b2b" ? [customerData, ...passengersData] : [...passengersData];
 
 
+
   const accomodationData = accomodationsData?.map((accommodation) => {
+    const formatDate = (date) => new Date(date).toISOString().split("T")[0];
     const checkinDate = new Date(accommodation.checkin);
     const checkoutDate = new Date(accommodation.checkout);
     const timeDifference = checkoutDate.getTime() - checkinDate.getTime();
@@ -125,8 +129,8 @@ const HotelVoucher = () => {
       meal: accommodation.meal,
       conf: accommodation.conf,
       roomType: accommodation.roomType,
-      checkin: accommodation.checkin,
-      checkout: accommodation.checkout,
+      checkin: formatDate(accommodation.checkin),
+    checkout: formatDate(accommodation.checkout),
       nights: nightDifference,
       rate: accommodation.bedRate,
       roomQuantity: accommodation.noOfBeds,
@@ -151,7 +155,7 @@ const HotelVoucher = () => {
         </button>
 
       <div className="p-1 sm:p-4 py-6">
-        <HotelVoucherTop headName={voucher.customer.name} voucher={generateVoucherNumber(0)} />
+        <HotelVoucherTop headName={voucher.customer.name} voucher={voucher.voucherNumber} />
 
         <h3 className="text-orange font-medium mb-2">Mutamers</h3>
         <MutamerTable data={mutamerData} />

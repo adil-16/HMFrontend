@@ -8,15 +8,15 @@ const AccomodationTable = ({ data, handleCost }) => {
     let totalNights = 0;
     let totalAmt = 0;
 
-    data.forEach((val) => {
+    data?.forEach((val) => {
       totalNights += parseInt(val.nights);
-      const amount = parseInt(val.roomQuantity) * parseFloat(val.roomRate) * totalNights;
+      const amount = parseInt(val.roomQuantity) * parseFloat(val.roomRate) * parseInt(val.nights);
       totalAmt += amount;
     });
 
     setNights(totalNights);
     setTotalAmount(totalAmt);
-    handleCost(totalAmt);
+    handleCost(totalAmt.toFixed(2)); // Pass the correctly calculated totalAmt
   }, [data]);
 
   return (
@@ -51,13 +51,11 @@ const AccomodationTable = ({ data, handleCost }) => {
             <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
               Room Total
             </th>
-            
-            
           </tr>
         </thead>
         <tbody>
-          {data.map((val, ind) => {
-            const totalAmt = parseInt(val.roomQuantity) * parseFloat(val.roomRate);
+          {data?.map((val, ind) => {
+            const totalAmt = parseInt(val.roomQuantity) * parseFloat(val.roomRate) * parseInt(val.nights);
 
             return (
               <tr className="border-b border-blue5" key={ind}>
@@ -65,10 +63,10 @@ const AccomodationTable = ({ data, handleCost }) => {
                   {val.hotel}
                 </td>
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                   {val.roomType} bed
+                  {val.roomType} bed
                 </td>
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                   {val.meal} 
+                  {val.meal}
                 </td>
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                   {val.checkin}
@@ -88,25 +86,11 @@ const AccomodationTable = ({ data, handleCost }) => {
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                   {totalAmt.toFixed(2)} {/* Display totalAmount for each row */}
                 </td>
-                
-                
               </tr>
             );
           })}
         </tbody>
       </table>
-
-      {/* <div className="w-full flex flex-row justify-end gap-x-1.5 items-center py-4 sm:pr-5 pr-3">
-        <p className="font-bold text-darkGray text-14 sm:text-16 ">
-          Total Amount:
-        </p>
-        <p className="font-medium text-white text-14 sm:text-16 mr-8">{totalAmount.toFixed(2)}</p>
-        <p className="font-bold text-darkGray text-14 sm:text-16">
-          Total Accommodations:
-        </p>
-        <p className="font-medium text-white text-14 sm:text-16">{nights}</p>
-        
-      </div> */}
     </div>
   );
 };

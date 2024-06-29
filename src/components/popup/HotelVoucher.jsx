@@ -36,7 +36,6 @@ const CashVoucherPopup = ({ onClose }) => {
   }, []);
 
   useEffect(() => {
-    // Fetch hotels when the component mounts
     const fetchHotels = async () => {
       try {
         const response = await axios.get("/hotel/getHotels");
@@ -58,7 +57,16 @@ const CashVoucherPopup = ({ onClose }) => {
   };
 
   const handleSubmit = async () => {
+    let latestVoucherNumber = localStorage.getItem('latestVoucherNumber');
+    if (!latestVoucherNumber) {
+      latestVoucherNumber = 0;
+    } else {
+      latestVoucherNumber = parseInt(latestVoucherNumber, 10);
+    }
+
+    const nextVoucherNumber = latestVoucherNumber + 1;
     const data = {
+      voucherNumber: nextVoucherNumber,
       customer: selectedCustomer,
       confirmationStatus: voucherDetails.confirmationStatus,
       tentativeDate: voucherDetails.confirmationStatus === "Tentative" ? voucherDetails.tentativeDate : null,
@@ -78,9 +86,13 @@ const CashVoucherPopup = ({ onClose }) => {
       const newVoucherData = response.data.data;
       console.log("Voucher submitted:", newVoucherData);
       setVoucherData(newVoucherData);
+      localStorage.setItem('latestVoucherNumber', nextVoucherNumber);
       navigate(`/admin/hotel-voucher/${newVoucherData.voucher._id}`, {
         state: {
-          voucher: newVoucherData,
+          voucher: {
+            ...newVoucherData,
+            voucherNumber: `V-${newVoucherData.voucher.voucherNumber}`, 
+          },
           accomodationsData: data.accommodations,
         },
       });

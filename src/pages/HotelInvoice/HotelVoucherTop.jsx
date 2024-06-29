@@ -61,7 +61,7 @@ const HotelVoucherTop = ({ headName, voucher, count, guest }) => {
               VAT Number :
             </p>
             <p className="font-medium ml-2 text-white text-14 sm:text-16">
-              {voucher?.voucher?.vatnumber}
+              {voucher?.voucher?.vatnumber || voucher?.vatnumber}
             </p>
           </div>
           <div className="flex flex-row items-center">

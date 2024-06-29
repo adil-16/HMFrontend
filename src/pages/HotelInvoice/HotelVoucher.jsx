@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { useLocation } from "react-router-dom";
 import TopBar from "../../components/bars/TopBar";
 import HotelVoucherTop from "./HotelVoucherTop";
@@ -35,11 +35,14 @@ const HotelInvoice = () => {
   const[costDataa, setCostData] = useState();
   const [confirmationNumber, setConfirmationNumber] = useState(1);
 
+
+  console.log("invoice data", voucher)
+
   const topTableData = [
     {
       confirmationNum: confirmationNumber.toString(),
-      confirmationStatus: voucher.voucher.confirmationStatus,
-      confType: voucher.voucher.confirmationType,
+      confirmationStatus: voucher?.voucher?.confirmationStatus || voucher?.confirmationStatus,
+      confType: voucher?.voucher?.confirmationType || voucher?.confirmationType,
       createdOn: printDate,
       docType: "Customer Copy",
     },
@@ -63,7 +66,7 @@ const HotelInvoice = () => {
   }
   
 
-  console.log("invoice data", guest)
+
 
   if (!voucher) {
     return <div>No voucher data found</div>;
