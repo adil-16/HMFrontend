@@ -59,19 +59,14 @@ const HotelVoucher = () => {
   const location = useLocation();
   // const history = useHistory();
   const navigate = useNavigate();
-  const { voucher, accomodationsData, data, customerType } =
-    location.state || {};
+  const { voucher, accomodationsData, data } = location.state || {};
   const [totalPassengers, setTotalPassengers] = useState(0);
   const [guest, setGuest] = useState("");
   const headName =
-    customerType === "guest" || voucher.customer.customerType === 'guest'
-      ? `${voucher?.customer?.contactPerson}`
-      : `${data?.passengers[0]?.name}`;
+    data?.passengers[0]?.name || voucher?.customer?.contactPerson;
 
   console.log("acc data", accomodationsData);
   console.log("voucher data", voucher);
-
-  console.log("cus type", customerType);
 
   useEffect(() => {
     const count = mutamerData?.length;
@@ -87,22 +82,11 @@ const HotelVoucher = () => {
     return <div>No voucher data found</div>;
   }
 
-  const customerData = {
-    sno: 1, // Assuming the customer is always the first entry
-    passport: data?.passportNumber|| voucher?.passportNumber,
-    name: voucher.customer.contactPerson,
-    gender: data?.gender || voucher?.gender,
-    pax: getPaxType(data?.age || voucher?.age),
-    bed: "Yes",
-    mofa: voucher.customer.mofa,
-    visa: voucher.customer.visa,
-    pnr: voucher.customer.pnr,
-  };
-const passengers = data?.passengers ? data.passengers : voucher.passengers; 
-// Extract passengers data
+  const passengers = data?.passengers ? data.passengers : voucher.passengers;
+  // Extract passengers data
   const passengersData =
     passengers?.map((passenger, index) => ({
-      sno: index + 2, // Start from 2 since customer is at sno 1
+      sno: 1, // Start from 2 since customer is at sno 1
       passport: passenger.passportNumber,
       name: passenger.name,
       gender: passenger.gender,
@@ -114,10 +98,7 @@ const passengers = data?.passengers ? data.passengers : voucher.passengers;
     })) || [];
 
   // Combine customer and passengers into mutamerData array
-  const mutamerData =
-    voucher.customer.customerType !== "b2b"
-      ? [customerData, ...passengersData]
-      : [...passengersData];
+  const mutamerData = [...passengersData];
 
   const accomodationData = accomodationsData?.map((accommodation) => {
     const formatDate = (date) => new Date(date).toISOString().split("T")[0];
@@ -167,7 +148,10 @@ const passengers = data?.passengers ? data.passengers : voucher.passengers;
       </button>
 
       <div className="p-1 sm:p-4 py-6">
-        <HotelVoucherTop headName={`${headName === 'undefined' ? 'No Head': headName}`} voucher={voucher.voucherNumber} />
+        <HotelVoucherTop
+          headName={`${headName === "undefined" ? "No Head" : headName}`}
+          voucher={voucher.voucherNumber}
+        />
 
         <h3 className="text-orange font-medium mb-2">Mutamers</h3>
         <MutamerTable data={mutamerData} />

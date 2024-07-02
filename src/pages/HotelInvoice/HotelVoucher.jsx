@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import TopBar from "../../components/bars/TopBar";
 import HotelVoucherTop from "./HotelVoucherTop";
@@ -8,7 +8,6 @@ import ServiceTable from "./ServiceTable";
 import TopTable from "./TopTableInvoice";
 import CostTable from "./CostTable";
 import FinancialTable from "./FinancialTable";
-
 
 const transportData = [
   {
@@ -20,30 +19,25 @@ const transportData = [
   },
 ];
 
-
-
-
-
-
 const generateVoucherNumber = (index) => {
   return `UB-${index + 1}`;
 };
 
 const HotelInvoice = () => {
   const location = useLocation();
-  const { voucher, accomodationsData, count, printDate, guest, data} = location.state || {};
-  const[costDataa, setCostData] = useState();
+  const { voucher, accomodationsData, count, printDate, guest, data } =
+    location.state || {};
+  const [costDataa, setCostData] = useState();
   const [confirmationNumber, setConfirmationNumber] = useState(1);
 
-
-  console.log("invoice data", voucher)
-  console.log("accomod data invoice", accomodationsData)
-
+  console.log("invoice data", voucher);
+  console.log("accomod data invoice", accomodationsData);
 
   const topTableData = [
     {
       confirmationNum: confirmationNumber.toString(),
-      confirmationStatus: data?.confirmationStatus || voucher?.confirmationStatus,
+      confirmationStatus:
+        data?.confirmationStatus || voucher?.confirmationStatus,
       confType: voucher?.voucher?.confirmationType || voucher?.confirmationType,
       createdOn: printDate,
       docType: "Customer Copy",
@@ -62,36 +56,34 @@ const HotelInvoice = () => {
     },
   ];
 
-
   const costCallback = (data) => {
     setCostData(data);
-  }
-  
-
-
+  };
 
   if (!voucher) {
     return <div>No voucher data found</div>;
   }
-  
 
   const accomodationData = accomodationsData?.map((accommodation) => {
+    const formatDate = (date) => new Date(date).toISOString().split("T")[0];
     const checkinDate = new Date(accommodation.checkin);
     const checkoutDate = new Date(accommodation.checkout);
     const timeDifference = checkoutDate.getTime() - checkinDate.getTime();
-    const nightDifference = Math.ceil(timeDifference / (1000 * 3600 * 24)); 
-  
-    const roomQuantity = accommodation.roomQuantity ? accommodation.roomQuantity : accommodation.totalRooms;
+    const nightDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
+    const roomQuantity = accommodation.roomQuantity
+      ? accommodation.roomQuantity
+      : accommodation.totalRooms;
     const roomQuan = roomQuantity ? roomQuantity : 1;
 
     return {
-      hotel:  accommodation.hotelName,
+      hotel: accommodation.hotelName,
       roomType: accommodation.roomType,
       meal: "R.O",
       roomQuantity: roomQuan || accommodation.totalRooms,
       roomRate: accommodation.bedRate || accommodation.roomRate,
-      checkin: accommodation.checkin,
-      checkout: accommodation.checkout,
+      checkin: formatDate(accommodation.checkin),
+      checkout: formatDate(accommodation.checkout),
       nights: nightDifference,
     };
   });
@@ -99,21 +91,27 @@ const HotelInvoice = () => {
   useEffect(() => {
     setConfirmationNumber((prevNumber) => prevNumber + 1);
   }, []);
-  
 
   return (
     <div className="w-full flex flex-col pb">
       <TopBar title="Package Invoice" />
 
       <div className="mt-5 ml-4 mr-8">
-      <TopTable data={topTableData} />
+        <TopTable data={topTableData} />
       </div>
 
       <div className="p-1 sm:p-4 py-6">
-        <HotelVoucherTop headName={voucher.customer.businessName} voucher={voucher} count= {count} guest= {guest} />
+        <HotelVoucherTop
+          headName={voucher.customer.businessName}
+          voucher={voucher}
+          count={count}
+          guest={guest}
+        />
 
-        <h3 className="text-orange font-medium mb-2 mt-5">Hotel Room Details</h3>
-        <AccomodationTable data={accomodationData} handleCost = {costCallback} />
+        <h3 className="text-orange font-medium mb-2 mt-5">
+          Hotel Room Details
+        </h3>
+        <AccomodationTable data={accomodationData} handleCost={costCallback} />
 
         {/* <div className="mb-2 mt-10">
         <ServiceTable />
@@ -123,19 +121,30 @@ const HotelInvoice = () => {
         <CostTable data = {costData} />
         </div> */}
 
-        <h3 className="text-orange font-medium mb-2 mt-5">Bank Account Information</h3>
+        <h3 className="text-orange font-medium mb-2 mt-5">
+          Bank Account Information
+        </h3>
         <TransportTable data={transportData} />
 
-        <h3 className="text-orange font-medium mb-2 mt-5">Financial Transactions Summary</h3>
+        <h3 className="text-orange font-medium mb-2 mt-5">
+          Financial Transactions Summary
+        </h3>
         <FinancialTable data={costDataa} />
       </div>
 
       <div className="mt-5 ml-4 text-20">
         <p className="underline text-orange">Option Date :</p>
-        <p className="underline text-white">Please confirm your request on or before option date, otherwise your request will be cancelled</p>
-        <p className="underline text-white">without further notification as per the company policy.</p>
+        <p className="underline text-white">
+          Please confirm your request on or before option date, otherwise your
+          request will be cancelled
+        </p>
+        <p className="underline text-white">
+          without further notification as per the company policy.
+        </p>
       </div>
-      <p className="mt-4 ml-4 text-16 text-white">Booking cannot be cancelled or refunded</p>
+      <p className="mt-4 ml-4 text-16 text-white">
+        Booking cannot be cancelled or refunded
+      </p>
     </div>
   );
 };

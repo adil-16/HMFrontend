@@ -17,7 +17,7 @@ const calculatePaxCounts = (vouchers) => {
     let childCount = 0;
     let infantCount = 0;
 
-    const customerAge = voucher.customer.age;
+    const customerAge = voucher.age;
     if (customerAge !== undefined) {
       const customerType = getPaxType(customerAge);
       if (customerType === "adult") adultCount++;
@@ -25,11 +25,8 @@ const calculatePaxCounts = (vouchers) => {
       if (customerType === "infant") infantCount++;
     }
 
-    if (
-      voucher.customer.passengers &&
-      Array.isArray(voucher.customer.passengers)
-    ) {
-      voucher.customer.passengers.forEach((passenger) => {
+    if (voucher.passengers && Array.isArray(voucher.passengers)) {
+      voucher.passengers.forEach((passenger) => {
         const passengerAge = passenger.age;
         if (passengerAge !== undefined) {
           const passengerType = getPaxType(passengerAge);
@@ -44,7 +41,6 @@ const calculatePaxCounts = (vouchers) => {
     return voucher;
   });
 };
-
 
 const ReportFormat = () => {
   const navigate = useNavigate();
@@ -67,7 +63,7 @@ const ReportFormat = () => {
         : null;
     return {
       voucherNum: voucher.voucherNumber,
-      party: voucher.customer.name,
+      party: voucher.customer.contactPerson,
       arrivalDate: title === "Arrival Intimation" ? arrivalDate : depDate,
       adult: voucher.paxCounts.adultCount,
       child: voucher.paxCounts.childCount,

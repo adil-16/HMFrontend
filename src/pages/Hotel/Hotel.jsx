@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TopBar from "../../components/bars/TopBar";
-import TableTop from "../../components/TableTop/TableTop";
+import TableTop from "./TableTopHotel";
 import AddHotel from "../../components/popup/AddHotel";
 
 import AddUser from "../../components/popup/addUser";
