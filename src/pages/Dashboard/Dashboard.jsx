@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
 import TopBar from "../../components/bars/TopBar";
-import DashboardCard from "../../components/cards/DashboardCard";
-import PieChartt from "../../components/chart/PieChart";
-import ReportCard from "../../components/cards/ReportCard";
-import Graphs from "../../components/chart/Graphs";
 import AddInventoryPopup from "../../components/popup/AddInventory";
 import CashVoucherPopup from "../../components/popup/CashVoucher";
 import HotelVoucherPopup from "../../components/popup/HotelVoucher";
@@ -92,12 +88,6 @@ const Dashboard = () => {
         <p className="font-Nunitoo text-white font-semibold text-16 sm:text-24 mb-8">
           Welcome Back, Admin
         </p>
-
-        {/* <div className="flex flex-wrap justify-between my-6">
-          {cards.map((val, ind) => (
-            <DashboardCard data={val} key={ind} />
-          ))}
-        </div> */}
 
         <div className="flex flex-wrap justify-start gap-4 mb-4">
           <button

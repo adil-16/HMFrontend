@@ -9,6 +9,7 @@ import HotelCard from "./HotelCard";
 import axios from "../../axios";
 
 const Store = () => {
+  console.log("hjl");
   const [showPopup, setShowPopup] = useState(false);
   const [book, setBook] = useState(false);
   const [data, setData] = useState([]);
@@ -19,6 +20,7 @@ const Store = () => {
   const [added, setAdded] = useState(false);
 
   useEffect(() => {
+    
     const getHotels = async () => {
       await axios
         .get("/hotel/getHotels")
