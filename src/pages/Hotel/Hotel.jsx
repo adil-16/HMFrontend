@@ -21,25 +21,18 @@ const Store = () => {
   const [added, setAdded] = useState(false);
 
   useEffect(() => {
-    
     const getHotels = async () => {
-      axios
-        .get("/hotel/getHotels")
-        .then((res) => {
-          setData(res?.data?.data?.hotels);
-          console.log("data is", res?.data?.data?.hotels);
-          setLoading(false)
-        })
-        .catch((err) => {
-          // //   setCategoryapi(true)
-          // setLoader(false)
-          //   setError(err.response.data.data.error);
-          setLoading(false)
-        })
-        
+      try {
+        const res = await axios.get("/hotel/getHotels");
+        setData(res?.data?.data?.hotels);
+      } catch (err) {
+        throw err;
+      } finally {
+        setLoading(false);
+      }
     };
     getHotels();
-  }, [addHotel]);
+  }, []);
 
   return (
     <div className="w-full">
@@ -54,29 +47,21 @@ const Store = () => {
           setData={setData}
           search="hotel"
         />
-         <div className="flex flex-wrap justify-start gap-10 m-1">
-          {loading? 
-          (
+        <div className="flex flex-wrap justify-start gap-10 m-1">
+          {loading ? (
             <div>loading ... </div>
-          ): ( data?.length === 0 ? (
+          ) : data?.length === 0 ? (
             <p className="text-center text-gray-500">No Hotels to show</p>
           ) : (
-            
-              
-            console.log("data: qasim", data)
-            
-            // data?.map((val, ind) => (
-            //   // <HotelCard
-            //   //   data={val}
-            //   //   key={val.id || ind}
-            //   //   setBook={setBook}
-            //   //   setHotelId={setHotelId}
-            //   // />
-            //   <div key={val.id}>123</div>
-            // ))
-          ))  
-        }
-          
+            data?.map((val, ind) => (
+              <HotelCard
+                data={val}
+                key={val.id || ind}
+                setBook={setBook}
+                setHotelId={setHotelId}
+              />
+            ))
+          )}
         </div>
       </div>
 
