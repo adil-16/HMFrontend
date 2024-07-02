@@ -16,23 +16,27 @@ const Store = () => {
   const [addHotel, setAddHotel] = useState(false);
   const [hotelId, setHotelId] = useState(false);
   const [showAddUser, setShowAddUser] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [added, setAdded] = useState(false);
 
   useEffect(() => {
     
     const getHotels = async () => {
-      await axios
+      axios
         .get("/hotel/getHotels")
         .then((res) => {
           setData(res?.data?.data?.hotels);
           console.log("data is", res?.data?.data?.hotels);
+          setLoading(false)
         })
         .catch((err) => {
           // //   setCategoryapi(true)
           // setLoader(false)
           //   setError(err.response.data.data.error);
-        });
+          setLoading(false)
+        })
+        
     };
     getHotels();
   }, [addHotel]);
@@ -51,7 +55,10 @@ const Store = () => {
           search="hotel"
         />
          <div className="flex flex-wrap justify-start gap-10 m-1">
-          {data && data?.length === 0 ? (
+          {loading? 
+          (
+            <div>loading ... </div>
+          ): ( data?.length === 0 ? (
             <p className="text-center text-gray-500">No Hotels to show</p>
           ) : (
             data?.map((val, ind) => (
@@ -63,7 +70,9 @@ const Store = () => {
               // />
               <div key={val.id}>123</div>
             ))
-          )}
+          ))  
+        }
+          
         </div>
       </div>
 
