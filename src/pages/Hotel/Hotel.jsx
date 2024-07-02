@@ -9,7 +9,6 @@ import HotelCard from "./HotelCard";
 import axios from "../../axios";
 
 const Store = () => {
-  console.log("hjl");
   const [showPopup, setShowPopup] = useState(false);
   const [book, setBook] = useState(false);
   const [data, setData] = useState([]);
@@ -34,6 +33,10 @@ const Store = () => {
     getHotels();
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="w-full">
       <TopBar title="Hotels" />
@@ -44,13 +47,11 @@ const Store = () => {
           type="Store"
           button="+ Add Hotel"
           setShowPopup={setShowPopup}
-          setData={setData}
+          // setData={setData}
           search="hotel"
         />
         <div className="flex flex-wrap justify-start gap-10 m-1">
-          {loading ? (
-            <div>loading ... </div>
-          ) : data?.length === 0 ? (
+          {data?.length === 0 ? (
             <p className="text-center text-gray-500">No Hotels to show</p>
           ) : (
             data?.map((val, ind) => (
