@@ -61,7 +61,10 @@ const Store = () => {
           ): ( data?.length === 0 ? (
             <p className="text-center text-gray-500">No Hotels to show</p>
           ) : (
-            <div>qasim</div>
+            
+              
+            console.log("data: qasim", data)
+            
             // data?.map((val, ind) => (
             //   // <HotelCard
             //   //   data={val}
