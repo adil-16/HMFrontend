@@ -55,12 +55,13 @@ const Store = () => {
             <p className="text-center text-gray-500">No Hotels to show</p>
           ) : (
             data?.map((val, ind) => (
-              <HotelCard
-                data={val}
-                key={val.id || ind}
-                setBook={setBook}
-                setHotelId={setHotelId}
-              />
+              // <HotelCard
+              //   data={val}
+              //   key={val.id || ind}
+              //   setBook={setBook}
+              //   setHotelId={setHotelId}
+              // />
+              <div key={val.id}>123</div>
             ))
           )}
         </div>
