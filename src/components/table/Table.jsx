@@ -72,29 +72,25 @@ const Table = ({
     <div className="w-full">
       <div
         className="rounded-lg border border-solid border-gray border-opacity-20 bg-black overflow-x-auto"
-        style={{ minWidth: "350px", overflowX: "auto" }} // Add this style
+        style={{ minWidth: "350px", overflowX: "auto" }}
       >
         <table className="w-full">
           <thead className="bg-white3 ml-2 p-4 bg-orange">
-            <tr className="font-sans p-6 ">
+            <tr className="font-sans p-6">
               <th className="p-2 text-center w-8 lg:w-20">
                 <div onClick={() => selectAllData()}>
-                  <CheckboxLabel check={selectAll} bg="white" />
+                  {/* <CheckboxLabel check={selectAll} bg="white" /> */}
                 </div>
               </th>
-              {tableHeader.map((val, ind) => {
-                return (
-                  <th
-                    className="text-left ml-2 sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 "
-                    key={ind}
-                  >
-                    {val}
-                  </th>
-                );
-              })}
-              <th className="font-Nunitoo text-12 text-medium text-white2 ml-2">
-                Actions
-              </th>
+              {tableHeader.map((val, ind) => (
+                <th
+                  className="text-left ml-2 sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 p-4" 
+                  key={ind}
+                >
+                  {val}
+                </th>
+              ))}
+              <th className="font-Nunitoo text-12 text-medium text-white2 ml-2 p-4">Actions</th> 
             </tr>
           </thead>
           <tbody>
@@ -105,7 +101,7 @@ const Table = ({
                 <tr className="border-b border-blue5" key={dataIndex}>
                   <td className="p-2 text-left w-8 lg:w-20">
                     <div onClick={() => selectData(dataIndex)}>
-                      <CheckboxLabel check={val.isSelected} bg="white" />
+                      {/* <CheckboxLabel check={val.isSelected} bg="white" /> */}
                     </div>
                   </td>
                   {/* cell 2 */}
@@ -128,7 +124,7 @@ const Table = ({
                       </div>
                       <div className="flex flex-col justify-center ml-1 lg:ml-3">
                         <p className="font-Nunitoo text-12 lg:text-15 text-medium text-white">
-                          {val.name}
+                          {val.contactPerson}
                         </p>
                         <p className="font-Nunitoo text-10 lg:text-14 text-medium text-orange">
                           {val[cell2]}
@@ -167,12 +163,6 @@ const Table = ({
                           setShowEditPopup(true);
                         }}
                       />
-                      <button
-                        className="bg-orange text-white py-1 px-2 rounded-md ml-6"
-                        onClick={() => handleShowLedger(val.id, val.name)}
-                      >
-                        Show Ledger
-                      </button>
                     </div>
                   </td>
                 </tr>
@@ -185,11 +175,9 @@ const Table = ({
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="mr-2 px-4 py-2  border border-white rounded-lg bg-orange focus:outline-none hover:border-gray2"
+            className="mr-2 px-4 py-2 border border-white rounded-lg bg-orange focus:outline-none hover:border-gray2"
           >
-            <p className="font-Nunitoo text-white text-12 md:text-16">
-              Previous
-            </p>
+            <p className="font-Nunitoo text-white text-12 md:text-16">Previous</p>
           </button>
           <div className="flex justify-center my-2">
             <p className="font-Nunitoo text-white text-10 md:text-14 font-medium">
@@ -199,7 +187,7 @@ const Table = ({
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={indexOfLastItem >= data.length}
-            className="px-4 py-2 border border-gray2 rounded-lg bg-orange focus:outline-none  hover:border-white"
+            className="px-4 py-2 border border-gray2 rounded-lg bg-orange focus:outline-none hover:border-white"
           >
             <p className="font-Nunitoo text-white text-12 md:text-16">Next</p>
           </button>
@@ -265,16 +253,16 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
         style={{ minWidth: "350px", overflowX: "auto" }}
       >
         <table className="w-full">
-          <thead className="bg-white3 ml-2 p-4 bg-orange">
+          <thead className="bg-white3  p-4 bg-orange">
             <tr className="font-sans p-6">
               <th className="p-2 text-center w-8 lg:w-20">
                 <div onClick={() => selectAllData()}>
-                  <CheckboxLabel check={selectAll} bg="white" />
+                  {/* <CheckboxLabel check={selectAll} bg="white" /> */}
                 </div>
               </th>
               {tableHeader.map((val, ind) => (
                 <th
-                  className="text-left ml-2 sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2"
+                  className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2  p-4"
                   key={ind}
                 >
                   {val}
@@ -291,7 +279,7 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
                 <tr className="border-b border-blue5" key={`${dataIndex}-${entryIndex}`}>
                   <td className="p-2 text-left w-8 lg:w-20">
                     <div onClick={() => selectData(dataIndex, entryIndex)}>
-                      <CheckboxLabel check={val.isSelected} bg="white" />
+                      {/* <CheckboxLabel check={val.isSelected} bg="white" /> */}
                     </div>
                   </td>
                   {/* cell 2 */}

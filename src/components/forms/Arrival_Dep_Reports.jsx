@@ -177,7 +177,7 @@ const Arrival_Dep_Reports = ({ onSubmit, setTitle }) => {
       <div className="mb-4">
         <label className="block text-orange font-medium mb-2">Customer</label>
         <Select
-          options={customers.map(customer => ({ value: customer.id, label: `${customer.name} (${customer.customerType}) ` }))}
+          options={customers.map(customer => ({ value: customer.id, label: `${customer.contactPerson} (${customer.customerType}) ` }))}
           value={selectedCustomer}
           onChange={setSelectedCustomer}
           placeholder="Select a customer"

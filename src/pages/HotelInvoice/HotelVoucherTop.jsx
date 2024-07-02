@@ -11,8 +11,8 @@ const HotelVoucherTop = ({ headName, voucher, count, guest }) => {
             </p>
             <p className="font-medium ml-2 text-white text-14 sm:text-16">
               {voucher?.customer?.customerType === "guest"
-                ? "Table Client"
-                : voucher?.customer?.companyName}
+                ? voucher?.customer?.contactPerson
+                : voucher?.customer?.contactPerson}
             </p>
           </div>
 

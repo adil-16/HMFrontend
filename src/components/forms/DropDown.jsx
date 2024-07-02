@@ -21,7 +21,7 @@ const DropdownMenu = ({users, selectedUser, setSelectedUser}) => {
         <option key={user._id} value={user._id}>
           <div className="flex gap-x-1">
             <img src={Avatar} alt={"abb"} className="h-10 w-10" />
-            <p>{user.name}</p>
+            <p>{user.contactPerson}</p>
           </div>
         </option>
       ))}

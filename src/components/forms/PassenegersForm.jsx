@@ -38,7 +38,7 @@ const PassengerForm = ({ passengers, setPassengers }) => {
     <div className="mt-5">
       <h3 className="font-Nunitoo font-medium text-orange text-14 py-2">Add Passengers</h3>
       <div className="max-h-64 overflow-y-auto">
-        {passengers.map((passenger, index) => (
+        {passengers?.map((passenger, index) => (
           <div key={index} className="mt-3">
             <p className="text-white">{`Passenger ${index + 1}`}</p>
             <p className="text-white">{`Name: ${passenger.name}`}</p>

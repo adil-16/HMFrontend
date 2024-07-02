@@ -71,7 +71,7 @@ const BookBedPopup = ({ onClose, roomNumber, bed, hotelId, roomId, onBedBooked }
             <option value="">Select Customer</option>
             {users?.map((user) => (
               <option key={user.id} value={user.id}>
-                {user.name}
+                {user.contactPerson}
               </option>
             ))}
           </select>

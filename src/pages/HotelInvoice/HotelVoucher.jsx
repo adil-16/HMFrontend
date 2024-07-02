@@ -31,17 +31,19 @@ const generateVoucherNumber = (index) => {
 
 const HotelInvoice = () => {
   const location = useLocation();
-  const { voucher, accomodationsData, count, printDate, guest} = location.state || {};
+  const { voucher, accomodationsData, count, printDate, guest, data} = location.state || {};
   const[costDataa, setCostData] = useState();
   const [confirmationNumber, setConfirmationNumber] = useState(1);
 
 
   console.log("invoice data", voucher)
+  console.log("accomod data invoice", accomodationsData)
+
 
   const topTableData = [
     {
       confirmationNum: confirmationNumber.toString(),
-      confirmationStatus: voucher?.voucher?.confirmationStatus || voucher?.confirmationStatus,
+      confirmationStatus: data?.confirmationStatus || voucher?.confirmationStatus,
       confType: voucher?.voucher?.confirmationType || voucher?.confirmationType,
       createdOn: printDate,
       docType: "Customer Copy",
@@ -79,14 +81,15 @@ const HotelInvoice = () => {
     const timeDifference = checkoutDate.getTime() - checkinDate.getTime();
     const nightDifference = Math.ceil(timeDifference / (1000 * 3600 * 24)); 
   
-    const roomQuantity = accommodation.roomQuantity ? accommodation.roomQuantity : 1;
+    const roomQuantity = accommodation.roomQuantity ? accommodation.roomQuantity : accommodation.totalRooms;
+    const roomQuan = roomQuantity ? roomQuantity : 1;
 
     return {
-      hotel: accommodation.hotel,
+      hotel:  accommodation.hotelName,
       roomType: accommodation.roomType,
       meal: "R.O",
-      roomQuantity: roomQuantity,
-      roomRate: accommodation.rate,
+      roomQuantity: roomQuan || accommodation.totalRooms,
+      roomRate: accommodation.bedRate || accommodation.roomRate,
       checkin: accommodation.checkin,
       checkout: accommodation.checkout,
       nights: nightDifference,
@@ -107,18 +110,18 @@ const HotelInvoice = () => {
       </div>
 
       <div className="p-1 sm:p-4 py-6">
-        <HotelVoucherTop headName={voucher.customer.name} voucher={voucher} count= {count} guest= {guest} />
+        <HotelVoucherTop headName={voucher.customer.businessName} voucher={voucher} count= {count} guest= {guest} />
 
         <h3 className="text-orange font-medium mb-2 mt-5">Hotel Room Details</h3>
         <AccomodationTable data={accomodationData} handleCost = {costCallback} />
 
-        <div className="mb-2 mt-10">
+        {/* <div className="mb-2 mt-10">
         <ServiceTable />
-        </div>
+        </div> */}
 
-        <div className="mb-2 mt-8">
+        {/* <div className="mb-2 mt-8">
         <CostTable data = {costData} />
-        </div>
+        </div> */}
 
         <h3 className="text-orange font-medium mb-2 mt-5">Bank Account Information</h3>
         <TransportTable data={transportData} />

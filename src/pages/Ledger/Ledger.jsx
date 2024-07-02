@@ -49,14 +49,6 @@ const Ledger = () => {
       <TopBar title="Ledgers" />
       {/* body */}
       <div className="p-1 sm:p-8 py-6">
-        <TableTop
-          selectedNo={selectedNo}
-          setData={setData}
-          type="Ledgers"
-          // button="+ Add Customer"
-          setShowPopup={setShowPopup}
-          search="ledger"
-        />
 
         <LedgerTop
           accountCode="0312156"

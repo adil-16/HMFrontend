@@ -23,8 +23,8 @@ const Store = () => {
       await axios
         .get("/hotel/getHotels")
         .then((res) => {
-          setData(res.data.data.hotels);
-          console.log("data is", res.data.data.hotels);
+          setData(res?.data?.data?.hotels);
+          console.log("data is", res?.data?.data?.hotels);
         })
         .catch((err) => {
           // //   setCategoryapi(true)
@@ -49,13 +49,13 @@ const Store = () => {
           search="hotel"
         />
          <div className="flex flex-wrap justify-start gap-10 m-1">
-          {data && data.length === 0 ? (
+          {data && data?.length === 0 ? (
             <p className="text-center text-gray-500">No Hotels to show</p>
           ) : (
             data?.map((val, ind) => (
               <HotelCard
                 data={val}
-                key={ind}
+                key={val.id || ind}
                 setBook={setBook}
                 setHotelId={setHotelId}
               />

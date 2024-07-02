@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../axios";
 
-const HotelVoucherForm = ({ rooms, setRooms }) => {
+const HotelVoucherForm = ({ rooms, setRooms, customerType }) => {
   const roomTypes = ["Shared", "Quatre", "Triple", "Double"];
   const [hotels, setHotels] = useState([]);
 
@@ -11,6 +11,7 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
       try {
         const response = await axios.get("/hotel/getHotels");
         setHotels(response.data.data.hotels);
+        console.log("hotels", response.data.data.hotels)
       } catch (error) {
         console.error("Error fetching hotels:", error);
       }
@@ -27,7 +28,10 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
   };
 
   const addRoom = () => {
-    setRooms([...rooms, { hotel: "", roomType: "", checkin: "", checkout: "", bedRate: "" }]);
+    setRooms([
+      ...rooms,
+      { hotel: "", roomType: "", checkin: "", checkout: "", bedRate: "", roomRate: "", totalRooms: "" },
+    ]);
   };
 
   const removeRoom = (index) => {
@@ -46,7 +50,7 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {rooms.map((room, roomIndex) => (
+        {rooms?.map((room, roomIndex) => (
           <div key={roomIndex} className="mb-4">
             <div className="mt-3">
               <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
@@ -98,24 +102,46 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
                 onChange={(e) => handleRoomChange(roomIndex, e)}
               />
             </div>
+
             <div className="flex gap-x-1 mt-2">
-              <input
-                type="number"
-                className={`border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
-                placeholder="Bed Rate"
-                name="bedRate"
-                value={room.bedRate}
-                onChange={(e) => handleRoomChange(roomIndex, e)}
-              />
-              {room.roomType === "Shared" && (
-                <input
-                  type="number"
-                  className={`border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
-                  placeholder="Number of Beds"
-                  name="noOfBeds"
-                  value={room.noOfBeds || ""}
-                  onChange={(e) => handleRoomChange(roomIndex, e)}
-                />
+              {customerType === "guest" && room.roomType === "Shared" ? (
+                <>
+                  <input
+                    type="number"
+                    className={`border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
+                    placeholder="Bed Rate"
+                    name="bedRate"
+                    value={room.bedRate}
+                    onChange={(e) => handleRoomChange(roomIndex, e)}
+                  />
+                  <input
+                    type="number"
+                    className={`border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
+                    placeholder="Number of Beds"
+                    name="noOfBeds"
+                    value={room.noOfBeds || ""}
+                    onChange={(e) => handleRoomChange(roomIndex, e)}
+                  />
+                </>
+              ) : (
+                <>
+                  <input
+                    type="number"
+                    className={`border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
+                    placeholder="Room Rate"
+                    name="roomRate"
+                    value={room.roomRate}
+                    onChange={(e) => handleRoomChange(roomIndex, e)}
+                  />
+                  <input
+                    type="number"
+                    className={`border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
+                    placeholder="Total Rooms"
+                    name="totalRooms"
+                    value={room.totalRooms}
+                    onChange={(e) => handleRoomChange(roomIndex, e)}
+                  />
+                </>
               )}
               <div
                 onClick={() => removeRoom(roomIndex)}
@@ -126,12 +152,9 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
             </div>
           </div>
         ))}
-        <div
-          onClick={addRoom}
-          className="flex items-center justify-center bg-orange h-6 w-24 rounded-lg text-white cursor-pointer mt-2"
-        >
-          + Add Room
-        </div>
+        <button type="button" onClick={addRoom} className="mt-3 bg-orange text-white py-2 px-4 rounded">
+          Add Hotel
+        </button>
       </form>
     </div>
   );

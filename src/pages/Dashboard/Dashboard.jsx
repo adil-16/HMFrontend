@@ -31,11 +31,15 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const loginStatus = localStorage.getItem("login");
+    if (!loginStatus) {
+      navigate("/");
+    }
     const getData = async () => {
       try {
         const res = await axios.get("/dashboard/getDash");
-        console.log("data is", res.data);
-        const { cards, rooms, roomBooked } = res.data.data;
+        console.log("data is", res?.data);
+        const { cards, rooms, roomBooked } = res?.data?.data;
         setCards(cards);
         setRooms(cleanData(rooms));
         setBookedRooms(cleanData(roomBooked));
@@ -46,14 +50,14 @@ const Dashboard = () => {
       }
     };
     getData();
-  }, []);
-
-  useEffect(() => {
-    const loginStatus = localStorage.getItem("login");
-    if (!loginStatus) {
-      navigate("/");
-    }
   }, [navigate]);
+
+  // useEffect(() => {
+  //   const loginStatus = localStorage.getItem("login");
+  //   if (!loginStatus) {
+  //     navigate("/");
+  //   }
+  // }, [navigate]);
 
   const handleShowLedger = async (fromDate, toDate) => {
     try {
@@ -95,57 +99,41 @@ const Dashboard = () => {
           ))}
         </div> */}
 
-<div className="flex flex-wrap justify-start gap-2 mb-4">
-  <button
-    onClick={() => setIsPopupOpen(true)}
-    className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
-  >
-    Add Inventory
-  </button>
+        <div className="flex flex-wrap justify-start gap-4 mb-4">
+          <button
+            onClick={() => setIsPopupOpen(true)}
+            className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+          >
+            Add Inventory
+          </button>
 
-  <button
-    onClick={() => setShowHotelVoucherPopup(true)}
-    className="bg-white text-black px-4 py-2 rounded-lg w-full sm:w-auto"
-  >
-    Create Hotel Voucher
-  </button>
+          <button
+            onClick={() => setShowHotelVoucherPopup(true)}
+            className="bg-white text-black px-4 py-2 rounded-lg w-full sm:w-auto"
+          >
+            Create Hotel Voucher
+          </button>
 
-  <button
-    onClick={() => navigate("/admin/ledger-report")}
-    className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
-  >
-    Ledger Reports
-  </button>
+          <button
+            onClick={() => navigate("/admin/ledger-report")}
+            className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+          >
+            Ledger Reports
+          </button>
 
-  <button
-    onClick={() => setShowCashVoucherPopup(true)}
-    className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
-  >
-    Payment/Receipt Vouchers
-  </button>
+          <button
+            onClick={() => setShowCashVoucherPopup(true)}
+            className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+          >
+            Payment/Receipt Vouchers
+          </button>
 
-  <button
-    onClick={() => navigate("/admin/customer-reports")}
-    className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
-  >
-    Arrival/Departure Reports
-  </button>
-</div>
-
-
-        <div className="flex flex-wrap justify-between items-center mt-6">
-          <p className="font-Nunitoo text-white font-semibold text-24">
-            Reports Overview
-          </p>
-        </div>
-
-        <Graphs rooms={rooms} />
-
-        <div className="flex flex-col sm:flex-row w-auto">
-          {/* <ReportCard rooms={cards} /> */}
-          <div className="flex justify-center">
-            <PieChartt usersData={bookedRooms} screenWidth={screenWidth} />
-          </div>
+          <button
+            onClick={() => navigate("/admin/customer-reports")}
+            className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+          >
+            Arrival/Departure Reports
+          </button>
         </div>
       </div>
 

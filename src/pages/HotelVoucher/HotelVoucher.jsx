@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from "react";
-import { useLocation, useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../../components/bars/TopBar";
 import HotelVoucherTop from "./HotelVoucherTop";
 import MutamerTable from "./MutamerTable";
@@ -11,9 +11,8 @@ const getPaxType = (age) => {
   if (age >= 0 && age <= 2) return "infant";
   if (age >= 3 && age <= 12) return "child";
   if (age > 12) return "adult";
-  return "unknown"; 
+  return "unknown";
 };
-
 
 const transportData = [
   {
@@ -60,12 +59,19 @@ const HotelVoucher = () => {
   const location = useLocation();
   // const history = useHistory();
   const navigate = useNavigate();
-  const { voucher, accomodationsData } = location.state || {};
+  const { voucher, accomodationsData, data, customerType } =
+    location.state || {};
   const [totalPassengers, setTotalPassengers] = useState(0);
   const [guest, setGuest] = useState("");
+  const headName =
+    customerType === "guest" || voucher.customer.customerType === 'guest'
+      ? `${voucher?.customer?.contactPerson}`
+      : `${data?.passengers[0]?.name}`;
 
-  console.log("acc data", accomodationsData)
+  console.log("acc data", accomodationsData);
+  console.log("voucher data", voucher);
 
+  console.log("cus type", customerType);
 
   useEffect(() => {
     const count = mutamerData?.length;
@@ -76,52 +82,50 @@ const HotelVoucher = () => {
     const guestname = mutamerData[0]?.name;
     setGuest(guestname);
   }, [voucher]);
-  
-
-
 
   if (!voucher) {
     return <div>No voucher data found</div>;
   }
-  
 
   const customerData = {
     sno: 1, // Assuming the customer is always the first entry
-    passport: voucher.customer.passportNumber,
-    name: voucher.customer.name,
-    gender: voucher.customer.gender,
-    pax: getPaxType(voucher.customer.age), 
+    passport: data?.passportNumber|| voucher?.passportNumber,
+    name: voucher.customer.contactPerson,
+    gender: data?.gender || voucher?.gender,
+    pax: getPaxType(data?.age || voucher?.age),
     bed: "Yes",
     mofa: voucher.customer.mofa,
     visa: voucher.customer.visa,
     pnr: voucher.customer.pnr,
   };
-
-  // Extract passengers data
-  const passengersData = voucher.customer.passengers?.map((passenger, index) => ({
-    sno: index + 2, // Start from 2 since customer is at sno 1
-    passport: passenger.passportNumber,
-    name: passenger.name,
-    gender: passenger.gender,
-    pax: getPaxType(passenger.age), 
-    bed: "Yes",
-    mofa: passenger.mofa,
-    visa: passenger.visa,
-    pnr: passenger.pnr,
-  })) || [];
+const passengers = data?.passengers ? data.passengers : voucher.passengers; 
+// Extract passengers data
+  const passengersData =
+    passengers?.map((passenger, index) => ({
+      sno: index + 2, // Start from 2 since customer is at sno 1
+      passport: passenger.passportNumber,
+      name: passenger.name,
+      gender: passenger.gender,
+      pax: getPaxType(passenger.age),
+      bed: "Yes",
+      mofa: passenger.mofa,
+      visa: passenger.visa,
+      pnr: passenger.pnr,
+    })) || [];
 
   // Combine customer and passengers into mutamerData array
-  const mutamerData = voucher.customer.customerType !== "b2b" ? [customerData, ...passengersData] : [...passengersData];
-
-
+  const mutamerData =
+    voucher.customer.customerType !== "b2b"
+      ? [customerData, ...passengersData]
+      : [...passengersData];
 
   const accomodationData = accomodationsData?.map((accommodation) => {
     const formatDate = (date) => new Date(date).toISOString().split("T")[0];
     const checkinDate = new Date(accommodation.checkin);
     const checkoutDate = new Date(accommodation.checkout);
     const timeDifference = checkoutDate.getTime() - checkinDate.getTime();
-    const nightDifference = Math.ceil(timeDifference / (1000 * 3600 * 24)); 
-  
+    const nightDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
     return {
       city: accommodation.hotelCity,
       hotel: accommodation.hotelName,
@@ -130,7 +134,7 @@ const HotelVoucher = () => {
       conf: accommodation.conf,
       roomType: accommodation.roomType,
       checkin: formatDate(accommodation.checkin),
-    checkout: formatDate(accommodation.checkout),
+      checkout: formatDate(accommodation.checkout),
       nights: nightDifference,
       rate: accommodation.bedRate,
       roomQuantity: accommodation.noOfBeds,
@@ -140,22 +144,30 @@ const HotelVoucher = () => {
   const handleShowInvoice = () => {
     const currentDate = new Date().toISOString().split("T")[0];
     const invoiceId = generateInvoiceId(0);
-    navigate(`/admin/hotel-invoice/${invoiceId}`, { state: { voucher: voucher, accomodationsData: accomodationData, count: totalPassengers, printDate: currentDate, guest: guest } });
+    navigate(`/admin/hotel-invoice/${invoiceId}`, {
+      state: {
+        data: data,
+        voucher: voucher,
+        accomodationsData: accomodationsData,
+        count: totalPassengers,
+        printDate: currentDate,
+        guest: guest,
+      },
+    });
   };
-  
 
   return (
     <div className="w-full flex flex-col pb-5">
       <TopBar title="Hotel Voucher" />
       <button
-          className="ml-auto mr-8 mt-4 bg-orange text-white font-bold py-2 px-4 rounded"
-          onClick={handleShowInvoice}
-        >
-          Show Invoice
-        </button>
+        className="ml-auto mr-8 mt-4 bg-orange text-white font-bold py-2 px-4 rounded"
+        onClick={handleShowInvoice}
+      >
+        Show Invoice
+      </button>
 
       <div className="p-1 sm:p-4 py-6">
-        <HotelVoucherTop headName={voucher.customer.name} voucher={voucher.voucherNumber} />
+        <HotelVoucherTop headName={`${headName === 'undefined' ? 'No Head': headName}`} voucher={voucher.voucherNumber} />
 
         <h3 className="text-orange font-medium mb-2">Mutamers</h3>
         <MutamerTable data={mutamerData} />

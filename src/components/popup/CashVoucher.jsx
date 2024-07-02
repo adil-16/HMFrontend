@@ -112,7 +112,7 @@ const CashVoucherPopup = ({ onClose }) => {
             >
               <option value="">Select Supplier</option>
               {suppliers?.length>0 ? suppliers.map((sup,index)=>{
-                return <option key={index} value={sup.id}>{sup.name}</option>
+                return <option key={index} value={sup.id}>{sup.contactPerson}</option>
               }) :"No supplier to show!"}
             </select>
           </div>
@@ -130,7 +130,7 @@ const CashVoucherPopup = ({ onClose }) => {
           >
             <option value="">Select Customer</option>
             {customers?.length>0 ? customers.map((sup,index)=>{
-              return <option key={index} value={sup.id}>{sup.name}</option>
+              return <option key={index} value={sup.id}>{sup.contactPerson}</option>
             }) :"No customer to show!"}
           </select>
           </div>

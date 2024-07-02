@@ -12,7 +12,7 @@ const User = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
-  const [showLedgerPopup, setShowLedgerPopup] = useState(false);
+  
 
   const [customerAdded, setCustomerAdded] = useState(false);
   const [updateData, setUpdateData] = useState(null);
@@ -46,40 +46,6 @@ const User = () => {
     getUsers();
   }, [customerAdded]);
 
-  const handleShowLedger = (fromDate, toDate) => {
-    console.log("Show Ledger for dates:", fromDate, toDate);
-    const currentDate = new Date().toISOString().split("T")[0];
-    console.log("Seleced user id: ", selectedUserId);
-
-
-    axios
-      .get(`/ledger/filterLedger/${selectedUserId}`, {
-        params: {
-          from: fromDate,
-          to: toDate,
-        },
-      })
-      .then((res) => {
-        
-        console.log("Filtered Ledger Data: ", res.data);
-        const totalBalance = res.data.ledgers.length > 0 ? res.data.ledgers[0].totalBalance : 0;
-        navigate("/admin/ledger", { 
-          state: {
-            ledgerData: res.data.ledgers,
-            userName: selectedUser, 
-            totalBalance,
-            fromDate,
-            toDate,
-            printDate: currentDate,
-          },
-        });
-        console.log("res data", res.data.ledgers)
-        console.log("balance", totalBalance)
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
 
   return (
     <div className="w-full">
@@ -111,12 +77,6 @@ const User = () => {
               setShowEditPopup={setShowEditPopup}
               setUpdateData={setUpdateData}
               setShowDeletePopup={setShowDeletePopup}
-              setShowLedgerPopup={(id, name, role) => {
-                setSelectedUserId(id);
-                setSelectedUser(name);
-                setSelectedRole(role);
-                setShowLedgerPopup(true);
-              }}
             />
           )}
         </div>
@@ -146,13 +106,6 @@ const User = () => {
           heading="Delete Customer"
           setAdded={setCustomerAdded}
           id={updateData.id}
-        />
-      )}
-
-      {showLedgerPopup && (
-        <ShowLedgerPopup
-          onClose={() => setShowLedgerPopup(false)}
-          onSubmit={handleShowLedger}
         />
       )}
     </div>

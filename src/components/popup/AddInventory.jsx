@@ -216,7 +216,7 @@ const AddInventoryPopup = ({ onClose }) => {
                 ? suppliers.map((sup, index) => {
                     return (
                       <option key={index} value={sup.id}>
-                        {sup.name}
+                        {sup.contactPerson}
                       </option>
                     );
                   })

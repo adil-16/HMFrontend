@@ -40,11 +40,11 @@ const LedgerReportForm = ({ onSubmit }) => {
     { value: 'cashAccount', label: 'Cash Account' },
     ...suppliers.map(supplier => ({
       value: `${supplier.id} Account`,
-      label: `${supplier.name} Account (Supplier)`
+      label: `${supplier.contactPerson} Account (Supplier)`
     })),
     ...customers.map(customer => ({
       value: `${customer.id} Account`,
-      label: `${customer.name} Account (Customer)`
+      label: `${customer.contactPerson} Account (Customer)`
     }))
   ];
 

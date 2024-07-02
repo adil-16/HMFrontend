@@ -49,7 +49,7 @@ const AccomodationTable = ({ data, handleCost }) => {
               Rate
             </th>
             <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
-              Room Total
+              Total Amount
             </th>
           </tr>
         </thead>

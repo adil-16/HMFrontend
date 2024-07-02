@@ -23,9 +23,9 @@ const HotelCard = ({ data }) => {
       try {
         const response = await axios.get(`/hotel/getHotel/${id}`);
         console.log("ababa", response);
-        setAvailableRooms(response.data.data.hotel.availableRoomsCount);
+        setAvailableRooms(response?.data?.data?.hotel?.availableRoomsCount);
         console.log(availableRooms);
-        setBookedRooms(response.data.data.hotel.bookedRoomsCount);
+        setBookedRooms(response?.data?.data?.hotel?.bookedRoomsCount);
       } catch (error) {
         console.error("Error fetching hotel details:", error);
       }
@@ -46,7 +46,7 @@ const HotelCard = ({ data }) => {
       {/* Hotel Image */}
       <div className="flex items-center justify-around">
         <div className="h-20 w-20">
-          {data.image == null ? (
+          {data?.image == null ? (
             <img
               src={Avatar}
               className="object-cover w-full h-full rounded-lg"
@@ -54,7 +54,7 @@ const HotelCard = ({ data }) => {
             />
           ) : (
             <img
-              src={`${url}${data.image}`}
+              src={`${url}${data?.image}`}
               className="object-cover w-full h-full rounded-lg"
               alt=""
             />
