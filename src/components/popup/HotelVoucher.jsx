@@ -23,11 +23,14 @@ const CashVoucherPopup = ({ onClose }) => {
   ]);
   const [voucherData, setVoucherData] = useState(null);
   const [hotels, setHotels] = useState([]);
+  const [banks, setBanks] = useState([]);
   const [voucherDetails, setVoucherDetails] = useState({
     confirmationStatus: "",
     tentativeHours: 24,
     vatnumber: "",
     passengers: [],
+    paymentMethod: "cash",
+    bankId: "",
   });
 
   const navigate = useNavigate();
@@ -55,6 +58,20 @@ const CashVoucherPopup = ({ onClose }) => {
     };
 
     fetchHotels();
+  }, []);
+
+  useEffect(() => {
+    const fetchBanks = async () => {
+      try {
+        const response = await axios.get("/bank/getBanks");
+        setBanks(response.data);
+        console.log("banks", response.data);
+      } catch (error) {
+        console.error("Error fetching banks:", error);
+      }
+    };
+
+    fetchBanks();
   }, []);
 
   const handleVoucherDetailsChange = (event) => {
@@ -85,6 +102,8 @@ const CashVoucherPopup = ({ onClose }) => {
             hotels.find((hotel) => hotel.id === room.hotel)?.location || "",
         })),
         passengers: voucherDetails.passengers || [],
+        paymentMethod: voucherDetails.paymentMethod,
+        bankId: voucherDetails.bankId,
       };
 
       console.log("Data", data);
@@ -203,6 +222,59 @@ const CashVoucherPopup = ({ onClose }) => {
             className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
           />
         </div>
+
+        <div className="mt-3">
+          <div className="block font-Nunitoo font-medium text-orange text-14 py-2">
+            Payment Method
+          </div>
+          <div className="flex items-center">
+            <input
+              type="radio"
+              id="cash"
+              name="paymentMethod"
+              value="cash"
+              checked={voucherDetails.paymentMethod === "cash"}
+              onChange={handleVoucherDetailsChange}
+              className="mr-2"
+            />
+            <label htmlFor="cash" className="mr-6 text-white">
+              Cash
+            </label>
+            <input
+              type="radio"
+              id="bank"
+              name="paymentMethod"
+              value="bank"
+              checked={voucherDetails.paymentMethod === "bank"}
+              onChange={handleVoucherDetailsChange}
+              className="mr-2"
+            />
+            <label htmlFor="bank" className="text-white">
+              Bank
+            </label>
+          </div>
+        </div>
+
+        {voucherDetails.paymentMethod === "bank" && (
+          <div className="mt-3">
+            <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
+              Select Bank
+            </label>
+            <select
+              name="bankId"
+              value={voucherDetails.bankId}
+              onChange={handleVoucherDetailsChange}
+              className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+            >
+              <option value="">Select Bank</option>
+              {banks.map((bank) => (
+                <option key={bank._id} value={bank._id}>
+                  {bank.bankName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {selectedCustomer && (
           <>

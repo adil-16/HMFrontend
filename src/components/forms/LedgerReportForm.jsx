@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import SubmitButton from "../../components/buttons/SubmitButtonHotel";
-import Select from 'react-select';
+import Select from "react-select";
 import axios from "../../axios";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const LedgerReportForm = ({ onSubmit }) => {
   const [account, setAccount] = useState(null);
-  const [reportCurrency, setReportCurrency] = useState('SAR');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [reportCurrency, setReportCurrency] = useState("SAR");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [suppliers, setSuppliers] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [banks, setBanks] = useState([]);
   const navigate = useNavigate();
 
   const getSuppliers = async () => {
@@ -31,24 +32,37 @@ const LedgerReportForm = ({ onSubmit }) => {
     }
   };
 
+  const getBanks = async () => {
+    try {
+      const res = await axios.get("/bank/getBanks");
+      setBanks(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     getSuppliers();
     getCustomers();
+    getBanks();
   }, []);
 
   const accountOptions = [
-    { value: 'cashAccount', label: 'Cash Account' },
-    ...suppliers.map(supplier => ({
+    { value: "cashAccount", label: "Cash Account" },
+    ...suppliers.map((supplier) => ({
       value: `${supplier.id} Account`,
-      label: `${supplier.contactPerson} Account (Supplier)`
+      label: `${supplier.contactPerson} Account (Supplier)`,
     })),
-    ...customers.map(customer => ({
+    ...customers.map((customer) => ({
       value: `${customer.id} Account`,
-      label: `${customer.contactPerson} Account (Customer)`
-    }))
+      label: `${customer.contactPerson} Account (Customer)`,
+    })),
+    ...banks?.map((bank) => ({
+      value: `${bank._id} Account`,
+      label: `${bank.bankName} Account (Bank)`,
+    })),
   ];
 
-  
   const handleSubmit = async (e) => {
     // e.preventDefault();
 
@@ -58,7 +72,7 @@ const LedgerReportForm = ({ onSubmit }) => {
     const currentDate = new Date().toISOString().split("T")[0];
 
     try {
-      if (accountType === 'cashAccount') {
+      if (accountType === "cashAccount") {
         // Cash Account API call
         const response = await axios.get(`ledger/filterAdminLedger`, {
           params: { from: fromDate, to: toDate },
@@ -67,11 +81,14 @@ const LedgerReportForm = ({ onSubmit }) => {
         if (response.status !== 200) {
           throw new Error("Failed to filter ledgers");
         }
-        navigate("/admin/ledger", { 
+        navigate("/admin/ledger", {
           state: {
             ledgerData: response.data.ledgers,
-            userName: 'Cash Account', 
-            totalBalance: response.data.ledgers.length > 0 ? response.data.ledgers[0].totalBalance : 0,
+            userName: "Cash Account",
+            totalBalance:
+              response.data.ledgers.length > 0
+                ? response.data.ledgers[0].totalBalance
+                : 0,
             fromDate,
             toDate,
             printDate: currentDate,
@@ -79,22 +96,28 @@ const LedgerReportForm = ({ onSubmit }) => {
         });
       } else {
         // Supplier or Customer API call
-        const selectedUserId = accountType.split(' ')[0];
-        const selectedUser = account.label.split(' ')[0];
+        const selectedUserId = accountType.split(" ")[0];
+        const selectedUser = account.label.split(" ")[0];
 
-        const response = await axios.get(`/ledger/filterLedger/${selectedUserId}`, {
-          params: {
-            from: fromDate,
-            to: toDate,
-          },
-        });
+        const response = await axios.get(
+          `/ledger/filterLedger/${selectedUserId}`,
+          {
+            params: {
+              from: fromDate,
+              to: toDate,
+            },
+          }
+        );
 
-        const totalBalance = response.data.ledgers.length > 0 ? response.data.ledgers[0].totalBalance : 0;
+        const totalBalance =
+          response.data.ledgers.length > 0
+            ? response.data.ledgers[0].totalBalance
+            : 0;
 
-        navigate("/admin/ledger", { 
+        navigate("/admin/ledger", {
           state: {
             ledgerData: response.data.ledgers,
-            userName: selectedUser, 
+            userName: selectedUser,
             totalBalance,
             fromDate,
             toDate,
@@ -121,31 +144,33 @@ const LedgerReportForm = ({ onSubmit }) => {
           styles={{
             control: (provided) => ({
               ...provided,
-              backgroundColor: 'white',
-              borderColor: 'black',
-              color: 'black',
+              backgroundColor: "white",
+              borderColor: "black",
+              color: "black",
             }),
             input: (provided) => ({
               ...provided,
-              color: 'black',
+              color: "black",
             }),
             singleValue: (provided) => ({
               ...provided,
-              color: 'black',
+              color: "black",
             }),
           }}
         />
       </div>
       <div className="mb-4">
-        <label className="block text-orange font-medium mb-2">Report Currency</label>
+        <label className="block text-orange font-medium mb-2">
+          Report Currency
+        </label>
         <div>
           <label className="inline-flex items-center mr-4">
             <input
               type="radio"
               name="currency"
               value="SAR"
-              checked={reportCurrency === 'SAR'}
-              onChange={() => setReportCurrency('SAR')}
+              checked={reportCurrency === "SAR"}
+              onChange={() => setReportCurrency("SAR")}
               className="form-radio"
             />
             <span className="ml-2">SAR</span>

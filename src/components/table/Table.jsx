@@ -18,6 +18,7 @@ const Table = ({
   setUpdateData,
   setShowDeletePopup,
   setShowLedgerPopup,
+  isUser,
 }) => {
   const navigate = useNavigate();
   const [url] = useState(import.meta.env.VITE_API_URL);
@@ -84,13 +85,15 @@ const Table = ({
               </th>
               {tableHeader.map((val, ind) => (
                 <th
-                  className="text-left ml-2 sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 p-4" 
+                  className="text-left ml-2 sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 p-4"
                   key={ind}
                 >
                   {val}
                 </th>
               ))}
-              <th className="font-Nunitoo text-12 text-medium text-white2 ml-2 p-4">Actions</th> 
+              <th className="font-Nunitoo text-12 text-medium text-white2 ml-2 p-4">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -107,24 +110,30 @@ const Table = ({
                   {/* cell 2 */}
                   <td className="w-auto sm:60 md:w-80">
                     <div className="flex justify-left py-2">
-                      <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gray rounded-full">
-                        {val.image == null ? (
-                          <img
-                            src={Avatar}
-                            className="object-cover w-full h-full rounded-full"
-                            alt=""
-                          />
-                        ) : (
-                          <img
-                            src={`${url}${val.image}`}
-                            className="object-cover w-full h-full rounded-full"
-                            alt=""
-                          />
-                        )}
-                      </div>
+                      {isUser && (
+                        <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gray rounded-full">
+                          {val[cell2] != "null" ? (
+                            val.image == null ? (
+                              <img
+                                src={Avatar}
+                                className="object-cover w-full h-full rounded-full"
+                                alt=""
+                              />
+                            ) : (
+                              <img
+                                src={`${url}${val.image}`}
+                                className="object-cover w-full h-full rounded-full"
+                                alt=""
+                              />
+                            )
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                      )}
                       <div className="flex flex-col justify-center ml-1 lg:ml-3">
                         <p className="font-Nunitoo text-12 lg:text-15 text-medium text-white">
-                          {val.contactPerson}
+                          {val.contactPerson || val.bankName}
                         </p>
                         <p className="font-Nunitoo text-10 lg:text-14 text-medium text-orange">
                           {val[cell2]}
@@ -132,6 +141,7 @@ const Table = ({
                       </div>
                     </div>
                   </td>
+
                   {/* 3rd cell */}
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5">
                     {val[cell3]}
@@ -177,7 +187,9 @@ const Table = ({
             disabled={currentPage === 1}
             className="mr-2 px-4 py-2 border border-white rounded-lg bg-orange focus:outline-none hover:border-gray2"
           >
-            <p className="font-Nunitoo text-white text-12 md:text-16">Previous</p>
+            <p className="font-Nunitoo text-white text-12 md:text-16">
+              Previous
+            </p>
           </button>
           <div className="flex justify-center my-2">
             <p className="font-Nunitoo text-white text-10 md:text-14 font-medium">
@@ -198,7 +210,6 @@ const Table = ({
 };
 
 export default Table;
-
 
 export const LedgerTable = ({ tableHeader, data = [], setData }) => {
   const navigate = useNavigate();
@@ -222,7 +233,8 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
 
   const selectData = (dataIndex, entryIndex) => {
     let dataCopy = [...data];
-    dataCopy[dataIndex].entries[entryIndex].isSelected = !dataCopy[dataIndex].entries[entryIndex].isSelected;
+    dataCopy[dataIndex].entries[entryIndex].isSelected =
+      !dataCopy[dataIndex].entries[entryIndex].isSelected;
     setData(dataCopy);
   };
 
@@ -244,7 +256,10 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
   const totalPages = Math.ceil(flattenedEntries.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = flattenedEntries.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = flattenedEntries.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   return (
     <div className="w-full">
@@ -276,7 +291,10 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
               const dataIndex = val.parentIndex;
               const entryIndex = ind;
               return (
-                <tr className="border-b border-blue5" key={`${dataIndex}-${entryIndex}`}>
+                <tr
+                  className="border-b border-blue5"
+                  key={`${dataIndex}-${entryIndex}`}
+                >
                   <td className="p-2 text-left w-8 lg:w-20">
                     <div onClick={() => selectData(dataIndex, entryIndex)}>
                       {/* <CheckboxLabel check={val.isSelected} bg="white" /> */}
@@ -298,7 +316,7 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                     {val.title}
                   </td>
-                  
+
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                     {val.debit}
                   </td>
@@ -322,7 +340,9 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
             disabled={currentPage === 1}
             className="mr-2 px-4 py-2 border border-white rounded-lg bg-orange focus:outline-none hover:border-gray2"
           >
-            <p className="font-Nunitoo text-white text-12 md:text-16">Previous</p>
+            <p className="font-Nunitoo text-white text-12 md:text-16">
+              Previous
+            </p>
           </button>
           <div className="flex justify-center my-2">
             <p className="font-Nunitoo text-white text-10 md:text-14 font-medium">
@@ -341,5 +361,3 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
     </div>
   );
 };
-
-

@@ -47,7 +47,7 @@ const User = () => {
 
   return (
     <div className="w-full">
-      <TopBar title="Users" />
+      <TopBar title="Customers/Suppliers" />
       {/* body */}
       <div className="p-1 sm:p-6 py-6">
         <div className="mb-6">

@@ -4,71 +4,94 @@ import SubmitButton from "../../components/buttons/SubmitButtonHotel";
 import axios from "../../axios";
 
 const CashVoucherPopup = ({ onClose }) => {
-    const [voucherType, setVoucherType] = useState("Cash Payment Voucher");
-    const [suppliers, setSuppliers] = useState([]);
-    const [selectedSupplier, setSelectedSupplier] = useState("");
-    const [customers, setCustomers] = useState([]);
-    const [selectedCustomer, setSelectedCustomer] = useState("");
-    const [customer, setCustomer] = useState("");
-    const [title, setTitle] = useState("");
-    const [amount, setAmount] = useState("");
-  
-    const getSuppliers = async () => {
-      await axios
-        .get("/user/getSuppliers")
-        .then((res) => {
-          console.log("data is", res.data);
-          setSuppliers(res.data.data.suppliers); 
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-    useEffect(() => {
-      getSuppliers();
-    }, []);
+  const [voucherType, setVoucherType] = useState("Cash Payment Voucher");
+  const [suppliers, setSuppliers] = useState([]);
+  const [selectedSupplier, setSelectedSupplier] = useState("");
+  const [customers, setCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState("");
+  const [customer, setCustomer] = useState("");
+  const [title, setTitle] = useState("");
+  const [amount, setAmount] = useState("");
+  const [banks, setBanks] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [bankId, setBankId] = useState("");
+  const [role, setRole] = useState("cash");
 
-    const getCustomers = async () => {
-      await axios
-        .get("/user/getCustomers")
-        .then((res) => {
-          console.log("data is", res.data);
-          setCustomers(res.data.data.customers); 
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+  const getSuppliers = async () => {
+    await axios
+      .get("/user/getSuppliers")
+      .then((res) => {
+        console.log("data is", res.data);
+        setSuppliers(res.data.data.suppliers);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    getSuppliers();
+  }, []);
+
+  const getCustomers = async () => {
+    await axios
+      .get("/user/getCustomers")
+      .then((res) => {
+        console.log("data is", res.data);
+        setCustomers(res.data.data.customers);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    getCustomers();
+  }, []);
+
+  const getBanks = async () => {
+    try {
+      const res = await axios.get("/bank/getBanks");
+      setBanks(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  useEffect(() => {
+    getBanks();
+  }, []);
+
+  useEffect(() => {
+    paymentMethod == "cash" ? setRole("cash") : setRole("bank");
+  }, [paymentMethod]);
+
+  const handleSubmit = async () => {
+    const data = {
+      voucherType,
+      title,
+      amount,
+      role,
+      paymentMethod,
+      bankId,
     };
-    useEffect(() => {
-      getCustomers();
-    }, []);
-  
-    const handleSubmit = async () => {
-      const data = {
-        voucherType,
-        title,
-        amount,
-        role: "cash",
-      };
-  
-      if (voucherType === "Cash Payment Voucher") {
-        data.supId = selectedSupplier;
-      } else {
-        data.cusId = selectedCustomer;
-      }
-  
-      try {
-        const url =
-          voucherType === "Cash Payment Voucher"
-            ? "/payment-voucher/debitpayment"
-            : "/payment-voucher/debitreceipt";
-        const response = await axios.post(url, data);
-        console.log("Voucher submitted:", response.data);
-        onClose();
-      } catch (error) {
-        console.error("Error submitting voucher:", error);
-      }
-    };
+
+    if (voucherType === "Cash Payment Voucher") {
+      data.supId = selectedSupplier;
+    } else {
+      data.cusId = selectedCustomer;
+    }
+    console.log("payment voucher data", data);
+
+    try {
+      const url =
+        voucherType === "Cash Payment Voucher"
+          ? "/payment-voucher/debitpayment"
+          : "/payment-voucher/debitreceipt";
+      const response = await axios.post(url, data);
+      console.log("Voucher submitted:", response.data);
+      onClose();
+    } catch (error) {
+      console.error("Error submitting voucher:", error);
+    }
+  };
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 backdrop-filter backdrop-blur-sm">
@@ -77,7 +100,11 @@ const CashVoucherPopup = ({ onClose }) => {
           className="absolute top-2 right-2 cursor-pointer bg-orange rounded-full"
           onClick={onClose}
         >
-          <img src={Cross} alt={"cross-icon"} className="w-5 h-5 sm:w-8 sm:h-8" />
+          <img
+            src={Cross}
+            alt={"cross-icon"}
+            className="w-5 h-5 sm:w-8 sm:h-8"
+          />
         </div>
 
         <div className="flex flex-col justify-center items-center">
@@ -111,33 +138,47 @@ const CashVoucherPopup = ({ onClose }) => {
               className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
             >
               <option value="">Select Supplier</option>
-              {suppliers?.length>0 ? suppliers.map((sup,index)=>{
-                return <option key={index} value={sup.id}>{sup.contactPerson}</option>
-              }) :"No supplier to show!"}
+              {suppliers?.length > 0
+                ? suppliers.map((sup, index) => {
+                    return (
+                      <option key={index} value={sup.id}>
+                        {sup.contactPerson}
+                      </option>
+                    );
+                  })
+                : "No supplier to show!"}
             </select>
           </div>
         )}
 
         {voucherType === "Cash Receipt Voucher" && (
           <div className="mt-3">
-          <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
-            Customer
-          </label>
-          <select
-            value={selectedCustomer}
-            onChange={(e) => setSelectedCustomer(e.target.value)}
-            className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
-          >
-            <option value="">Select Customer</option>
-            {customers?.length>0 ? customers.map((sup,index)=>{
-              return <option key={index} value={sup.id}>{sup.contactPerson}</option>
-            }) :"No customer to show!"}
-          </select>
+            <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
+              Customer
+            </label>
+            <select
+              value={selectedCustomer}
+              onChange={(e) => setSelectedCustomer(e.target.value)}
+              className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+            >
+              <option value="">Select Customer</option>
+              {customers?.length > 0
+                ? customers.map((sup, index) => {
+                    return (
+                      <option key={index} value={sup.id}>
+                        {sup.contactPerson}
+                      </option>
+                    );
+                  })
+                : "No customer to show!"}
+            </select>
           </div>
         )}
 
         <div className="mt-3">
-          <label className="block font-Nunitoo font-medium text-orange text-14 py-2">Title</label>
+          <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
+            Title
+          </label>
           <input
             type="text"
             value={title}
@@ -147,7 +188,9 @@ const CashVoucherPopup = ({ onClose }) => {
         </div>
 
         <div className="mt-3">
-          <label className="block font-Nunitoo font-medium text-orange text-14 py-2">Amount</label>
+          <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
+            Amount
+          </label>
           <input
             type="number"
             value={amount}
@@ -155,6 +198,59 @@ const CashVoucherPopup = ({ onClose }) => {
             className="block w-full bg-black border text-white border-gray py-2 px-2 rounded focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
           />
         </div>
+
+        <div className="mt-3">
+          <div className="block font-Nunitoo font-medium text-orange text-14 py-2">
+            Payment Method
+          </div>
+          <div className="flex items-center">
+            <input
+              type="radio"
+              id="cash"
+              name="paymentMethod"
+              value="cash"
+              checked={paymentMethod === "cash"}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              className="mr-2"
+            />
+            <label htmlFor="cash" className="mr-6 text-white">
+              Cash
+            </label>
+            <input
+              type="radio"
+              id="bank"
+              name="paymentMethod"
+              value="bank"
+              checked={paymentMethod === "bank"}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              className="mr-2"
+            />
+            <label htmlFor="bank" className="text-white">
+              Bank
+            </label>
+          </div>
+        </div>
+
+        {paymentMethod === "bank" && (
+          <div className="mt-3">
+            <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
+              Select Bank
+            </label>
+            <select
+              name="bankId"
+              value={bankId}
+              onChange={(e) => setBankId(e.target.value)}
+              className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+            >
+              <option value="">Select Bank</option>
+              {banks.map((bank) => (
+                <option key={bank._id} value={bank._id}>
+                  {bank.bankName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="flex justify-center my-2 sm:mt-8 sm:mb-10">
           <SubmitButton text="Submit" submit={handleSubmit} />
