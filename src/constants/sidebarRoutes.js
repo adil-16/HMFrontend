@@ -12,8 +12,14 @@ export default [
     select: true,
   },
   {
-    name: "Customers/Suppliers",
-    link: "/admin/user",
+    name: "Customers",
+    link: "/admin/customers",
+    icon: User,
+    select: false,
+  },
+  {
+    name: "Suppliers",
+    link: "/admin/suppliers",
     icon: User,
     select: false,
   },

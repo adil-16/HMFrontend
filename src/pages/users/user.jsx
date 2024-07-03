@@ -51,7 +51,6 @@ const User = () => {
       {/* body */}
       <div className="p-1 sm:p-6 py-6">
         <div className="mb-6">
-          <p className="text-24 font-Nunitoo">Customers</p>
           <TableTop
             selectedNo={selectedNo}
             setData={setData}
@@ -70,40 +69,6 @@ const User = () => {
               tableHeader={tableHeader}
               data={customers}
               setData={setCustomers}
-              cell2="email"
-              cell3="phone"
-              cell4="role"
-              selectedNo={selectedNo}
-              setSelectedNo={setSelectedNo}
-              setShowPopup={setShowPopup}
-              setShowEditPopup={setShowEditPopup}
-              setUpdateData={setUpdateData}
-              setShowDeletePopup={setShowDeletePopup}
-              isUser={true}
-            />
-          )}
-        </div>
-
-        <div>
-          <p className="text-24 font-Nunitoo">Suppliers</p>
-          <TableTop
-            selectedNo={selectedNo}
-            setData={setData}
-            type="Suppliers"
-            button="Add Supplier"
-            setShowPopup={() => {
-              setSelectedRole("supplier");
-              setShowPopup(true);
-            }}
-            search="user"
-          />
-          {suppliers.length === 0 ? (
-            <p className="text-center text-gray-500">No suppliers to show</p>
-          ) : (
-            <Table
-              tableHeader={tableHeader}
-              data={suppliers}
-              setData={setSuppliers}
               cell2="email"
               cell3="phone"
               cell4="role"

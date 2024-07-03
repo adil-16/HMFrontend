@@ -14,6 +14,7 @@ import Sidebar from "./components/bars/SideBar";
 import SmallSidebar from "./components/bars/SmallSidebar";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import User from "./pages/users/user";
+import Supplier from "./pages/Suppliers/supplier";
 import Store from "./pages/Hotel/Hotel";
 import Booking from "./pages/Hotel/booking";
 import Bookings from "./pages/Booking/booking";
@@ -110,7 +111,8 @@ function App() {
         <Routes>
           <Route path="/" element={LoginOutlet(<Login />)} />
           <Route path="/admin" element={Outlet(<Dashboard />)} />
-          <Route path="/admin/user" element={Outlet(<User />)} />
+          <Route path="/admin/customers" element={Outlet(<User />)} />
+          <Route path="/admin/suppliers" element={Outlet(<Supplier />)} />
           <Route path="/admin/hotel" element={Outlet(<Store />)} />
           <Route path="/admin/hotel/:id" element={Outlet(<HotelDetails />)} />
           <Route path="/admin/booking" element={Outlet(<Booking />)} />
