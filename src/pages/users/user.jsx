@@ -79,6 +79,7 @@ const User = () => {
               setShowEditPopup={setShowEditPopup}
               setUpdateData={setUpdateData}
               setShowDeletePopup={setShowDeletePopup}
+              isUser={true}
             />
           )}
         </div>
@@ -112,6 +113,7 @@ const User = () => {
               setShowEditPopup={setShowEditPopup}
               setUpdateData={setUpdateData}
               setShowDeletePopup={setShowDeletePopup}
+              isUser={true}
             />
           )}
         </div>

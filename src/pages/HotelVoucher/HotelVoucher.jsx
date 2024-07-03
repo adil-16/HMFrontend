@@ -94,7 +94,7 @@ const HotelVoucher = () => {
       bed: "Yes",
       mofa: passenger.mofa,
       visa: passenger.visa,
-      pnr: passenger.pnr,
+      nationality: passenger.nationality,
     })) || [];
 
   // Combine customer and passengers into mutamerData array

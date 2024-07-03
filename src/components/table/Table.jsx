@@ -112,22 +112,18 @@ const Table = ({
                     <div className="flex justify-left py-2">
                       {isUser && (
                         <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gray rounded-full">
-                          {val[cell2] != "null" ? (
-                            val.image == null ? (
-                              <img
-                                src={Avatar}
-                                className="object-cover w-full h-full rounded-full"
-                                alt=""
-                              />
-                            ) : (
-                              <img
-                                src={`${url}${val.image}`}
-                                className="object-cover w-full h-full rounded-full"
-                                alt=""
-                              />
-                            )
+                          {val.image == null ? (
+                            <img
+                              src={Avatar}
+                              className="object-cover w-full h-full rounded-full"
+                              alt=""
+                            />
                           ) : (
-                            <div></div>
+                            <img
+                              src={`${url}${val.image}`}
+                              className="object-cover w-full h-full rounded-full"
+                              alt=""
+                            />
                           )}
                         </div>
                       )}
@@ -261,6 +257,20 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
     indexOfLastItem
   );
 
+  // Calculate totals for the current items
+  const totalDebit = currentItems.reduce(
+    (acc, item) => acc + (item.debit || 0),
+    0
+  );
+  const totalCredit = currentItems.reduce(
+    (acc, item) => acc + (item.credit || 0),
+    0
+  );
+  const totalBalance = currentItems.reduce(
+    (acc, item) => acc + (item.balance || 0),
+    0
+  );
+
   return (
     <div className="w-full">
       <div
@@ -268,7 +278,7 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
         style={{ minWidth: "350px", overflowX: "auto" }}
       >
         <table className="w-full">
-          <thead className="bg-white3  p-4 bg-orange">
+          <thead className="bg-white3 p-4 bg-orange">
             <tr className="font-sans p-6">
               <th className="p-2 text-center w-8 lg:w-20">
                 <div onClick={() => selectAllData()}>
@@ -277,7 +287,7 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
               </th>
               {tableHeader.map((val, ind) => (
                 <th
-                  className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2  p-4"
+                  className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 p-4"
                   key={ind}
                 >
                   {val}
@@ -286,7 +296,6 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
             </tr>
           </thead>
           <tbody>
-            {/* rows */}
             {currentItems.map((val, ind) => {
               const dataIndex = val.parentIndex;
               const entryIndex = ind;
@@ -300,31 +309,24 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
                       {/* <CheckboxLabel check={val.isSelected} bg="white" /> */}
                     </div>
                   </td>
-                  {/* cell 2 */}
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5">
                     {new Date(val.createdAt).toLocaleDateString()}
                   </td>
-                  {/* 3rd cell */}
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5">
                     {val.type}
                   </td>
-                  {/* 4th cell */}
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                     {val.trans}
                   </td>
-                  {/* 5th cell */}
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                     {val.title}
                   </td>
-
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                     {val.debit}
                   </td>
-                  {/* 9th cell */}
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                     {val.credit}
                   </td>
-                  {/* 10th cell */}
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
                     {val.balance}
                   </td>
@@ -332,8 +334,25 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
               );
             })}
           </tbody>
+          <tfoot>
+            <tr className="font-sans p-6">
+              <td className="p-2 text-left w-8 lg:w-20"></td>
+              <td
+                className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5"
+                colSpan={4}
+              ></td>
+              <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left">
+                Total Debit: {totalDebit}
+              </td>
+              <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
+                Total Credit: {totalCredit}
+              </td>
+              <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
+                Total Balance: {totalBalance}
+              </td>
+            </tr>
+          </tfoot>
         </table>
-        {/* Pagination */}
         <div className="flex justify-between my-2">
           <button
             onClick={() => handlePageChange(currentPage - 1)}

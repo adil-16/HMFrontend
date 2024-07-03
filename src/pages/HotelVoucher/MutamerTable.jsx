@@ -19,6 +19,9 @@ const MutamerTable = ({ data }) => {
               G
             </th>
             <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
+              Nationality
+            </th>
+            <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
               PAX
             </th>
             <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
@@ -29,9 +32,6 @@ const MutamerTable = ({ data }) => {
             </th>
             <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
               Visa #
-            </th>
-            <th className="text-left sm:ml-4 font-Nunitoo text-12 text-medium text-white2 ml-2 ">
-              PNR
             </th>
           </tr>
         </thead>
@@ -58,15 +58,15 @@ const MutamerTable = ({ data }) => {
                 </td>
                 {/* 6th cell */}
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                  {val.pax}
+                  {val.nationality}
                 </td>
                 {/* 7th cell */}
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                  {val.bed}
+                  {val.pax}
                 </td>
                 {/* 8th cell */}
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                  {val.mofa}
+                  {val.bed}
                 </td>
                 {/* 9th cell */}
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
@@ -74,7 +74,7 @@ const MutamerTable = ({ data }) => {
                 </td>
                 {/* 10th cell */}
                 <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                  {val.pnr}
+                  {val.mofa}
                 </td>
               </tr>
             );
