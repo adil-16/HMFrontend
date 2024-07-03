@@ -16,6 +16,7 @@ const Suppliers = () => {
   const [customerAdded, setCustomerAdded] = useState(false);
   const [updateData, setUpdateData] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [tableHeader, setTableHeader] = useState([
     "User",
@@ -31,6 +32,7 @@ const Suppliers = () => {
 
   useEffect(() => {
     const getUsers = async () => {
+      setIsLoading(true);
       await axios
         .get("/user/getUsers")
         .then((res) => {
@@ -40,6 +42,9 @@ const Suppliers = () => {
         })
         .catch((err) => {
           console.error(err);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     };
     getUsers();
@@ -62,7 +67,9 @@ const Suppliers = () => {
             }}
             search="user"
           />
-          {suppliers.length === 0 ? (
+          {isLoading ? (
+            <p className="text-center text-gray-500">Loading...</p>
+          ) : customers.length === 0 ? (
             <p className="text-center text-gray-500">No suppliers to show</p>
           ) : (
             <Table
