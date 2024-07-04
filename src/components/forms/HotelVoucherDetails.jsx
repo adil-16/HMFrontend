@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "../../axios";
 
 const HotelVoucherForm = ({ rooms, setRooms }) => {
-  const roomTypes = ["Shared", "Quatre", "Triple", "Double"];
+  const roomTypes = ["Quint", "Quad", "Triple", "Double"];
   const [hotels, setHotels] = useState([]);
 
   useEffect(() => {

@@ -12,15 +12,15 @@ const AddInventoryPopup = ({ onClose }) => {
   const [checkin, setCheckin] = useState("");
   const [checkout, setCheckout] = useState("");
   const [roomDetails, setRoomDetails] = useState([
-    { type: "Shared", rooms: "", beds: 0, rate: "", nights: 0, total: "" },
+    { type: "Quint", rooms: "", beds: 0, rate: "", nights: 0, total: "" },
     { type: "Quad", rooms: "", beds: 0, rate: "", nights: 0, total: "" },
     { type: "Triple", rooms: "", beds: 0, rate: "", nights: 0, total: "" },
     { type: "Double", rooms: "", beds: 0, rate: "", nights: 0, total: "" },
   ]);
   const [grandTotal, setGrandTotal] = useState(0);
-  const[hotelRooms,setHotelRooms]=useState([])
+  const [hotelRooms, setHotelRooms] = useState([]);
 
-  let debit= 0;
+  let debit = 0;
   let credit = 0 - grandTotal;
 
   async function onSubmitInventory() {
@@ -47,13 +47,13 @@ const AddInventoryPopup = ({ onClose }) => {
         checkin,
         checkout,
         rooms: {
-          shared: roomDetails[0].rooms,
+          quint: roomDetails[0].rooms,
           quad: roomDetails[1].rooms,
           triple: roomDetails[2].rooms,
           double: roomDetails[3].rooms,
         },
         bedRates: {
-          shared: roomDetails[0].rate,
+          quint: roomDetails[0].rate,
           quad: roomDetails[1].rate,
           triple: roomDetails[2].rate,
           double: roomDetails[3].rate,
@@ -142,7 +142,7 @@ const AddInventoryPopup = ({ onClose }) => {
 
   const calculateBeds = (type, rooms) => {
     const bedTypes = {
-      Shared: 5,
+      Quint: 5,
       Quad: 4,
       Triple: 3,
       Double: 2,
@@ -233,7 +233,11 @@ const AddInventoryPopup = ({ onClose }) => {
               <option value="">Select Hotel</option>
               {hotels?.length > 0
                 ? hotels.map((hotel) => {
-                    return <option key={hotel.id} value={hotel.id}>{hotel.name}</option>;
+                    return (
+                      <option key={hotel.id} value={hotel.id}>
+                        {hotel.name}
+                      </option>
+                    );
                   })
                 : "No hotel to show!"}
             </select>
