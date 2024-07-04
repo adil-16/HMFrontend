@@ -50,7 +50,7 @@ const Dashboard = () => {
       }
     };
     getData();
-  }, [navigate]);
+  }, []);
 
   // useEffect(() => {
   //   const loginStatus = localStorage.getItem("login");
