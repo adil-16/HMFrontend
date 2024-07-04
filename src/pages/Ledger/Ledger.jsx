@@ -17,12 +17,10 @@ const Ledger = () => {
     totalBalance = 0,
     fromDate = "N/A",
     toDate = "N/A",
-    printDate = "N/A"
+    reportCurrency = "N/A",
+    printDate = "N/A",
   } = location.state || {};
   const ledgerData = location.state?.ledgerData || [];
-  
-
-
 
   const [tableHeader, setTableHeader] = useState([
     "Date",
@@ -41,23 +39,21 @@ const Ledger = () => {
     console.log("ledger data", ledgerData); // Log ledger data to verify
   }, [ledgerData]);
 
-
-    console.log("dataaaaa", data)
+  console.log("dataaaaa", data);
 
   return (
     <div className="w-full">
       <TopBar title="Ledgers" />
       {/* body */}
       <div className="p-1 sm:p-8 py-6">
-
         <LedgerTop
           accountCode="0312156"
           accountTitle={userName}
-          balance= {totalBalance}
-          periodFrom= {fromDate}
-          periodTo= {toDate}
-          printDate= {printDate}
-          currency="SAR"
+          balance={totalBalance}
+          periodFrom={fromDate}
+          periodTo={toDate}
+          printDate={printDate}
+          currency={reportCurrency}
         />
         <div className="mx-1">
           <LedgerTable

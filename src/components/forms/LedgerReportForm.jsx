@@ -75,7 +75,7 @@ const LedgerReportForm = ({ onSubmit }) => {
       if (accountType === "cashAccount") {
         // Cash Account API call
         const response = await axios.get(`ledger/filterAdminLedger`, {
-          params: { from: fromDate, to: toDate },
+          params: { from: fromDate, to: toDate, currency: reportCurrency },
         });
 
         if (response.status !== 200) {
@@ -105,6 +105,7 @@ const LedgerReportForm = ({ onSubmit }) => {
             params: {
               from: fromDate,
               to: toDate,
+              currency: reportCurrency,
             },
           }
         );
@@ -121,6 +122,7 @@ const LedgerReportForm = ({ onSubmit }) => {
             totalBalance,
             fromDate,
             toDate,
+            reportCurrency,
             printDate: currentDate,
           },
         });
@@ -174,6 +176,17 @@ const LedgerReportForm = ({ onSubmit }) => {
               className="form-radio"
             />
             <span className="ml-2">SAR</span>
+          </label>
+          <label className="inline-flex items-center mr-4">
+            <input
+              type="radio"
+              name="currency"
+              value="PKR"
+              checked={reportCurrency === "PKR"}
+              onChange={() => setReportCurrency("PKR")}
+              className="form-radio"
+            />
+            <span className="ml-2">PKR</span>
           </label>
         </div>
       </div>

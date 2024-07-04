@@ -4,6 +4,7 @@ import AddInventoryPopup from "../../components/popup/AddInventory";
 import CashVoucherPopup from "../../components/popup/CashVoucher";
 import HotelVoucherPopup from "../../components/popup/HotelVoucher";
 import ShowLedgerPopup from "../../components/popup/ShowLedger";
+import ShowCurrencyPopup from "../../components/popup/AddCurrencyRate";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
 
@@ -23,6 +24,8 @@ const Dashboard = () => {
   const [showLedgerPopup, setShowLedgerPopup] = useState(false);
   const [showCashVoucherPopup, setShowCashVoucherPopup] = useState(false);
   const [showHotelVoucherPopup, setShowHotelVoucherPopup] = useState(false);
+  const [showAddCurrencyRatePopup, setShowAddCurrencyRatePopup] =
+    useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -120,9 +123,16 @@ const Dashboard = () => {
 
           <button
             onClick={() => navigate("/admin/customer-reports")}
-            className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+            className="bg-white text-black px-4 py-2 rounded-lg w-full sm:w-auto"
           >
             Arrival/Departure Reports
+          </button>
+
+          <button
+            onClick={() => setShowAddCurrencyRatePopup(true)}
+            className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+          >
+            Add Currency Rate
           </button>
         </div>
       </div>
@@ -144,6 +154,10 @@ const Dashboard = () => {
 
       {showHotelVoucherPopup && (
         <HotelVoucherPopup onClose={() => setShowHotelVoucherPopup(false)} />
+      )}
+
+      {showAddCurrencyRatePopup && (
+        <ShowCurrencyPopup onClose={() => setShowAddCurrencyRatePopup(false)} />
       )}
     </div>
   );
