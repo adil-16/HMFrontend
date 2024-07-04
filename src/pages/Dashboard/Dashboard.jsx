@@ -33,6 +33,7 @@ const Dashboard = () => {
     const loginStatus = localStorage.getItem("login");
     if (!loginStatus) {
       navigate("/");
+      return;
     }
     const getData = async () => {
       try {
