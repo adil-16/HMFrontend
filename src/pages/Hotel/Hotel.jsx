@@ -31,7 +31,7 @@ const Store = () => {
       }
     };
     getHotels();
-  }, []);
+  }, [addHotel]);
 
   if (loading) {
     return <div>Loading...</div>;
