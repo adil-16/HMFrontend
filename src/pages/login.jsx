@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { InputDefault } from "../components/inputFields/inputFiels";
 import PasswordField from "../components/inputFields/passwordField";
-import axios from '../axios'
-import {useNavigate } from "react-router-dom";
+import axios from "../axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  console.log("qasim");
   const [email, setEmail] = useState("admin@admin.com");
   const [pass, setPass] = useState("12345678");
   const [error, setError] = useState(false);
@@ -30,11 +31,11 @@ const Login = () => {
   const login = async () => {
     setError(false);
     try {
-      const res = await axios.post("/user/login", {email, password: pass});
+      const res = await axios.post("/user/login", { email, password: pass });
       console.log("data", res.data.data);
-      localStorage.setItem('user', JSON.stringify(res.data.data));
-      localStorage.setItem('login', true);
-      navigate('/admin');
+      localStorage.setItem("user", JSON.stringify(res.data.data));
+      localStorage.setItem("login", true);
+      navigate("/admin");
     } catch (err) {
       setError(err.response.data.data.error);
     }
@@ -43,7 +44,9 @@ const Login = () => {
   return (
     <div>
       <div className="absolute inset-0 flex flex-col mt-16 items-center">
-        <p className={`font-Nunitoo text-center ml-2 font-semibold text-orange text-32`}>
+        <p
+          className={`font-Nunitoo text-center ml-2 font-semibold text-orange text-32`}
+        >
           Hotel Room Booking
         </p>
         <p className="font-Nunitoo font-bold text-orange text-16 sm:text-24 md:text-32 mt-1 md:mt-12">
@@ -73,7 +76,7 @@ const Login = () => {
             Placeholder="Min 8 characters"
             bg={"gray"}
           />
-          {error && (<p className="text-orange w-80 mt-2">{error}</p>)}
+          {error && <p className="text-orange w-80 mt-2">{error}</p>}
           <button
             className="border-none focus:outline-none bg-orange text-white mt-12 py-3 rounded-lg w-full"
             onClick={login}

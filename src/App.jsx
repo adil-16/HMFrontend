@@ -1,14 +1,5 @@
-import "@fontsource/nunito"; // Defaults to weight 400
-import "@fontsource/nunito/700.css"; // Specify weight
-import "@fontsource/nunito/600.css"; // Specify weight
-import "@fontsource/nunito/500.css"; // Specify weight
-import "@fontsource/nunito/400.css"; // Specify weight
-import "@fontsource/nunito/400-italic.css"; // Specify weight and style
-
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import React, { useState } from "react";
-
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import Login from "./pages/login";
 import Sidebar from "./components/bars/SideBar";
 import SmallSidebar from "./components/bars/SmallSidebar";
@@ -31,7 +22,7 @@ import Bank from "./pages/Bank/Bank";
 
 export const AuthContext = React.createContext();
 
-function App() {
+const App = () => {
   const [hideSidebar, setHideSidebar] = useState(false);
   const [changeUser, setChangeUser] = useState(false);
   const [login, setLogin] = useState(JSON.parse(localStorage.getItem("login")));
@@ -43,40 +34,33 @@ function App() {
     setChangeUser,
   };
 
-  // screen
-  const Outlet = (component) => {
-    console.log("hello outlet");
+  const AdminLayout = () => {
     return (
       <div className="w-screen min-h-screen bg-black">
-        <div className="hidden md:block " style={{ overflowX: "hidden" }}>
-          <style>{`
-        body {
-          overflow-x: hidden;
-        }
-      `}</style>
+        <div className="hidden md:block" style={{ overflowX: "hidden" }}>
           {login && (
-            <div className="h-full grid grid-cols ">
-              <div className="flex-grow ">
+            <div className="h-full grid grid-cols">
+              <div className="flex-grow">
                 <Sidebar />
               </div>
-              <div className="bg-black h-full ml-60 flex-grow ">
-                {component}
+              <div className="bg-black h-full ml-60 flex-grow">
+                <Outlet />
               </div>
             </div>
           )}
         </div>
-
-        {/* medium screen */}
         <div className="block md:hidden">
           {login && (
             <div className="h-screen grid grid-cols w-full">
               {hideSidebar ? (
-                <div className="flex bg-black h-full">{component}</div>
+                <div className="flex bg-black h-full">
+                  <Outlet />
+                </div>
               ) : (
                 <div>
                   <SmallSidebar />
-                  <div className="bg-black h-full ml-20 flex-grow ">
-                    {component}
+                  <div className="bg-black h-full ml-20 flex-grow">
+                    <Outlet />
                   </div>
                 </div>
               )}
@@ -87,65 +71,43 @@ function App() {
     );
   };
 
-  // screen
-  const LoginOutlet = (component) => {
+  const LoginLayout = () => {
     return (
-      <div
-        className=" bg-black"
-        style={{
-          // backgroundImage: `url(${AdminBg})`,
-          // backgroundSize: 'cover', // Ensure the background image covers the entire container
-          height: "100vh",
-          width: "100vw",
-          // backgroundRepeat: 'no-repeat', // Prevent the background image from repeating
-          // backgroundPosition: 'center', // Center the background image within the container
-          // backgroundAttachment: 'fixed' // Ensure the background image covers the entire viewport
-        }}
-      >
-        {component}
+      <div className="bg-black" style={{ height: "100vh", width: "100vw" }}>
+        <Outlet />
       </div>
     );
   };
+
   return (
     <BrowserRouter>
       <AuthContext.Provider value={value}>
         <Routes>
-          <Route path="/" element={LoginOutlet(<Login />)} />
-          <Route path="/admin" element={Outlet(<Dashboard />)} />
-          <Route path="/admin/customers" element={Outlet(<User />)} />
-          <Route path="/admin/suppliers" element={Outlet(<Supplier />)} />
-          <Route path="/admin/hotel" element={Outlet(<Store />)} />
-          <Route path="/admin/hotel/:id" element={Outlet(<HotelDetails />)} />
-          <Route path="/admin/booking" element={Outlet(<Booking />)} />
-          <Route path="/admin/Allbookings" element={Outlet(<Bookings />)} />
-          <Route path="/admin/settings" element={Outlet(<Settings />)} />
-          <Route path="/admin/ledger" element={Outlet(<Ledger />)} />
-          <Route
-            path="/admin/hotel-voucher/:id"
-            element={Outlet(<HotelVoucher />)}
-          />
-          <Route
-            path="/admin/hotel-invoice/:id"
-            element={Outlet(<HotelInvoice />)}
-          />
-          <Route
-            path="/admin/payment-voucher"
-            element={Outlet(<PaymentVoucher />)}
-          />
-          <Route
-            path="/admin/ledger-report"
-            element={Outlet(<LedgerReport />)}
-          />
-          <Route
-            path="/admin/customer-reports"
-            element={Outlet(<CustomerReports />)}
-          />
-          <Route path="/admin/report" element={Outlet(<ArrivalDepReport />)} />
-          <Route path="/admin/bank" element={Outlet(<Bank />)} />
+          <Route path="/" element={<LoginLayout />}>
+            <Route index element={<Login />} />
+          </Route>
+          <Route path="/admin/*" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="customers" element={<User />} />
+            <Route path="suppliers" element={<Supplier />} />
+            <Route path="hotel" element={<Store />} />
+            <Route path="hotel/:id" element={<HotelDetails />} />
+            <Route path="booking" element={<Booking />} />
+            <Route path="Allbookings" element={<Bookings />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="ledger" element={<Ledger />} />
+            <Route path="hotel-voucher/:id" element={<HotelVoucher />} />
+            <Route path="hotel-invoice/:id" element={<HotelInvoice />} />
+            <Route path="payment-voucher" element={<PaymentVoucher />} />
+            <Route path="ledger-report" element={<LedgerReport />} />
+            <Route path="customer-reports" element={<CustomerReports />} />
+            <Route path="report" element={<ArrivalDepReport />} />
+            <Route path="bank" element={<Bank />} />
+          </Route>
         </Routes>
       </AuthContext.Provider>
     </BrowserRouter>
   );
-}
+};
 
 export default App;
