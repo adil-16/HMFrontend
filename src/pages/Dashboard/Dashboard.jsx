@@ -7,6 +7,7 @@ import ShowLedgerPopup from "../../components/popup/ShowLedger";
 import ShowCurrencyPopup from "../../components/popup/AddCurrencyRate";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader";
 
 const cleanData = (data) =>
   data.map((item) => ({
@@ -85,7 +86,7 @@ const Dashboard = () => {
     }
   };
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
   return (
     <div className="w-full">
