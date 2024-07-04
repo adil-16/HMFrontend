@@ -35,6 +35,7 @@ const Dashboard = () => {
       navigate("/");
       return;
     }
+
     const getData = async () => {
       try {
         const res = await axios.get("/dashboard/getDash");
@@ -49,6 +50,7 @@ const Dashboard = () => {
         setIsLoading(false);
       }
     };
+
     getData();
   }, []);
 

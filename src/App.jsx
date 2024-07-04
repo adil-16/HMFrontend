@@ -45,6 +45,7 @@ function App() {
 
   // screen
   const Outlet = (component) => {
+    console.log("hello outlet");
     return (
       <div className="w-screen min-h-screen bg-black">
         <div className="hidden md:block " style={{ overflowX: "hidden" }}>
