@@ -2,94 +2,103 @@ import React, { useState, useEffect } from "react";
 import Cross from "../../assets/cross.svg";
 import SubmitButton from "../../components/buttons/SubmitButtonHotel";
 import axios from "../../axios";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { toast } from "react-toastify";
+
+const schema = yup.object().shape({
+  voucherType: yup.string().required("Voucher type is required"),
+  title: yup.string().required("Title is required"),
+  amount: yup
+    .number()
+    .required("Amount is required")
+    .positive("Amount must be positive"),
+  paymentMethod: yup.string().required("Payment method is required"),
+  bankId: yup.string().when("paymentMethod", {
+    is: "bank",
+    then: (schema) => schema.required("Bank is required"),
+  }),
+  supId: yup.string().when("voucherType", {
+    is: "Cash Payment Voucher",
+    then: (schema) => schema.required("Supplier is required"),
+  }),
+  cusId: yup.string().when("voucherType", {
+    is: "Cash Receipt Voucher",
+    then: (schema) => schema.required("Customer is required"),
+  }),
+});
 
 const CashVoucherPopup = ({ onClose }) => {
-  const [voucherType, setVoucherType] = useState("Cash Payment Voucher");
   const [suppliers, setSuppliers] = useState([]);
-  const [selectedSupplier, setSelectedSupplier] = useState("");
   const [customers, setCustomers] = useState([]);
-  const [selectedCustomer, setSelectedCustomer] = useState("");
-  const [customer, setCustomer] = useState("");
-  const [title, setTitle] = useState("");
-  const [amount, setAmount] = useState("");
   const [banks, setBanks] = useState([]);
-  const [paymentMethod, setPaymentMethod] = useState("cash");
-  const [bankId, setBankId] = useState("");
   const [role, setRole] = useState("cash");
 
-  const getSuppliers = async () => {
-    await axios
-      .get("/user/getSuppliers")
-      .then((res) => {
-        console.log("data is", res.data);
-        setSuppliers(res.data.data.suppliers);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const voucherType = watch("voucherType");
+  const paymentMethod = watch("paymentMethod");
+
   useEffect(() => {
+    const getSuppliers = async () => {
+      try {
+        const res = await axios.get("/user/getSuppliers");
+        setSuppliers(res.data.data.suppliers);
+      } catch (err) {
+        console.error(err);
+      }
+    };
     getSuppliers();
   }, []);
 
-  const getCustomers = async () => {
-    await axios
-      .get("/user/getCustomers")
-      .then((res) => {
-        console.log("data is", res.data);
-        setCustomers(res.data.data.customers);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   useEffect(() => {
+    const getCustomers = async () => {
+      try {
+        const res = await axios.get("/user/getCustomers");
+        setCustomers(res.data.data.customers);
+      } catch (err) {
+        console.error(err);
+      }
+    };
     getCustomers();
   }, []);
 
-  const getBanks = async () => {
-    try {
-      const res = await axios.get("/bank/getBanks");
-      setBanks(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
   useEffect(() => {
+    const getBanks = async () => {
+      try {
+        const res = await axios.get("/bank/getBanks");
+        setBanks(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
     getBanks();
   }, []);
 
   useEffect(() => {
-    paymentMethod == "cash" ? setRole("cash") : setRole("bank");
+    paymentMethod === "cash" ? setRole("cash") : setRole("bank");
   }, [paymentMethod]);
 
-  const handleSubmit = async () => {
-    const data = {
-      voucherType,
-      title,
-      amount,
-      role,
-      paymentMethod,
-      bankId,
-    };
-
-    if (voucherType === "Cash Payment Voucher") {
-      data.supId = selectedSupplier;
-    } else {
-      data.cusId = selectedCustomer;
-    }
-    console.log("payment voucher data", data);
-
+  const onSubmit = async (data) => {
     try {
       const url =
         voucherType === "Cash Payment Voucher"
           ? "/payment-voucher/debitpayment"
           : "/payment-voucher/debitreceipt";
-      const response = await axios.post(url, data);
-      console.log("Voucher submitted:", response.data);
+      const response = await axios.post(url, { ...data, role });
+      toast.success("Voucher submitted successfully!");
       onClose();
     } catch (error) {
       console.error("Error submitting voucher:", error);
+      toast.error("Error submitting voucher!");
     }
   };
 
@@ -113,148 +122,202 @@ const CashVoucherPopup = ({ onClose }) => {
           </h2>
         </div>
 
-        <div className="mt-3">
-          <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
-            Voucher Type
-          </label>
-          <select
-            value={voucherType}
-            onChange={(e) => setVoucherType(e.target.value)}
-            className="block w-full bg-black border text-white border-gray py-2 px-2 rounded focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
-          >
-            <option value="Cash Payment Voucher">Cash Payment Voucher</option>
-            <option value="Cash Receipt Voucher">Cash Receipt Voucher</option>
-          </select>
-        </div>
-
-        {voucherType === "Cash Payment Voucher" && (
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mt-3">
             <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
-              Supplier
+              Voucher Type
             </label>
-            <select
-              value={selectedSupplier}
-              onChange={(e) => setSelectedSupplier(e.target.value)}
-              className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
-            >
-              <option value="">Select Supplier</option>
-              {suppliers?.length > 0
-                ? suppliers.map((sup, index) => {
-                    return (
-                      <option key={index} value={sup.id}>
+            <Controller
+              name="voucherType"
+              control={control}
+              defaultValue="Cash Payment Voucher"
+              render={({ field }) => (
+                <select
+                  {...field}
+                  className="block w-full bg-black border text-white border-gray py-2 px-2 rounded focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+                >
+                  <option value="Cash Payment Voucher">
+                    Cash Payment Voucher
+                  </option>
+                  <option value="Cash Receipt Voucher">
+                    Cash Receipt Voucher
+                  </option>
+                </select>
+              )}
+            />
+            {errors.voucherType && (
+              <p className="text-red-500">{errors.voucherType.message}</p>
+            )}
+          </div>
+
+          {voucherType === "Cash Payment Voucher" && (
+            <div className="mt-3">
+              <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
+                Supplier
+              </label>
+              <Controller
+                name="supId"
+                control={control}
+                render={({ field }) => (
+                  <select
+                    {...field}
+                    className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+                  >
+                    <option value="">Select Supplier</option>
+                    {suppliers.map((sup) => (
+                      <option key={sup.id} value={sup.id}>
                         {sup.contactPerson}
                       </option>
-                    );
-                  })
-                : "No supplier to show!"}
-            </select>
-          </div>
-        )}
+                    ))}
+                  </select>
+                )}
+              />
+              {errors.supId && (
+                <p className="text-red-500">{errors.supId.message}</p>
+              )}
+            </div>
+          )}
 
-        {voucherType === "Cash Receipt Voucher" && (
-          <div className="mt-3">
-            <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
-              Customer
-            </label>
-            <select
-              value={selectedCustomer}
-              onChange={(e) => setSelectedCustomer(e.target.value)}
-              className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
-            >
-              <option value="">Select Customer</option>
-              {customers?.length > 0
-                ? customers.map((sup, index) => {
-                    return (
-                      <option key={index} value={sup.id}>
-                        {sup.contactPerson}
+          {voucherType === "Cash Receipt Voucher" && (
+            <div className="mt-3">
+              <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
+                Customer
+              </label>
+              <Controller
+                name="cusId"
+                control={control}
+                render={({ field }) => (
+                  <select
+                    {...field}
+                    className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+                  >
+                    <option value="">Select Customer</option>
+                    {customers.map((cus) => (
+                      <option key={cus.id} value={cus.id}>
+                        {cus.contactPerson}
                       </option>
-                    );
-                  })
-                : "No customer to show!"}
-            </select>
-          </div>
-        )}
+                    ))}
+                  </select>
+                )}
+              />
+              {errors.cusId && (
+                <p className="text-red-500">{errors.cusId.message}</p>
+              )}
+            </div>
+          )}
 
-        <div className="mt-3">
-          <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
-            Title
-          </label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="block w-full bg-black border text-white border-gray py-2 px-2 rounded focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
-          />
-        </div>
-
-        <div className="mt-3">
-          <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
-            Amount
-          </label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="block w-full bg-black border text-white border-gray py-2 px-2 rounded focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
-          />
-        </div>
-
-        <div className="mt-3">
-          <div className="block font-Nunitoo font-medium text-orange text-14 py-2">
-            Payment Method
-          </div>
-          <div className="flex items-center">
-            <input
-              type="radio"
-              id="cash"
-              name="paymentMethod"
-              value="cash"
-              checked={paymentMethod === "cash"}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              className="mr-2"
-            />
-            <label htmlFor="cash" className="mr-6 text-white">
-              Cash
-            </label>
-            <input
-              type="radio"
-              id="bank"
-              name="paymentMethod"
-              value="bank"
-              checked={paymentMethod === "bank"}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              className="mr-2"
-            />
-            <label htmlFor="bank" className="text-white">
-              Bank
-            </label>
-          </div>
-        </div>
-
-        {paymentMethod === "bank" && (
           <div className="mt-3">
             <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
-              Select Bank
+              Title
             </label>
-            <select
-              name="bankId"
-              value={bankId}
-              onChange={(e) => setBankId(e.target.value)}
-              className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
-            >
-              <option value="">Select Bank</option>
-              {banks.map((bank) => (
-                <option key={bank._id} value={bank._id}>
-                  {bank.bankName}
-                </option>
-              ))}
-            </select>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="text"
+                  className="block w-full bg-black border text-white border-gray py-2 px-2 rounded focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+                />
+              )}
+            />
+            {errors.title && (
+              <p className="text-red-500">{errors.title.message}</p>
+            )}
           </div>
-        )}
 
-        <div className="flex justify-center my-2 sm:mt-8 sm:mb-10">
-          <SubmitButton text="Submit" submit={handleSubmit} />
-        </div>
+          <div className="mt-3">
+            <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
+              Amount
+            </label>
+            <Controller
+              name="amount"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="number"
+                  className="block w-full bg-black border text-white border-gray py-2 px-2 rounded focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+                />
+              )}
+            />
+            {errors.amount && (
+              <p className="text-red-500">{errors.amount.message}</p>
+            )}
+          </div>
+
+          <div className="mt-3">
+            <div className="block font-Nunitoo font-medium text-orange text-14 py-2">
+              Payment Method
+            </div>
+            <div className="flex items-center">
+              <Controller
+                name="paymentMethod"
+                control={control}
+                defaultValue="cash"
+                render={({ field }) => (
+                  <>
+                    <input
+                      {...field}
+                      type="radio"
+                      value="cash"
+                      checked={field.value === "cash"}
+                      className="mr-2"
+                    />
+                    <label htmlFor="cash" className="mr-6 text-white">
+                      Cash
+                    </label>
+                    <input
+                      {...field}
+                      type="radio"
+                      value="bank"
+                      checked={field.value === "bank"}
+                      className="mr-2"
+                    />
+                    <label htmlFor="bank" className="text-white">
+                      Bank
+                    </label>
+                  </>
+                )}
+              />
+            </div>
+            {errors.paymentMethod && (
+              <p className="text-red-500">{errors.paymentMethod.message}</p>
+            )}
+          </div>
+
+          {paymentMethod === "bank" && (
+            <div className="mt-3">
+              <label className="block font-Nunitoo font-medium text-orange text-14 py-2">
+                Bank
+              </label>
+              <Controller
+                name="bankId"
+                control={control}
+                render={({ field }) => (
+                  <select
+                    {...field}
+                    className="border border-blue3 bg-black text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+                  >
+                    <option value="">Select Bank</option>
+                    {banks?.map((bank) => (
+                      <option key={bank._id} value={bank._id}>
+                        {bank.bankName}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              />
+              {errors.bankId && (
+                <p className="text-red-500">{errors.bankId.message}</p>
+              )}
+            </div>
+          )}
+
+          <div className="flex justify-center mt-4">
+            <SubmitButton text="Submit" submit={handleSubmit(onSubmit)} />
+          </div>
+        </form>
       </div>
     </div>
   );

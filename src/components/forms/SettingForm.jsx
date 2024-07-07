@@ -48,7 +48,7 @@ const SettingForm = () => {
         .then((res) => {
           setPass("");
           localStorage.setItem("user", JSON.stringify(res.data.data));
-          setChangeUser(prev => !prev)
+          setChangeUser((prev) => !prev);
         })
         .catch((err) => {
           // setLoader(false)
@@ -69,7 +69,7 @@ const SettingForm = () => {
         .then((res) => {
           setPass("");
           localStorage.setItem("user", JSON.stringify(res.data.data));
-          setChangeUser(prev => !prev)
+          setChangeUser((prev) => !prev);
         })
         .catch((err) => {
           // setLoader(false)
@@ -141,7 +141,7 @@ const SettingForm = () => {
           <ImageField bg={"gray"} setImg={setImage} />
         </div>
         <div className="mt-4">
-        <SubmitButton text="Upload" submit={updateProfilePhoto} />
+          <SubmitButton text="Upload" submit={updateProfilePhoto} />
         </div>
       </div>
     </div>

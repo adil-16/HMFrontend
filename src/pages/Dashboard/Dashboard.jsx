@@ -31,6 +31,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("Rendering Dashboard component");
     const loginStatus = localStorage.getItem("login");
     if (!loginStatus) {
       navigate("/");
@@ -53,7 +54,7 @@ const Dashboard = () => {
     };
 
     getData();
-  }, []);
+  }, [navigate]);
 
   // useEffect(() => {
   //   const loginStatus = localStorage.getItem("login");

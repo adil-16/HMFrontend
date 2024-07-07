@@ -3,16 +3,46 @@ import SubmitButton from "../../components/buttons/SubmitButtonHotel";
 import Select from "react-select";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { toast } from "react-toastify";
+import moment from "moment";
+
+const schema = yup.object().shape({
+  account: yup.object().required("Account is required"),
+  reportCurrency: yup.string().required("Report currency is required"),
+  startDate: yup
+    .date()
+    .transform((value, originalValue) => (originalValue === "" ? null : value))
+    .required("Start date is required")
+    .nullable(),
+  endDate: yup
+    .date()
+    .transform((value, originalValue) => (originalValue === "" ? null : value))
+    .required("End date is required")
+    .min(yup.ref("startDate"), "End date cannot be before start date")
+    .nullable(),
+});
 
 const LedgerReportForm = ({ onSubmit }) => {
-  const [account, setAccount] = useState(null);
-  const [reportCurrency, setReportCurrency] = useState("SAR");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [suppliers, setSuppliers] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [banks, setBanks] = useState([]);
   const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      reportCurrency: "SAR",
+    },
+  });
 
   const getSuppliers = async () => {
     try {
@@ -20,6 +50,7 @@ const LedgerReportForm = ({ onSubmit }) => {
       setSuppliers(res.data.data.suppliers);
     } catch (err) {
       console.error(err);
+      toast.error("Failed to fetch suppliers.");
     }
   };
 
@@ -29,6 +60,7 @@ const LedgerReportForm = ({ onSubmit }) => {
       setCustomers(res.data.data.customers);
     } catch (err) {
       console.error(err);
+      toast.error("Failed to fetch customers.");
     }
   };
 
@@ -38,6 +70,7 @@ const LedgerReportForm = ({ onSubmit }) => {
       setBanks(res.data);
     } catch (err) {
       console.error(err);
+      toast.error("Failed to fetch banks.");
     }
   };
 
@@ -63,17 +96,23 @@ const LedgerReportForm = ({ onSubmit }) => {
     })),
   ];
 
-  const handleSubmit = async (e) => {
-    // e.preventDefault();
-
+  const submit = async (data) => {
+    const { account, reportCurrency, startDate, endDate } = data;
     const { value: accountType } = account || {};
-    const fromDate = startDate;
-    const toDate = endDate;
-    const currentDate = new Date().toISOString().split("T")[0];
+
+    if (!startDate || !endDate) {
+      console.error("Start date and end date are required.");
+      toast.error("Start date and end date are required.");
+      return;
+    }
+    const fromDate = moment(startDate).format("YYYY-MM-DD");
+    // console.log("from date", fromDate);
+    const toDate = moment(endDate).format("YYYY-MM-DD");
+    const currentDate = moment().format("YYYY-MM-DD");
 
     try {
       if (accountType === "cashAccount") {
-        // Cash Account API call
+        console.log("dates", fromDate, toDate);
         const response = await axios.get(`ledger/filterAdminLedger`, {
           params: { from: fromDate, to: toDate, currency: reportCurrency },
         });
@@ -91,11 +130,14 @@ const LedgerReportForm = ({ onSubmit }) => {
                 : 0,
             fromDate,
             toDate,
+            reportCurrency,
             printDate: currentDate,
           },
         });
+        console.log("dates after", fromDate, toDate);
+
+        toast.success("Ledger report generated successfully.");
       } else {
-        // Supplier or Customer API call
         const selectedUserId = accountType.split(" ")[0];
         const selectedUser = account.label.split(" ")[0];
 
@@ -126,40 +168,61 @@ const LedgerReportForm = ({ onSubmit }) => {
             printDate: currentDate,
           },
         });
+        toast.success("Ledger report generated successfully.");
       }
     } catch (error) {
       console.error("Error filtering ledgers:", error);
+
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message ===
+          "No ledger entries found between the selected interval."
+      ) {
+        toast.error("No ledger entries found between the selected interval");
+      } else {
+        toast.error("Error generating ledger report.");
+      }
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 bg-black rounded-lg">
+    <form onSubmit={handleSubmit(submit)} className="p-4 bg-black rounded-lg">
       <div className="mb-4">
         <label className="block text-orange font-medium mb-2">Account</label>
-        <Select
-          options={accountOptions}
-          value={account}
-          onChange={setAccount}
-          placeholder="Select or type to search"
-          className="w-1/2 bg-white text-black"
-          classNamePrefix="react-select"
-          styles={{
-            control: (provided) => ({
-              ...provided,
-              backgroundColor: "white",
-              borderColor: "black",
-              color: "black",
-            }),
-            input: (provided) => ({
-              ...provided,
-              color: "black",
-            }),
-            singleValue: (provided) => ({
-              ...provided,
-              color: "black",
-            }),
-          }}
+        <Controller
+          name="account"
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              options={accountOptions}
+              placeholder="Select or type to search"
+              className="w-1/2 bg-white text-black"
+              classNamePrefix="react-select"
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  backgroundColor: "white",
+                  borderColor: "black",
+                  color: "black",
+                }),
+                input: (provided) => ({
+                  ...provided,
+                  color: "black",
+                }),
+                singleValue: (provided) => ({
+                  ...provided,
+                  color: "black",
+                }),
+              }}
+              onChange={(value) => setValue("account", value)}
+            />
+          )}
         />
+        {errors.account && (
+          <p className="text-red-500">{errors.account.message}</p>
+        )}
       </div>
       <div className="mb-4">
         <label className="block text-orange font-medium mb-2">
@@ -169,47 +232,57 @@ const LedgerReportForm = ({ onSubmit }) => {
           <label className="inline-flex items-center mr-4">
             <input
               type="radio"
-              name="currency"
+              name="reportCurrency"
               value="SAR"
-              checked={reportCurrency === "SAR"}
-              onChange={() => setReportCurrency("SAR")}
+              defaultChecked={true}
+              // checked={"reportCurrency" === "SAR"}
+              onChange={() => setValue("reportCurrency", "SAR")}
               className="form-radio"
+              {...register("reportCurrency")}
             />
             <span className="ml-2">SAR</span>
           </label>
           <label className="inline-flex items-center mr-4">
             <input
               type="radio"
-              name="currency"
+              name="reportCurrency"
               value="PKR"
-              checked={reportCurrency === "PKR"}
-              onChange={() => setReportCurrency("PKR")}
+              // checked={"reportCurrency" === "PKR"}
+              onChange={() => setValue("reportCurrency", "PKR")}
               className="form-radio"
+              {...register("reportCurrency")}
             />
             <span className="ml-2">PKR</span>
           </label>
         </div>
+        {errors.reportCurrency && (
+          <p className="text-red-500">{errors.reportCurrency.message}</p>
+        )}
       </div>
       <div className="mb-4">
         <label className="block text-orange font-medium mb-2">Start Date</label>
         <input
           type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
+          {...register("startDate")}
           className="border border-blue3 bg-black text-white focus:outline-none rounded-md p-2 w-auto"
         />
+        {errors.startDate && (
+          <p className="text-orange">{errors.startDate.message}</p>
+        )}
       </div>
       <div className="mb-4">
         <label className="block text-orange font-medium mb-2">End Date</label>
         <input
           type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
+          {...register("endDate")}
           className="border border-blue3 bg-black text-white focus:outline-none rounded-md p-2 w-auto"
         />
+        {errors.endDate && (
+          <p className="text-orange">{errors.endDate.message}</p>
+        )}
       </div>
       <div className="flex justify-start mt-12">
-        <SubmitButton text="Generate Report" submit={handleSubmit} />
+        <SubmitButton text="Generate Report" submit={handleSubmit(submit)} />
       </div>
     </form>
   );

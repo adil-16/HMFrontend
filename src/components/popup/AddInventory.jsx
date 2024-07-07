@@ -1,9 +1,41 @@
 import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { toast } from "react-toastify";
 import Cross from "../../assets/cross.svg";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import axios from "../../axios";
+import Loader from "../../components/Loader";
 
 const AddInventoryPopup = ({ onClose }) => {
+  const schema = Yup.object().shape({
+    supplier: Yup.string().required("Supplier is required"),
+    hotel: Yup.string().required("Hotel is required"),
+    checkin: Yup.date().required("Check-In Date is required"),
+    checkout: Yup.date()
+      .required("Check-Out Date is required")
+      .min(Yup.ref("checkin"), "Check-Out Date must be after Check-In Date"),
+    roomDetails: Yup.array().of(
+      Yup.object().shape({
+        rooms: Yup.number()
+          .min(1, "Rooms must be at least 1")
+          .required("Rooms are required"),
+        rate: Yup.number()
+          .min(1, "Rate must be at least 1")
+          .required("Rate is required"),
+      })
+    ),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+  const [loading, setLoading] = useState(false);
   const [supplier, setSupplier] = useState("");
   const [suppliers, setSuppliers] = useState([]);
   const [hotel, setHotel] = useState("");
@@ -24,6 +56,8 @@ const AddInventoryPopup = ({ onClose }) => {
   let credit = 0 - grandTotal;
 
   async function onSubmitInventory() {
+    setLoading(true);
+
     let ledgerObject = {
       title: "Rooms",
       credit: grandTotal,
@@ -83,10 +117,15 @@ const AddInventoryPopup = ({ onClose }) => {
       );
       console.log(hotelUpdateResponse, "hotel response");
       setHotelRooms(hotelUpdateResponse.data.data.hotel.rooms);
+      toast.success("Inventory added successfully");
       onClose();
     } catch (error) {
-      console.log(error);
+      console.log("Error submitting inventory:", error);
+      toast.error(
+        error?.response?.data?.message || "Failed to submit inventory"
+      );
     }
+    setLoading(false);
   }
 
   const getSuppliers = async () => {
@@ -97,7 +136,8 @@ const AddInventoryPopup = ({ onClose }) => {
         setSuppliers(res.data.data.suppliers); // Update to set the suppliers list
       })
       .catch((err) => {
-        console.log(err);
+        console.error("Failed to fetch suppliers:", err);
+        toast.error("Failed to fetch suppliers");
       });
   };
   const getHotels = async () => {
@@ -109,7 +149,8 @@ const AddInventoryPopup = ({ onClose }) => {
         // setCity(hotel.city)
       })
       .catch((err) => {
-        console.log(err);
+        console.error("Failed to fetch hotels:", err);
+        toast.error("Failed to fetch hotels");
       });
   };
   useEffect(() => {
@@ -131,23 +172,21 @@ const AddInventoryPopup = ({ onClose }) => {
     newRoomDetails[index][field] = value;
 
     if (field === "rooms") {
-      newRoomDetails[index].beds = calculateBeds(
-        newRoomDetails[index].type,
-        value
-      );
+      newRoomDetails[index].beds = calculateBeds(newRoomDetails[index].type);
     }
+    console.log("beds", newRoomDetails);
 
     setRoomDetails(newRoomDetails);
   };
 
-  const calculateBeds = (type, rooms) => {
+  const calculateBeds = (type) => {
     const bedTypes = {
       Quint: 5,
       Quad: 4,
       Triple: 3,
       Double: 2,
     };
-    return rooms * (bedTypes[type] || 0);
+    return bedTypes[type] || 0;
   };
 
   const calculateTotal = (rooms, beds, rate, nights) => {
@@ -182,6 +221,10 @@ const AddInventoryPopup = ({ onClose }) => {
       }))
     );
   }, [checkin, checkout]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 backdrop-filter backdrop-blur-sm">
