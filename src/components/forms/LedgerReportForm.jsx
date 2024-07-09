@@ -181,16 +181,15 @@ const LedgerReportForm = ({ onSubmit }) => {
         error.response &&
         error.response.data &&
         error.response.data.message ===
-          "No ledger entries found between the selected interval."
+          "No Ledger record found between selected dates"
       ) {
-        toast.error("No ledger entries found between the selected interval");
+        toast.error("No Ledger record found between selected dates");
       } else {
         toast.error("Error generating ledger report.");
       }
     }
     setLoading(false);
   };
-
   return (
     <form onSubmit={handleSubmit(submit)} className="p-4 bg-black rounded-lg">
       <div className="mb-4">
