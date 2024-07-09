@@ -10,7 +10,7 @@ const Bank = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [bankAdded, setBankAdded] = useState(false);
   const [updateData, setUpdateData] = useState(null);
 
@@ -25,6 +25,7 @@ const Bank = () => {
 
   useEffect(() => {
     const getBanks = async () => {
+      setIsLoading(true);
       await axios
         .get("/bank/getBanks")
         .then((res) => {
@@ -33,6 +34,9 @@ const Bank = () => {
         })
         .catch((err) => {
           console.error(err);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     };
     getBanks();
@@ -50,8 +54,10 @@ const Bank = () => {
             setShowPopup={() => setShowPopup(true)}
             search="bank"
           />
-          {banks.length === 0 ? (
-            <p className="text-center text-gray-500">No banks to show</p>
+          {isLoading ? (
+            <p className="text-center text-gray-500">Loading...</p>
+          ) : banks.length === 0 ? (
+            <p className="text-center text-gray-500">No suppliers to show</p>
           ) : (
             <Table
               tableHeader={tableHeader}

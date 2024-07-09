@@ -17,17 +17,13 @@ const cleanData = (data) =>
   }));
 
 const Dashboard = () => {
-  const [cards, setCards] = useState([]);
-  const [rooms, setRooms] = useState([]);
-  const [bookedRooms, setBookedRooms] = useState([]);
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [showLedgerPopup, setShowLedgerPopup] = useState(false);
   const [showCashVoucherPopup, setShowCashVoucherPopup] = useState(false);
   const [showHotelVoucherPopup, setShowHotelVoucherPopup] = useState(false);
   const [showAddCurrencyRatePopup, setShowAddCurrencyRatePopup] =
     useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,31 +33,7 @@ const Dashboard = () => {
       navigate("/");
       return;
     }
-
-    const getData = async () => {
-      try {
-        const res = await axios.get("/dashboard/getDash");
-        console.log("data is", res?.data);
-        const { cards, rooms, roomBooked } = res?.data?.data;
-        setCards(cards);
-        setRooms(cleanData(rooms));
-        setBookedRooms(cleanData(roomBooked));
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-        setIsLoading(false);
-      }
-    };
-
-    getData();
   }, [navigate]);
-
-  // useEffect(() => {
-  //   const loginStatus = localStorage.getItem("login");
-  //   if (!loginStatus) {
-  //     navigate("/");
-  //   }
-  // }, [navigate]);
 
   const handleShowLedger = async (fromDate, toDate) => {
     try {
