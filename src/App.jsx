@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import Login from "./pages/login";
 import Sidebar from "./components/bars/SideBar";
@@ -27,14 +27,22 @@ const App = () => {
   const [changeUser, setChangeUser] = useState(false);
   const [login, setLogin] = useState(JSON.parse(localStorage.getItem("login")));
 
+  useEffect(() => {
+    const storedLogin = JSON.parse(localStorage.getItem("login"));
+    setLogin(storedLogin);
+  }, []);
+
   const value = {
     hideSidebar,
     setHideSidebar,
     changeUser,
     setChangeUser,
+    login,
+    setLogin,
   };
 
   const AdminLayout = () => {
+    console.log("login value", login);
     return (
       <div className="w-screen min-h-screen bg-black">
         <div className="hidden md:block" style={{ overflowX: "hidden" }}>

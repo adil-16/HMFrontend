@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { InputDefault } from "../components/inputFields/inputFiels";
 import PasswordField from "../components/inputFields/passwordField";
 import axios from "../axios";
@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import CircularLoader from "../components/CircularLoader";
+import { AuthContext } from "../App";
 
 const Login = () => {
   const [email, setEmail] = useState("admin@admin.com");
@@ -15,6 +16,7 @@ const Login = () => {
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
   const navigate = useNavigate();
+  const { setLogin } = useContext(AuthContext);
 
   const handleKeyDown = (e, nextRef) => {
     if (nextRef && nextRef.current) {
@@ -55,6 +57,7 @@ const Login = () => {
       // Save user data to local storage
       localStorage.setItem("user", JSON.stringify(res.data.data));
       localStorage.setItem("login", true);
+      setLogin(true);
 
       // Show success toast and navigate to the admin page after a short delay
       toast.success("Logged in successfully");
