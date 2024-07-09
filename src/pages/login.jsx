@@ -5,6 +5,7 @@ import axios from "../axios";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
+import CircularLoader from "../components/CircularLoader";
 
 const Login = () => {
   const [email, setEmail] = useState("admin@admin.com");
@@ -81,63 +82,59 @@ const Login = () => {
 
   return (
     <div>
-      {!loading && (
-        <div className="absolute inset-0 flex flex-col mt-16 items-center">
-          <p className="font-Nunitoo text-center ml-2 font-semibold text-orange text-32">
-            Hotel Room Booking
-          </p>
-          <p className="font-Nunitoo font-bold text-orange text-16 sm:text-24 md:text-32 mt-1 md:mt-12">
-            Let’s get you login!
-          </p>
-          <p className="font-Nunitoo font-regular text-opacity-60 text-orange text-12 sm:text-14 md:text-16">
-            Enter your information below
-          </p>
-          <div className="flex flex-col p-2 w-auto sm:w-80 mt-10">
-            <label className="font-Nunitoo text-orange text-20 font-bold">
-              Email
-            </label>
-            <InputDefault
-              setValue={setEmail}
-              handleKeyDown={(e) => handleKeyDown(e, passwordInputRef)}
-              inputRef={emailInputRef}
-              Placeholder="mail@simmmple.com"
-              bg={"gray"}
-            />
-            {error.email && (
-              <p className="text-orange w-80 mt-2">{error.email}</p>
+      <div className="absolute inset-0 flex flex-col mt-16 items-center">
+        <p className="font-Nunitoo text-center ml-2 font-semibold text-orange text-32">
+          Hotel Room Booking
+        </p>
+        <p className="font-Nunitoo font-bold text-orange text-16 sm:text-24 md:text-32 mt-1 md:mt-12">
+          Let’s get you login!
+        </p>
+        <p className="font-Nunitoo font-regular text-opacity-60 text-orange text-12 sm:text-14 md:text-16">
+          Enter your information below
+        </p>
+        <div className="flex flex-col p-2 w-auto sm:w-80 mt-10">
+          <label className="font-Nunitoo text-orange text-20 font-bold">
+            Email
+          </label>
+          <InputDefault
+            setValue={setEmail}
+            handleKeyDown={(e) => handleKeyDown(e, passwordInputRef)}
+            inputRef={emailInputRef}
+            Placeholder="mail@simmmple.com"
+            bg={"gray"}
+          />
+          {error.email && (
+            <p className="text-orange w-80 mt-2">{error.email}</p>
+          )}
+          <label className="font-Nunitoo font-bold text-orange text-20 mt-4">
+            Password
+          </label>
+          <PasswordField
+            setValue={setPass}
+            handleKeyDown={(e) => handleKeyDown(e, null)}
+            inputRef={passwordInputRef}
+            Placeholder="Min 8 characters"
+            bg={"gray"}
+          />
+          {error.password && (
+            <p className="text-orange w-80 mt-2">{error.password}</p>
+          )}
+          {error.form && <p className="text-orange w-80 mt-2">{error.form}</p>}
+          <button
+            className="bg-orange flex justify-center items-center h-10 focus:outline-none w-auto md:w-40 m-10 ml-16"
+            onClick={login}
+            disabled={loading}
+          >
+            {loading ? (
+              <CircularLoader size={6} color="white" />
+            ) : (
+              <p className="font-Nunitoo font-medium text-14 text-white">
+                Sign In
+              </p>
             )}
-            <label className="font-Nunitoo font-bold text-orange text-20 mt-4">
-              Password
-            </label>
-            <PasswordField
-              setValue={setPass}
-              handleKeyDown={(e) => handleKeyDown(e, null)}
-              inputRef={passwordInputRef}
-              Placeholder="Min 8 characters"
-              bg={"gray"}
-            />
-            {error.password && (
-              <p className="text-orange w-80 mt-2">{error.password}</p>
-            )}
-            {error.form && (
-              <p className="text-orange w-80 mt-2">{error.form}</p>
-            )}
-            <button
-              className="border-none focus:outline-none bg-orange text-white mt-12 py-3 rounded-lg w-full"
-              onClick={login}
-              disabled={loading}
-            >
-              {loading ? (
-                <CircularLoader size={6} color="white" />
-              ) : (
-                <p className="font-Nunitoo font-medium text-14 text-white">
-                  Sign In
-                </p>
-              )}
-            </button>
-          </div>
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 };
