@@ -29,6 +29,8 @@ const LedgerReportForm = ({ onSubmit }) => {
   const [suppliers, setSuppliers] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [banks, setBanks] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const {
@@ -97,12 +99,14 @@ const LedgerReportForm = ({ onSubmit }) => {
   ];
 
   const submit = async (data) => {
+    setLoading(true);
     const { account, reportCurrency, startDate, endDate } = data;
     const { value: accountType } = account || {};
 
     if (!startDate || !endDate) {
       console.error("Start date and end date are required.");
       toast.error("Start date and end date are required.");
+      setLoading(false);
       return;
     }
     const fromDate = moment(startDate).format("YYYY-MM-DD");
@@ -184,6 +188,7 @@ const LedgerReportForm = ({ onSubmit }) => {
         toast.error("Error generating ledger report.");
       }
     }
+    setLoading(false);
   };
 
   return (
@@ -282,7 +287,11 @@ const LedgerReportForm = ({ onSubmit }) => {
         )}
       </div>
       <div className="flex justify-start mt-12">
-        <SubmitButton text="Generate Report" submit={handleSubmit(submit)} />
+        <SubmitButton
+          text="Generate Report"
+          submit={handleSubmit(submit)}
+          loading={loading}
+        />
       </div>
     </form>
   );

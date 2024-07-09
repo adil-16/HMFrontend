@@ -13,6 +13,7 @@ const SettingForm = () => {
   const [error, setError] = useState(false);
   const [image, setImage] = useState(null);
   const { setChangeUser } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
 
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
@@ -39,6 +40,7 @@ const SettingForm = () => {
   }, []);
 
   const update = async () => {
+    setLoading(false);
     setError(false);
     if (pass == "" || email == "") {
       setError("Fill empty fields");
@@ -55,9 +57,11 @@ const SettingForm = () => {
           setError(err.response.data.data.error);
         });
     }
+    setLoading(false);
   };
 
   const updateProfilePhoto = async () => {
+    setLoading(true);
     setError(false);
     if (image == null) {
       setError("Select the Image");
@@ -76,6 +80,7 @@ const SettingForm = () => {
           setError(err.response.data.data.error);
         });
     }
+    setloading(false);
   };
 
   return (
@@ -126,7 +131,7 @@ const SettingForm = () => {
         {error && <p className="text-orange w-80 mt-2">{error}</p>}
 
         <div className="mt-4">
-          <SubmitButton text="Approve" submit={update} />
+          <SubmitButton text="Approve" submit={update} loading={loading} />
         </div>
       </div>
 
@@ -141,7 +146,11 @@ const SettingForm = () => {
           <ImageField bg={"gray"} setImg={setImage} />
         </div>
         <div className="mt-4">
-          <SubmitButton text="Upload" submit={updateProfilePhoto} />
+          <SubmitButton
+            text="Upload"
+            submit={updateProfilePhoto}
+            loading={loading}
+          />
         </div>
       </div>
     </div>

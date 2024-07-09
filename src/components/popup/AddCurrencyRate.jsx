@@ -1,32 +1,54 @@
 import React, { useState } from "react";
 import Cross from "../../assets/cross.svg";
 import axios from "../../axios";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { toast } from "react-toastify";
+import CircularLoader from "../../components/CircularLoader";
+
+const schema = yup.object().shape({
+  rate: yup
+    .number()
+    .required("Rate is required")
+    .typeError("Rate must be a number")
+    .positive("Rate must be a positive number"),
+});
 
 const AddCurrencyRate = ({ onClose }) => {
-  const [rate, setRate] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
+  const onSubmit = async (data) => {
+    setLoading(true);
     try {
-      const response = await axios.post(
-        "/ledger/updateCurrencyRate",
-        { rate },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post("/ledger/updateCurrencyRate", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.status === 200) {
+        toast.success("Currency rate updated successfully");
         console.log("Currency rate updated successfully");
+        onClose();
+        reset(); // Reset form after successful submission
       } else {
+        toast.error("Failed to update currency rate");
         console.error("Failed to update currency rate");
       }
     } catch (error) {
+      toast.error("Failed to update currency rate. Please try again.");
       console.error("Error:", error);
     }
-
-    onClose();
+    setLoading(false);
   };
 
   return (
@@ -46,26 +68,39 @@ const AddCurrencyRate = ({ onClose }) => {
           </h2>
         </div>
         <div className="h-full overflow-y-auto">
-          <div className="mb-10">
-            <label className="font-Nunitoo font-medium text-orange text-14 py-2">
-              Enter Rate for SAR
-            </label>
-            <input
-              type="number"
-              value={rate}
-              onChange={(e) => setRate(e.target.value)}
-              placeholder="Amount"
-              className=" remove-arrow w-full px-2 py-2 bg-white text-black border border-gray-300 rounded-md"
-            />
-          </div>
-          <div className="flex justify-center mt-10">
-            <button
-              onClick={handleSubmit}
-              className="bg-orange text-white px-6 py-2 rounded-lg"
-            >
-              Submit
-            </button>
-          </div>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="mb-10">
+              <label className="font-Nunitoo font-medium text-orange text-14 py-2">
+                Enter Rate for SAR
+              </label>
+              <input
+                type="number"
+                {...register("rate")}
+                placeholder="Amount"
+                className={`remove-arrow w-full px-2 py-2 bg-white text-black border border-gray-300 rounded-md ${
+                  errors.rate ? "border-red-500" : ""
+                }`}
+              />
+              {errors.rate && (
+                <span className="text-red-500">{errors.rate.message}</span>
+              )}
+            </div>
+            <div className="flex justify-center mt-10">
+              <button
+                type="submit"
+                className="bg-orange flex justify-center items-center h-10 focus:outline-none w-auto md:w-40 m-2"
+                disabled={loading}
+              >
+                {loading ? (
+                  <CircularLoader size={6} color="white" />
+                ) : (
+                  <p className="font-Nunitoo font-medium text-14 text-white">
+                    Submit
+                  </p>
+                )}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

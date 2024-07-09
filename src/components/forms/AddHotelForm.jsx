@@ -9,6 +9,7 @@ const AddHotelForm = ({ onClose, image, setAddHotel }) => {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [totalRooms, setTotalRooms] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [rooms, setRooms] = useState([
     { roomType: "", totalBeds: "", beds: [{ bedRate: "" }] },
   ]);
@@ -19,6 +20,7 @@ const AddHotelForm = ({ onClose, image, setAddHotel }) => {
   const locationInputRef = useRef(null);
 
   const handleChange = async () => {
+    setLoading(true);
     const data = new FormData();
     data.append("file", image);
     data.append("name", name);
@@ -36,6 +38,7 @@ const AddHotelForm = ({ onClose, image, setAddHotel }) => {
         console.log("error is", err);
         setError(err.response.data.data.error);
       });
+    setLoading(false);
   };
 
   const handleKeyDown = (e, nextRef) => {
@@ -103,7 +106,7 @@ const AddHotelForm = ({ onClose, image, setAddHotel }) => {
       </div>
       {error && <p className="text-orange w-80 mt-2">{error}</p>}
       <div className="flex justify-center my-2 sm:mt-10 sm:mb-14">
-        <SubmitButton text="Submit" submit={handleChange} />
+        <SubmitButton text="Submit" submit={handleChange} loading={loading} />
       </div>
     </div>
   );

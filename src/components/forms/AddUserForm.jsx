@@ -5,7 +5,6 @@ import * as yup from "yup";
 import axios from "../../axios";
 import SubmitButton from "../../components/buttons/SubmitButtonHotel";
 import { toast } from "react-toastify";
-import Loader from "../../components/Loader";
 
 const schema = yup.object().shape({
   businessName: yup.string().required("Business Name is required"),
@@ -76,10 +75,6 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, role }) => {
     }
     setLoading(false);
   };
-
-  if (loading) {
-    return <Loader />;
-  }
 
   return (
     <div className="mx-4 md:ml-14 md:mr-48 h-full overflow-y-auto">
@@ -171,7 +166,11 @@ const AddUserForm = ({ onClose, image, setAdded, updateData, role }) => {
         {error && <p className="text-orange w-80 mt-2">{error}</p>}
 
         <div className="flex justify-center my-2 sm:mt-10 sm:mb-14">
-          <SubmitButton text="Submit" submit={handleSubmit(onSubmit)} />
+          <SubmitButton
+            text="Submit"
+            submit={handleSubmit(onSubmit)}
+            loading={loading}
+          />
         </div>
       </form>
     </div>

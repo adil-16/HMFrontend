@@ -9,6 +9,7 @@ const AddBankForm = ({ onClose, setAdded, updateData }) => {
   const [contactNumber, setContactNumber] = useState("");
   const [swiftCode, setSwiftCode] = useState("");
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const bankNameInputRef = useRef(null);
   const addressInputRef = useRef(null);
@@ -39,6 +40,7 @@ const AddBankForm = ({ onClose, setAdded, updateData }) => {
   }, []);
 
   const handleSubmit = async () => {
+    setLoading(true);
     const data = {
       bankName,
       address,
@@ -66,6 +68,7 @@ const AddBankForm = ({ onClose, setAdded, updateData }) => {
         setError(err.response?.data?.message || "An error occurred");
       }
     }
+    setLoading(false);
   };
 
   return (
@@ -132,7 +135,7 @@ const AddBankForm = ({ onClose, setAdded, updateData }) => {
       {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
       <div className="flex justify-center my-2 sm:mt-10 sm:mb-14">
-        <SubmitButton text="Submit" submit={handleSubmit} />
+        <SubmitButton text="Submit" submit={handleSubmit} loading={loading} />
       </div>
     </div>
   );

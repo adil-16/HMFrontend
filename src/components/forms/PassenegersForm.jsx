@@ -1,40 +1,37 @@
-import React, { useState } from "react";
-import { InputDefault } from "../../components/inputFields/inputFiels";
+import React from "react";
+import { useFormContext, useFieldArray } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-const PassengerForm = ({ passengers, setPassengers }) => {
-  const [passengerName, setPassengerName] = useState("");
-  const [passengerAge, setPassengerAge] = useState(0);
-  const [passengerGender, setPassengerGender] = useState("male");
-  const [passengerNationality, setPassengerNationality] = useState("");
-  const [passengerPassportNumber, setPassengerPassportNumber] = useState("");
+const passengerSchema = yup.object().shape({
+  name: yup.string().required("Name is required"),
+  age: yup.number().required("Age is required").positive().integer(),
+  gender: yup.string().required("Gender is required"),
+  nationality: yup.string().required("Nationality is required"),
+  passportNumber: yup.string().required("Passport number is required"),
+});
+
+const PassengerForm = () => {
+  const {
+    register,
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "passengers",
+  });
 
   const handleAddPassenger = () => {
-    const newPassenger = {
-      name: passengerName,
-      age: passengerAge,
-      gender: passengerGender,
-      nationality: passengerNationality,
-      passportNumber: passengerPassportNumber,
-    };
-    setPassengers([...passengers, newPassenger]);
-    setPassengerName("");
-    setPassengerAge(0);
-    setPassengerGender("male");
-    setPassengerNationality("");
-    setPassengerPassportNumber("");
-  };
-  const handleKeyDown = (e, nextRef) => {
-    if (e.key === "Enter") {
-      if (nextRef && nextRef.current) {
-        nextRef.current.focus();
-      } else {
-        handleSubmit();
-      }
-    }
-  };
-  const removePassenger = (index) => {
-    const newPassengers = passengers.filter((_, i) => i !== index);
-    setPassengers(newPassengers);
+    append({
+      name: "",
+      age: 0,
+      gender: "male",
+      nationality: "",
+      passportNumber: "",
+    });
   };
 
   return (
@@ -43,81 +40,99 @@ const PassengerForm = ({ passengers, setPassengers }) => {
         Add Passengers
       </h3>
       <div className="max-h-64 overflow-y-auto">
-        {passengers?.map((passenger, index) => (
-          <div key={index} className="mt-3">
-            <p className="text-white">{`Passenger ${index + 1}`}</p>
-            <p className="text-white">{`Name: ${passenger.name}`}</p>
-            <p className="text-white">{`Age: ${passenger.age}`}</p>
-            <p className="text-white">{`Gender: ${passenger.gender}`}</p>
-            <p className="text-white">{`Nationality: ${passenger.nationality}`}</p>
-            <p className="text-white">{`Passport Number: ${passenger.passportNumber}`}</p>
+        {fields.map((field, index) => (
+          <div key={field.id} className="mt-3">
+            <p className="text-white mb-2 font-Nunitoo font-semibold">{`Passenger ${
+              index + 1
+            }`}</p>
+            <div>
+              <label className="font-Nunitoo font-medium text-orange text-14 py-2">
+                Passenger Name
+              </label>
+              <input
+                {...register(`passengers.${index}.name`)}
+                className="bg-white border border-gray text-black ml-2 py-2 mb-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
+                placeholder="Passenger Name"
+              />
+              {errors.passengers?.[index]?.name && (
+                <p className="text-red-500">
+                  {errors.passengers[index].name.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="font-Nunitoo font-medium text-orange text-14 py-2">
+                Passenger Age
+              </label>
+              <input
+                type="number"
+                {...register(`passengers.${index}.age`)}
+                className="bg-white border border-gray text-black ml-2 py-2 px-4 mb-2 rounded focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
+                placeholder="Passenger Age"
+              />
+              {errors.passengers?.[index]?.age && (
+                <p className="text-red-500">
+                  {errors.passengers[index].age.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="font-Nunitoo font-medium text-orange text-14 py-2">
+                Passenger Gender
+              </label>
+              <select
+                {...register(`passengers.${index}.gender`)}
+                className="bg-white border border-gray text-black ml-2 py-2 px-4 mb-2 rounded focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+              {errors.passengers?.[index]?.gender && (
+                <p className="text-red-500">
+                  {errors.passengers[index].gender.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="font-Nunitoo font-medium text-orange text-14 py-2">
+                Passenger Nationality
+              </label>
+              <input
+                {...register(`passengers.${index}.nationality`)}
+                className="bg-white border border-gray text-black ml-2 py-2 px-4 mb-2 rounded focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
+                placeholder="Nationality"
+              />
+              {errors.passengers?.[index]?.nationality && (
+                <p className="text-red-500">
+                  {errors.passengers[index].nationality.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="font-Nunitoo font-medium text-orange text-14 py-2">
+                Passenger Passport Number
+              </label>
+              <input
+                {...register(`passengers.${index}.passportNumber`)}
+                className="bg-white border border-gray text-black ml-2 py-2 px-4 mb-2 rounded focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
+                placeholder="Passport Number"
+              />
+              {errors.passengers?.[index]?.passportNumber && (
+                <p className="text-red-500">
+                  {errors.passengers[index].passportNumber.message}
+                </p>
+              )}
+            </div>
             <button
-              onClick={() => removePassenger(index)}
+              type="button"
+              onClick={() => remove(index)}
               className="ml-2 bg-red-500 text-white py-1 px-2 rounded focus:outline-none"
             >
               Remove
             </button>
           </div>
         ))}
-      </div>
-      <div className="mt-3">
-        <label className="font-Nunitoo font-medium text-orange text-14 py-2">
-          Passenger Name
-        </label>
-        <InputDefault
-          value={passengerName}
-          setValue={setPassengerName}
-          Placeholder="Passenger Name"
-          bg="white"
-        />
-      </div>
-      <div className="mt-3">
-        <label className="font-Nunitoo font-medium text-orange text-14 py-2">
-          Passenger Age
-        </label>
-        <InputDefault
-          type="number"
-          value={passengerAge}
-          setValue={setPassengerAge}
-          Placeholder="Passenger Age"
-          bg="white"
-        />
-      </div>
-      <div className="mt-3">
-        <label className="font-Nunitoo font-medium text-orange text-14 py-2">
-          Passenger Gender
-        </label>
-        <select
-          value={passengerGender}
-          onChange={(e) => setPassengerGender(e.target.value)}
-          className="bg-white border border-gray text-black ml-2 py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
-        >
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
-      <div className="mt-3">
-        <label className="font-Nunitoo font-medium text-orange text-14 py-2">
-          Passenger Nationality
-        </label>
-        <InputDefault
-          value={passengerNationality}
-          setValue={setPassengerNationality}
-          Placeholder="Nationality"
-          bg="white"
-        />
-      </div>
-      <div className="mt-3">
-        <label className="font-Nunitoo font-medium text-orange text-14 py-2">
-          Passenger Passport Number
-        </label>
-        <InputDefault
-          value={passengerPassportNumber}
-          setValue={setPassengerPassportNumber}
-          Placeholder="Passport Number"
-          bg="white"
-        />
       </div>
       <button
         type="button"

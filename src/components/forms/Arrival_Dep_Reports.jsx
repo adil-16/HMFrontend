@@ -3,20 +3,40 @@ import Select from "react-select";
 import axios from "../../axios";
 import SubmitButton from "../../components/buttons/SubmitButtonHotel";
 import { useNavigate } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { toast } from "react-toastify";
+
+const schema = yup.object().shape({
+  reportType: yup.string().required("Report type is required"),
+  duration: yup.string().required("Duration is required"),
+  fromDate: yup.string().when("duration", (duration, schema) => {
+    duration === "Custom" ? schema.required("From date is required") : schema;
+  }),
+  toDate: yup.string().when("duration", (duration, schema) => {
+    duration === "Custom" ? schema.required("To date is required") : schema;
+  }),
+  hotelId: yup.string().required("Hotel selection is required"),
+  confirmationStatus: yup.string().required("Voucher status is required"),
+});
 
 const Arrival_Dep_Reports = ({ onSubmit, setTitle }) => {
   const navigate = useNavigate();
-  const [reportType, setReportType] = useState("Arrival Intimation");
-  const [duration, setDuration] = useState("Today");
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
   const [hotels, setHotels] = useState([]);
   const [selectedHotel, setSelectedHotel] = useState(null);
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [voucherStatus, setVoucherStatus] = useState("Both");
   const [vouchers, setVouchers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const getHotels = async () => {
     await axios
@@ -32,54 +52,54 @@ const Arrival_Dep_Reports = ({ onSubmit, setTitle }) => {
 
   useEffect(() => {
     getHotels();
-    setTitle(reportType);
-  }, [reportType]);
+    setTitle(watch("reportType"));
+  }, [watch("reportType")]);
 
-  const handleFormSubmit = async (e) => {
-    // e.preventDefault();
+  const handleFormSubmit = async (data) => {
     setLoading(true);
-    setError("");
-    const formData = {
-      reportType,
-      duration,
-      fromDate: duration === "Custom" ? fromDate : "",
-      toDate: duration === "Custom" ? toDate : "",
-      hotelId: selectedHotel?.value,
-      confirmationStatus: voucherStatus === "Both" ? "Both" : voucherStatus,
-    };
+    console.log("form data", data);
     try {
       const res = await axios.get("/hotel-voucher/filtered-vouchers", {
-        params: formData,
+        params: data,
       });
       const { vouchers, paxCounts } = res.data.data;
-      console.log("data in filtered vouceher", res.data.data);
-      onSubmit(res.data.data.vouchers);
-      setVouchers(res.data.data.vouchers);
+      onSubmit(vouchers);
+      setVouchers(vouchers);
       setLoading(false);
       navigate("/admin/report", {
-        state: { title: reportType, paxCounts, vouchers },
+        state: { title: data.reportType, paxCounts, vouchers },
       });
+      toast.success("Report generated successfully!");
     } catch (err) {
       setLoading(false);
-      setError("Failed to fetch vouchers. Please try again.");
-      console.error(err);
+      toast.error("Failed to fetch vouchers matching the criteria");
     }
   };
 
+  const handleHotelChange = (option) => {
+    setSelectedHotel(option);
+    setValue("hotelId", option.value);
+  };
+
   return (
-    <form onSubmit={handleFormSubmit} className="p-4 bg-black rounded-lg">
+    <form
+      onSubmit={handleSubmit(handleFormSubmit)}
+      className="p-4 bg-black rounded-lg"
+    >
       <div className="mb-4">
         <label className="block text-orange font-medium mb-2">
           Report Type
         </label>
         <select
-          value={reportType}
-          onChange={(e) => setReportType(e.target.value)}
+          {...register("reportType")}
           className="w-full bg-white text-black p-2 rounded-md"
         >
           <option value="Arrival Intimation">Arrival Intimation</option>
           <option value="Departure Intimation">Departure Intimation</option>
         </select>
+        {errors.reportType && (
+          <span className="text-red-500">{errors.reportType.message}</span>
+        )}
       </div>
       <div className="mb-4">
         <label className="block text-orange font-medium mb-2">Duration</label>
@@ -87,10 +107,8 @@ const Arrival_Dep_Reports = ({ onSubmit, setTitle }) => {
           <label className="inline-flex items-center mr-4">
             <input
               type="radio"
-              name="duration"
+              {...register("duration")}
               value="Today"
-              checked={duration === "Today"}
-              onChange={() => setDuration("Today")}
               className="form-radio"
             />
             <span className="ml-2">Today</span>
@@ -98,10 +116,8 @@ const Arrival_Dep_Reports = ({ onSubmit, setTitle }) => {
           <label className="inline-flex items-center mr-4">
             <input
               type="radio"
-              name="duration"
+              {...register("duration")}
               value="Tomorrow"
-              checked={duration === "Tomorrow"}
-              onChange={() => setDuration("Tomorrow")}
               className="form-radio"
             />
             <span className="ml-2">Tomorrow</span>
@@ -109,17 +125,20 @@ const Arrival_Dep_Reports = ({ onSubmit, setTitle }) => {
           <label className="inline-flex items-center">
             <input
               type="radio"
-              name="duration"
+              {...register("duration")}
               value="Custom"
-              checked={duration === "Custom"}
-              onChange={() => setDuration("Custom")}
               className="form-radio"
             />
             <span className="ml-2">Custom</span>
           </label>
         </div>
+        {errors.duration && (
+          <span className="text-white font-semibold">
+            {errors.duration.message}
+          </span>
+        )}
       </div>
-      {duration === "Custom" && (
+      {watch("duration") === "Custom" && (
         <>
           <div className="mb-4">
             <label className="block text-orange font-medium mb-2">
@@ -127,10 +146,14 @@ const Arrival_Dep_Reports = ({ onSubmit, setTitle }) => {
             </label>
             <input
               type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
+              {...register("fromDate")}
               className="border border-blue3 bg-black text-white focus:outline-none rounded-md p-2 w-auto"
             />
+            {errors.fromDate && (
+              <span className="text-white font-semibold">
+                {errors.fromDate.message}
+              </span>
+            )}
           </div>
           <div className="mb-4">
             <label className="block text-orange font-medium mb-2">
@@ -138,43 +161,66 @@ const Arrival_Dep_Reports = ({ onSubmit, setTitle }) => {
             </label>
             <input
               type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
+              {...register("toDate")}
               className="border border-blue3 bg-black text-white focus:outline-none rounded-md p-2 w-auto"
             />
+            {errors.toDate && (
+              <span className="text-white font-semibold">
+                {errors.toDate.message}
+              </span>
+            )}
           </div>
         </>
       )}
       <div className="mb-4">
         <label className="block text-orange font-medium mb-2">Hotel</label>
-        <Select
-          options={hotels.map((hotel) => ({
-            value: hotel.id,
-            label: hotel.name,
-          }))}
-          value={selectedHotel}
-          onChange={setSelectedHotel}
-          placeholder="Select a hotel"
-          className="w-full bg-white text-black"
+        <Controller
+          name="hotelId"
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              options={hotels.map((hotel) => ({
+                value: hotel.id,
+                label: hotel.name,
+              }))}
+              value={selectedHotel}
+              onChange={handleHotelChange}
+              placeholder="Select a hotel"
+              className="w-full bg-white text-black"
+            />
+          )}
         />
+        {errors.hotelId && (
+          <span className="text-white font-semibold">
+            {errors.hotelId.message}
+          </span>
+        )}
       </div>
-
       <div className="mb-4">
         <label className="block text-orange font-medium mb-2">
           Voucher Status
         </label>
         <select
-          value={voucherStatus}
-          onChange={(e) => setVoucherStatus(e.target.value)}
+          {...register("confirmationStatus")}
           className="w-full bg-white text-black p-2 rounded-md"
         >
           <option value="Confirmed">Confirmed</option>
           <option value="Tentative">Tentative</option>
           <option value="Both">Both</option>
         </select>
+        {errors.confirmationStatus && (
+          <span className="text-red-500">
+            {errors.confirmationStatus.message}
+          </span>
+        )}
       </div>
       <div className="flex justify-start mt-12">
-        <SubmitButton text="Generate Report" submit={handleFormSubmit} />
+        <SubmitButton
+          text="Generate Report"
+          submit={handleSubmit(handleFormSubmit)}
+          loading={loading}
+        />
       </div>
     </form>
   );

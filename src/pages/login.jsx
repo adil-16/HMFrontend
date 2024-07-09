@@ -3,7 +3,6 @@ import { InputDefault } from "../components/inputFields/inputFiels";
 import PasswordField from "../components/inputFields/passwordField";
 import axios from "../axios";
 import { useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 
@@ -82,7 +81,6 @@ const Login = () => {
 
   return (
     <div>
-      {loading && <Loader />}
       {!loading && (
         <div className="absolute inset-0 flex flex-col mt-16 items-center">
           <p className="font-Nunitoo text-center ml-2 font-semibold text-orange text-32">
@@ -127,10 +125,15 @@ const Login = () => {
             <button
               className="border-none focus:outline-none bg-orange text-white mt-12 py-3 rounded-lg w-full"
               onClick={login}
+              disabled={loading}
             >
-              <p className="font-Nunitoo font-medium text-white text-14">
-                Sign In
-              </p>
+              {loading ? (
+                <CircularLoader size={6} color="white" />
+              ) : (
+                <p className="font-Nunitoo font-medium text-14 text-white">
+                  Sign In
+                </p>
+              )}
             </button>
           </div>
         </div>

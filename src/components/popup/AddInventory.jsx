@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import Cross from "../../assets/cross.svg";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import axios from "../../axios";
-import Loader from "../../components/Loader";
+import Loader from "../../components/CircularLoader";
 
 const AddInventoryPopup = ({ onClose }) => {
   const schema = Yup.object().shape({
@@ -222,9 +222,9 @@ const AddInventoryPopup = ({ onClose }) => {
     );
   }, [checkin, checkout]);
 
-  if (loading) {
-    return <Loader />;
-  }
+  // if (loading) {
+  //   return <Loader />;
+  // }
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 backdrop-filter backdrop-blur-sm">
@@ -376,7 +376,11 @@ const AddInventoryPopup = ({ onClose }) => {
           </p>
         </div>
         <div className="flex justify-end mt-4">
-          <SubmitButton text="Submit" onSubmitInventory={onSubmitInventory} />
+          <SubmitButton
+            text="Submit"
+            onSubmitInventory={onSubmitInventory}
+            loading={loading}
+          />
         </div>
       </div>
     </div>

@@ -5,6 +5,8 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
   const roomTypes = ["Quint", "Quad", "Triple", "Double"];
   const [hotels, setHotels] = useState([]);
 
+  // console.log("rooms", rooms);
+
   useEffect(() => {
     // Fetch hotels when the component mounts
     const fetchHotels = async () => {
@@ -35,7 +37,7 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
         roomType: "",
         checkin: "",
         checkout: "",
-        bedRate: "",
+        // bedRate: "",
         roomRate: "",
         totalRooms: "",
       },

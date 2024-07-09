@@ -6,6 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
+import Loader from "../../components/CircularLoader";
 
 const schema = yup.object().shape({
   voucherType: yup.string().required("Voucher type is required"),
@@ -34,6 +35,7 @@ const CashVoucherPopup = ({ onClose }) => {
   const [customers, setCustomers] = useState([]);
   const [banks, setBanks] = useState([]);
   const [role, setRole] = useState("cash");
+  const [loading, setLoading] = useState(false);
 
   const {
     control,
@@ -88,6 +90,7 @@ const CashVoucherPopup = ({ onClose }) => {
   }, [paymentMethod]);
 
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       const url =
         voucherType === "Cash Payment Voucher"
@@ -100,6 +103,7 @@ const CashVoucherPopup = ({ onClose }) => {
       console.error("Error submitting voucher:", error);
       toast.error("Error submitting voucher!");
     }
+    setLoading(false);
   };
 
   return (
@@ -315,7 +319,11 @@ const CashVoucherPopup = ({ onClose }) => {
           )}
 
           <div className="flex justify-center mt-4">
-            <SubmitButton text="Submit" submit={handleSubmit(onSubmit)} />
+            <SubmitButton
+              text="Submit"
+              submit={handleSubmit(onSubmit)}
+              loading={loading}
+            />
           </div>
         </form>
       </div>
