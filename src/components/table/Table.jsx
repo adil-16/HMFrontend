@@ -241,9 +241,9 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
     setCurrentPage(page);
   };
 
-  if (data.length === 0) {
-    return <div>No data available</div>;
-  }
+  // if (data.length === 0) {
+  //   return <div>No data available</div>;
+  // }
 
   const flattenedEntries = data.flatMap((entry, index) =>
     entry.entries.map((subEntry) => ({ ...subEntry, parentIndex: index }))
@@ -257,7 +257,6 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
     indexOfLastItem
   );
 
-  // Calculate totals for the current items
   const totalDebit = currentItems.reduce(
     (acc, item) => acc + (item.debit || 0),
     0
@@ -310,25 +309,19 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
                     </div>
                   </td>
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5">
-                    {new Date(val.createdAt).toLocaleDateString()}
+                    {val.date}
                   </td>
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5">
-                    {val.type}
+                    {val.day}
                   </td>
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                    {val.trans}
+                    {val.cost}
                   </td>
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                    {val.title}
+                    {val.sellingPrice}
                   </td>
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                    {val.debit}
-                  </td>
-                  <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                    {val.credit}
-                  </td>
-                  <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                    {val.balance}
+                    {val.booking}
                   </td>
                 </tr>
               );
@@ -337,18 +330,13 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
           <tfoot>
             <tr className="font-sans p-6">
               <td className="p-2 text-left w-8 lg:w-20"></td>
-              <td
-                className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5"
-                colSpan={4}
-              ></td>
+              <td className="p-2 text-left w-8 lg:w-20"></td>
+              <td className="p-2 text-left w-8 lg:w-20"></td>
               <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left">
-                Total Debit: {totalDebit}
+                Total Cost: {totalDebit}
               </td>
               <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                Total Credit: {totalCredit}
-              </td>
-              <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left ml-2">
-                Total Balance: {totalBalance}
+                Total Selling Price: {totalCredit}
               </td>
             </tr>
           </tfoot>

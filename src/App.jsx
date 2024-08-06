@@ -19,6 +19,7 @@ import LedgerReport from "./pages/LedgerReports/LedgerReport";
 import CustomerReports from "./pages/CustomerTrackReports/Report";
 import ArrivalDepReport from "./pages/Arr_Dep_Reports/ReportFormat";
 import Bank from "./pages/Bank/Bank";
+import RoomLedgerReport from "./pages/RoomLedgerReport/RoomLedgerReport";
 
 export const AuthContext = React.createContext();
 
@@ -42,7 +43,7 @@ const App = () => {
   };
 
   const AdminLayout = () => {
-    console.log("login value", login);
+    // console.log("login value", login);
     return (
       <div className="w-screen min-h-screen bg-black">
         <div className="hidden md:block" style={{ overflowX: "hidden" }}>
@@ -104,6 +105,7 @@ const App = () => {
             <Route path="Allbookings" element={<Bookings />} />
             <Route path="settings" element={<Settings />} />
             <Route path="ledger" element={<Ledger />} />
+            <Route path="room-ledger/:id" element={<RoomLedgerReport />} />
             <Route path="hotel-voucher/:id" element={<HotelVoucher />} />
             <Route path="hotel-invoice/:id" element={<HotelInvoice />} />
             <Route path="payment-voucher" element={<PaymentVoucher />} />

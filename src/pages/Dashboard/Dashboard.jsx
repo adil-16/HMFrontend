@@ -5,29 +5,24 @@ import CashVoucherPopup from "../../components/popup/CashVoucher";
 import HotelVoucherPopup from "../../components/popup/HotelVoucher";
 import ShowLedgerPopup from "../../components/popup/ShowLedger";
 import ShowCurrencyPopup from "../../components/popup/AddCurrencyRate";
+import RoomLedgerPopup from "../../components/popup/RoomLedger";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader";
-
-const cleanData = (data) =>
-  data.map((item) => ({
-    ...item,
-    count: Math.max(item.count, 0),
-    value: Math.max(item.value, 0),
-  }));
 
 const Dashboard = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [showLedgerPopup, setShowLedgerPopup] = useState(false);
   const [showCashVoucherPopup, setShowCashVoucherPopup] = useState(false);
   const [showHotelVoucherPopup, setShowHotelVoucherPopup] = useState(false);
+  const [showRoomLedgerPopup, setShowRoomLedgerPopup] = useState(false);
   const [showAddCurrencyRatePopup, setShowAddCurrencyRatePopup] =
     useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Rendering Dashboard component");
+    // console.log("Rendering Dashboard component");
     const loginStatus = localStorage.getItem("login");
     if (!loginStatus) {
       navigate("/");
@@ -38,7 +33,7 @@ const Dashboard = () => {
   const handleShowLedger = async (fromDate, toDate) => {
     try {
       const response = await axios.get(`/ledger/getAdminLedger/?role=cash`);
-      console.log("Filtered Ledger Data: ", response.data);
+      // console.log("Filtered Ledger Data: ", response.data);
       const totalBalance =
         response.data.ledgers.length > 0
           ? response.data.ledgers[0].totalBalance
@@ -106,6 +101,13 @@ const Dashboard = () => {
           </button>
 
           <button
+            onClick={() => setShowRoomLedgerPopup(true)}
+            className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+          >
+            Show Room Report
+          </button>
+
+          <button
             onClick={() => setShowAddCurrencyRatePopup(true)}
             className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
           >
@@ -135,6 +137,10 @@ const Dashboard = () => {
 
       {showAddCurrencyRatePopup && (
         <ShowCurrencyPopup onClose={() => setShowAddCurrencyRatePopup(false)} />
+      )}
+
+      {showRoomLedgerPopup && (
+        <RoomLedgerPopup onClose={() => setShowRoomLedgerPopup(false)} />
       )}
     </div>
   );

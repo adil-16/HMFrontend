@@ -36,7 +36,7 @@ const Ledger = () => {
     if (ledgerData.length > 0) {
       setData(ledgerData);
     }
-    console.log("ledger data", ledgerData); // Log ledger data to verify
+    console.log("ledger data", ledgerData);
   }, [ledgerData]);
 
   console.log("dataaaaa", data);
