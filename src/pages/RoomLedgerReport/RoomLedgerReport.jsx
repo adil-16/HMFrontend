@@ -3,6 +3,7 @@ import TopBar from "../../components/bars/TopBar";
 import { LedgerTable } from "../../components/table/Table";
 import LedgerTop from "./RoomLedgerTop";
 import { useLocation } from "react-router-dom";
+import DateRange from "../../components/Date/DateRange";
 
 const Ledger = () => {
   const [data, setData] = useState([]);
@@ -27,7 +28,8 @@ const Ledger = () => {
           roomType="Double"
           printDate={printDate}
         />
-        <div className="mx-1">
+        <DateRange />
+        <div className="mx-1 mt-8">
           <LedgerTable
             tableHeader={tableHeader}
             data={data}
