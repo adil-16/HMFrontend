@@ -333,6 +333,7 @@ const AddInventoryPopup = ({ onClose }) => {
                     <td>
                       <input
                         type="number"
+                        min="0"
                         value={detail.rooms}
                         onChange={(e) =>
                           handleRoomDetailChange(index, "rooms", e.target.value)
@@ -344,6 +345,7 @@ const AddInventoryPopup = ({ onClose }) => {
                     <td>
                       <input
                         type="number"
+                        min="0"
                         value={detail.rate}
                         onChange={(e) =>
                           handleRoomDetailChange(index, "rate", e.target.value)
