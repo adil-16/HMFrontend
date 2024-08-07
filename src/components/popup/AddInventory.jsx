@@ -95,28 +95,29 @@ const AddInventoryPopup = ({ onClose }) => {
         role: "cash",
         debit: grandTotal,
         credit: 0,
+        roomDetails: roomDetails
       };
       const poformResponse = await axios.post(
         "/poform/createPoform",
         poformObject
       );
-      console.log(poformResponse, "poform response");
+      // console.log(poformResponse, "poform response");
 
-      let filterHotel = hotels.filter((hot) => hot.id == hotel);
-      let roomCounter = 1;
+      // let filterHotel = hotels.filter((hot) => hot.id == hotel);
+      // let roomCounter = 1;
 
-      let hotelObject = {
-        location: filterHotel[0].location,
-        name: filterHotel[0].name,
-        totalRooms: 0,
-        roomDetails,
-      };
-      const hotelUpdateResponse = await axios.put(
-        `/hotel/editHotel/${hotel}`,
-        hotelObject
-      );
-      console.log(hotelUpdateResponse, "hotel response");
-      setHotelRooms(hotelUpdateResponse.data.data.hotel.rooms);
+      // let hotelObject = {
+      //   location: filterHotel[0].location,
+      //   name: filterHotel[0].name,
+      //   totalRooms: 0,
+      //   roomDetails,
+      // };
+      // const hotelUpdateResponse = await axios.put(
+      //   `/hotel/editHotel/${hotel}`,
+      //   hotelObject
+      // );
+      // console.log(hotelUpdateResponse, "hotel response");
+      // setHotelRooms(hotelUpdateResponse.data.data.hotel.rooms);
       toast.success("Inventory added successfully");
       onClose();
     } catch (error) {
