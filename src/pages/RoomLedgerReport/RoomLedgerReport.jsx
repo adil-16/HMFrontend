@@ -44,7 +44,7 @@ const Ledger = () => {
           printDate={printDate}
         />
         <DateRange rows={originalData} setRows={setData} />
-        <div className="mx-1 mt-6">
+        <div className="mx-1 mt-6 overflow-hidden">
           <LedgerTable
             tableHeader={tableHeader}
             data={data}

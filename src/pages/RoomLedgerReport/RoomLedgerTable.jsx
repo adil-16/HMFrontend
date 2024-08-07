@@ -100,17 +100,15 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
               ))
             )}
           </tbody>
-          <tfoot>
-            <tr className="font-sans p-6">
-              <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left">
-                Total Cost: {totalCost}
-              </td>
-              <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left">
-                Total Selling Price: {totalSellingPrice}
-              </td>
-            </tr>
-          </tfoot>
         </table>
+        <div className="flex justify-end my-2 mr-32 gap-36">
+          <p className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left">
+            Total Cost: {totalCost}
+          </p>
+          <p className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left">
+            Total Selling Price: {totalSellingPrice}
+          </p>
+        </div>
         <div className="flex justify-between my-2">
           <button
             onClick={() => handlePageChange(currentPage - 1)}
