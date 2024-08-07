@@ -33,7 +33,7 @@ const Ledger = () => {
     "Booking Date",
     "Cost",
     "Sale",
-    "(Profit/Loss)",
+    "Profit/(Loss)",
     "Status",
   ]);
 
