@@ -337,7 +337,7 @@ const AddInventoryPopup = ({ onClose }) => {
                         onChange={(e) =>
                           handleRoomDetailChange(index, "rooms", e.target.value)
                         }
-                        className="w-full bg-gray-800 text-white p-2 m-1"
+                        className="w-full text-black p-2 m-1"
                       />
                     </td>
                     <td className="pl-6">{detail.beds}</td>
@@ -348,7 +348,7 @@ const AddInventoryPopup = ({ onClose }) => {
                         onChange={(e) =>
                           handleRoomDetailChange(index, "rate", e.target.value)
                         }
-                        className="w-full bg-gray-800 text-white p-2 m-1"
+                        className="w-full text-black p-2 m-1"
                       />
                     </td>
                     <td className="pl-6">{detail.nights}</td>
@@ -362,7 +362,7 @@ const AddInventoryPopup = ({ onClose }) => {
                           detail.nights
                         )}
                         readOnly
-                        className="w-full bg-gray-800 text-white p-2 m-1"
+                        className="w-full text-black p-2 m-1"
                       />
                     </td>
                   </tr>
