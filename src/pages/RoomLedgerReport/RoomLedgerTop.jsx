@@ -52,19 +52,19 @@ const LedgerTop = ({
             Total Cost:
           </p>
           <p className="font-medium text-white text-14 sm:text-16">
-            {roomData?.totalCost}
+            {roomData?.totalCost?.toFixed(2)}
           </p>
           <p className="font-bold text-darkGray text-16 sm:text-19">
             Total Sale:
           </p>
           <p className="font-medium text-white text-14 sm:text-16">
-            {roomData?.totalSale}
+            {roomData?.totalSale?.toFixed(2)}
           </p>
           <p className="font-bold text-darkGray text-16 sm:text-19">
             Total Profit:
           </p>
           <p className="font-medium text-white text-14 sm:text-16">
-            {roomData?.totalProfit}
+            {roomData?.totalProfit?.toFixed(2)}
           </p>
         </div>
       </div>
