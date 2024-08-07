@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 export const LedgerTable = ({ tableHeader, data = [], setData }) => {
   const navigate = useNavigate();
-  console.log(data);
-
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -44,7 +42,6 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
     (acc, item) => acc + (item.sellingPrice || 0),
     0
   );
-
   return (
     <div className="w-full">
       <div
@@ -70,36 +67,41 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((item, index) => (
-              <tr className="border-b border-blue5" key={index}>
-                <td className="p-2 text-left w-8 lg:w-20">
-                  <div onClick={() => selectData(index)}>
-                    {/* <CheckboxLabel check={item.isSelected} bg="white" /> */}
-                  </div>
-                </td>
-                <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-12 whitespace-nowrap">
-                  {item?.date}
-                </td>
-                <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5">
-                  {item?.cost}
-                </td>
-                <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-2">
-                  {item?.sellingPrice}
-                </td>
-                <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-2">
-                  {item?.profit}
-                </td>
-                <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-2">
-                  {item?.booking}
+            {currentItems.length === 0 ? (
+              <tr>
+                <td colSpan={tableHeader.length} className="text-center py-4">
+                  No data available
                 </td>
               </tr>
-            ))}
+            ) : (
+              currentItems.map((item, index) => (
+                <tr className="border-b border-blue5" key={index}>
+                  <td className="p-2 text-left w-8 lg:w-20">
+                    <div onClick={() => selectData(index)}>
+                      {/* <CheckboxLabel check={item.isSelected} bg="white" /> */}
+                    </div>
+                  </td>
+                  <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-12 whitespace-nowrap">
+                    {item?.date}
+                  </td>
+                  <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5">
+                    {item?.cost}
+                  </td>
+                  <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-2">
+                    {item?.sellingPrice}
+                  </td>
+                  <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-2">
+                    {item?.profit}
+                  </td>
+                  <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-2">
+                    {item?.booking}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
           <tfoot>
             <tr className="font-sans p-6">
-              <td className="p-2 text-left w-8 lg:w-20"></td>
-              <td className="p-2 text-left w-8 lg:w-20"></td>
-              <td className="p-2 text-left w-8 lg:w-20"></td>
               <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left">
                 Total Cost: {totalCost}
               </td>

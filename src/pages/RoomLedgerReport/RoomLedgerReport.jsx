@@ -4,9 +4,11 @@ import { LedgerTable } from "./RoomLedgerTable";
 import LedgerTop from "./RoomLedgerTop";
 import { useLocation } from "react-router-dom";
 import axios from "../../axios";
+import DateRange from "../../components/Date/DateRange";
 
 const Ledger = () => {
   const [data, setData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const location = useLocation();
   const {
     hotelName = "N/A",
@@ -14,12 +16,15 @@ const Ledger = () => {
     hotelId = undefined,
     room = undefined,
   } = location.state || {};
+
   useEffect(() => {
     axios.get(`/ledger/roomLedger/${hotelId}/${room._id}`).then((res) => {
       console.log(res.data.roomLedger);
+      setOriginalData(res.data.roomLedger);
       setData(res.data.roomLedger);
     });
   }, []);
+
   const [tableHeader, setTableHeader] = useState([
     "Date",
     "Cost",
@@ -38,7 +43,8 @@ const Ledger = () => {
           roomType={room.type}
           printDate={printDate}
         />
-        <div className="mx-1">
+        <DateRange rows={originalData} setRows={setData} />
+        <div className="mx-1 mt-6">
           <LedgerTable
             tableHeader={tableHeader}
             data={data}

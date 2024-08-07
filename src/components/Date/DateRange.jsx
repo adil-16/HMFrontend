@@ -21,20 +21,20 @@ const DateRange = ({ rows, setRows }) => {
     }
   };
 
-  //   const filterData = () => {
-  //     const fromDate = moment(date[0].toDate()).startOf("day").toDate();
-  //     const toDate = moment(date[1].toDate()).endOf("day").toDate();
-  //     console.log("Filtering from", fromDate, "to", toDate);
-  //     console.log("Rows:", rows);
+  const filterData = () => {
+    const fromDate = moment(date[0].toDate()).startOf("day").toDate();
+    const toDate = moment(date[1].toDate()).endOf("day").toDate();
+    console.log("Filtering from", fromDate, "to", toDate);
+    console.log("Rows:", rows);
 
-  //     const filteredRows = rows?.filter((row) => {
-  //       const rowDate = new Date(row.date);
-  //       return rowDate >= fromDate && rowDate <= toDate;
-  //     });
+    const filteredRows = rows?.filter((row) => {
+      const rowDate = new Date(row.date);
+      return rowDate >= fromDate && rowDate <= toDate;
+    });
 
-  //     setRows(filteredRows);
-  //     console.log("Filtered rows:", filteredRows);
-  //   };
+    setRows(filteredRows);
+    console.log("Filtered rows:", filteredRows);
+  };
 
   //   useEffect(() => {
   //     filterData();
@@ -89,7 +89,7 @@ const DateRange = ({ rows, setRows }) => {
             <CalendarIcon />
           </span>
           <button
-            // onClick={filterData}
+            onClick={filterData}
             className="px-2 py-1 bg-orange rounded-md text-white"
           >
             Set Date
@@ -111,7 +111,7 @@ const DateRange = ({ rows, setRows }) => {
                   fontFamily: "League Spartan",
                 }}
                 showOtherDays
-                maxDate={new Date()}
+                // maxDate={new Date()}
                 range
                 value={value}
                 onChange={setValue}
