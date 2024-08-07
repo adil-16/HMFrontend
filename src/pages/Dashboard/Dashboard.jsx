@@ -104,7 +104,7 @@ const Dashboard = () => {
             onClick={() => setShowRoomLedgerPopup(true)}
             className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
           >
-            Show Room PLS Report
+            Room Profit and Loss Report
           </button>
 
           <button
