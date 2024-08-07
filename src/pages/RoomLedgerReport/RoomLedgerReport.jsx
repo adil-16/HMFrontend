@@ -9,6 +9,7 @@ import DateRange from "../../components/Date/DateRange";
 const Ledger = () => {
   const [data, setData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
+  const [roomData, setRoomData] = useState();
   const location = useLocation();
   const {
     hotelName = "N/A",
@@ -19,11 +20,14 @@ const Ledger = () => {
 
   useEffect(() => {
     axios.get(`/ledger/roomLedger/${hotelId}/${room._id}`).then((res) => {
-      console.log(res.data.roomLedger);
+      console.log(res.data);
+      setRoomData(res.data);
       setOriginalData(res.data.roomLedger);
       setData(res.data.roomLedger);
     });
   }, []);
+
+  console.log("asfas", roomData);
 
   const [tableHeader, setTableHeader] = useState([
     "Booking Date",
@@ -42,6 +46,7 @@ const Ledger = () => {
           roomNumber={room.roomNumber}
           roomType={room.type}
           printDate={printDate}
+          roomData={roomData}
         />
         <DateRange rows={originalData} setRows={setData} />
         <div className="mx-1 mt-6 overflow-hidden">

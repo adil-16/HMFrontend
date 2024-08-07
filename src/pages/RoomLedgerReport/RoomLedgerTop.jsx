@@ -1,6 +1,12 @@
 import React from "react";
 
-const LedgerTop = ({ hotelName, roomNumber, printDate, roomType }) => {
+const LedgerTop = ({
+  hotelName,
+  roomNumber,
+  printDate,
+  roomType,
+  roomData,
+}) => {
   return (
     <div className="font-Nunito w-full flex flex-col sm:flex-row justify-between my-5 flex-wrap overflow-x-auto">
       {/* first col */}
@@ -46,19 +52,19 @@ const LedgerTop = ({ hotelName, roomNumber, printDate, roomType }) => {
             Total Cost:
           </p>
           <p className="font-medium text-white text-14 sm:text-16">
-            {printDate}
+            {roomData?.totalCost}
           </p>
           <p className="font-bold text-darkGray text-16 sm:text-19">
             Total Sale:
           </p>
           <p className="font-medium text-white text-14 sm:text-16">
-            {printDate}
+            {roomData?.totalSale}
           </p>
           <p className="font-bold text-darkGray text-16 sm:text-19">
             Total Profit:
           </p>
           <p className="font-medium text-white text-14 sm:text-16">
-            {printDate}
+            {roomData?.totalProfit}
           </p>
         </div>
       </div>
