@@ -37,7 +37,7 @@ const CashVoucherPopup = ({ onClose }) => {
     await axios
       .get("/hotel/getHotels")
       .then((res) => {
-        // console.log("data is hotels ", res.data);
+        console.log("data is hotels ", res.data);
         setHotels(res.data.data.hotels);
       })
       .catch((err) => {
@@ -68,13 +68,14 @@ const CashVoucherPopup = ({ onClose }) => {
     setLoading(true);
     try {
       const selectedHotel = hotels.find((hotel) => hotel.id === data.hotelId);
-      const selectedRoom = rooms.find((room) => room._id === data.roomId);
+      const selectedRoom = rooms.find((room) => room._id == data.roomId);
       const currentDate = moment().format("YYYY-MM-DD");
 
       if (selectedHotel) {
-        navigate(`/admin/room-ledger/${1241251225}`, {
+        navigate(`/admin/room-ledger/${selectedRoom._id}`, {
           state: {
-            // roomType: selectedRoom.type,
+            room: selectedRoom,
+            hotelId: selectedHotel.id,
             hotelName: selectedHotel.name,
             printDate: currentDate,
             // roomNumber: selectedRoom.roomNumber,
