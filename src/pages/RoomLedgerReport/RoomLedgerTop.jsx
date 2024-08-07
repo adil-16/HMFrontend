@@ -41,6 +41,26 @@ const LedgerTop = ({ hotelName, roomNumber, printDate, roomType }) => {
             {printDate}
           </p>
         </div>
+        <div className="flex flex-row items-center gap-x-6 mt-8 mb-2">
+          <p className="font-bold text-darkGray text-16 sm:text-19">
+            Total Cost:
+          </p>
+          <p className="font-medium text-white text-14 sm:text-16">
+            {printDate}
+          </p>
+          <p className="font-bold text-darkGray text-16 sm:text-19">
+            Total Sale:
+          </p>
+          <p className="font-medium text-white text-14 sm:text-16">
+            {printDate}
+          </p>
+          <p className="font-bold text-darkGray text-16 sm:text-19">
+            Total Profit:
+          </p>
+          <p className="font-medium text-white text-14 sm:text-16">
+            {printDate}
+          </p>
+        </div>
       </div>
     </div>
   );

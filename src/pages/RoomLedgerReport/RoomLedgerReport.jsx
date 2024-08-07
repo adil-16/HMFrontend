@@ -26,11 +26,11 @@ const Ledger = () => {
   }, []);
 
   const [tableHeader, setTableHeader] = useState([
-    "Date",
+    "Booking Date",
     "Cost",
-    "Selling Price",
-    "Profit",
-    "Booking",
+    "Sale",
+    "(Profit/Loss)",
+    "Status",
   ]);
 
   return (

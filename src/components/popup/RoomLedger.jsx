@@ -107,7 +107,7 @@ const CashVoucherPopup = ({ onClose }) => {
 
         <div className="flex flex-col justify-center items-center">
           <h2 className="font-Nunitoo text-orange text-19 sm:text-24 font-medium pt-2 pb-2">
-            Room Ledger Report
+            Room PSL Report
           </h2>
         </div>
 
