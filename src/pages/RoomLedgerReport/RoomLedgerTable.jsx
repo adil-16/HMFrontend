@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const LedgerTable = ({ tableHeader, data = [], setData }) => {
+export const LedgerTable = ({ tableHeader, data = [], setData, loading }) => {
   const navigate = useNavigate();
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,15 +41,13 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
-  const totalCost = currentItems.reduce(
-    (acc, item) => acc + (item.cost || 0),
-    0
-  );
-  const totalSellingPrice = currentItems.reduce(
-    (acc, item) => acc + (item.sellingPrice || 0),
-    0
-  );
+  if (loading) {
+    return (
+      <div className="w-full flex justify-center items-center py-4">
+        <p className="text-white font-Nunitoo text-16">Loading...</p>
+      </div>
+    );
+  }
   return (
     <div className="w-full">
       <div
@@ -57,7 +55,7 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
         style={{ minWidth: "350px", overflowX: "auto" }}
       >
         <table className="w-full">
-          <thead className="bg-white3  bg-orange">
+          <thead className="bg-white3 bg-orange">
             <tr className="font-sans p-6">
               <th className="p-2 text-center w-8 lg:w-20">
                 <div onClick={selectAllData}>
@@ -72,7 +70,7 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
                   {val === "Profit/(Loss)" ? (
                     <>
                       Profit/
-                      <span className="text-rose-600">(Loss)</span>
+                      <span style={{ color: "red" }}>(Loss)</span>
                     </>
                   ) : (
                     val
@@ -116,14 +114,6 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
             )}
           </tbody>
         </table>
-        {/* <div className="flex justify-end my-2 mr-32 gap-36">
-          <p className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left">
-            Total Cost: {totalCost?.toFixed(2)}
-          </p>
-          <p className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left">
-            Total Selling Price: {totalSellingPrice?.toFixed(2)}
-          </p>
-        </div> */}
         <div className="flex justify-between my-2">
           <div className="flex gap-2">
             <button
