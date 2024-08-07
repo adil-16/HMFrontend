@@ -39,7 +39,7 @@ const Ledger = () => {
 
   return (
     <div className="w-full">
-      <TopBar title="Room Ledger Report" />
+      <TopBar title="Room Profit and Loss Report" />
       <div className="p-1 sm:p-8 py-6">
         <LedgerTop
           hotelName={hotelName}
