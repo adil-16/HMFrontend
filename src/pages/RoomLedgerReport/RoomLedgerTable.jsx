@@ -66,10 +66,17 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
               </th>
               {tableHeader.map((val, ind) => (
                 <th
-                  className="text-left sm:ml-4 font-Nunitoo text-12 text-lg text-white2 py-8"
+                  className="text-left sm:ml-4 font-Nunitoo text-12 text-lg py-8"
                   key={ind}
                 >
-                  {val}
+                  {val === "Profit/(Loss)" ? (
+                    <>
+                      Profit/
+                      <span className="text-rose-600">(Loss)</span>
+                    </>
+                  ) : (
+                    val
+                  )}
                 </th>
               ))}
             </tr>

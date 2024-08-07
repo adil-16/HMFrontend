@@ -213,7 +213,7 @@ const AddInventoryPopup = ({ onClose }) => {
       const checkinDate = new Date(checkin);
       const checkoutDate = new Date(checkout);
       const diffTime = Math.abs(checkoutDate - checkinDate);
-      diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     }
     setRoomDetails((prevRoomDetails) =>
       prevRoomDetails.map((detail) => ({

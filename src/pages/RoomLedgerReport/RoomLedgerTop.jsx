@@ -1,5 +1,15 @@
 import React from "react";
 
+const roundValue = (value) => {
+  if (value === undefined || value === null) return "";
+
+  const num = parseFloat(value);
+  if (isNaN(num)) return "";
+
+  const roundedValue = num % 1 === 0 ? num : Math.round(num);
+  return roundedValue;
+};
+
 const LedgerTop = ({
   hotelName,
   roomNumber,
@@ -7,6 +17,9 @@ const LedgerTop = ({
   roomType,
   roomData,
 }) => {
+  const roundedTotalCost = roundValue(roomData?.totalCost);
+  const roundedTotalSale = roundValue(roomData?.totalSale);
+  const roundedTotalProfit = roundValue(roomData?.totalProfit);
   return (
     <div className="font-Nunito w-full flex flex-col sm:flex-row justify-between my-5 flex-wrap overflow-x-auto">
       {/* first col */}
@@ -52,19 +65,19 @@ const LedgerTop = ({
             Total Cost:
           </p>
           <p className="font-medium text-white text-14 sm:text-16">
-            {roomData?.totalCost?.toFixed(2)}
+            {roundedTotalCost}
           </p>
           <p className="font-bold text-darkGray text-16 sm:text-19">
             Total Sale:
           </p>
           <p className="font-medium text-white text-14 sm:text-16">
-            {roomData?.totalSale?.toFixed(2)}
+            {roundedTotalSale}
           </p>
           <p className="font-bold text-darkGray text-16 sm:text-19">
             Total Profit:
           </p>
           <p className="font-medium text-white text-14 sm:text-16">
-            {roomData?.totalProfit?.toFixed(2)}
+            {roundedTotalProfit}
           </p>
         </div>
       </div>
