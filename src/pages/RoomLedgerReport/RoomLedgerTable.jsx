@@ -85,13 +85,13 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
                     {item?.date}
                   </td>
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-0.5">
-                    {item?.cost}
+                    {item?.cost?.toFixed(2)}
                   </td>
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-2">
-                    {item?.sellingPrice}
+                    {item?.sellingPrice?.toFixed(2)}
                   </td>
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-2">
-                    {item?.profit}
+                    {item?.profit?.toFixed(2)}
                   </td>
                   <td className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left pr-2">
                     {item?.booking}
@@ -103,10 +103,10 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
         </table>
         <div className="flex justify-end my-2 mr-32 gap-36">
           <p className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left">
-            Total Cost: {totalCost}
+            Total Cost: {totalCost?.toFixed(2)}
           </p>
           <p className="font-Nunitoo text-12 lg:text-16 text-medium text-white py-2 text-left">
-            Total Selling Price: {totalSellingPrice}
+            Total Selling Price: {totalSellingPrice?.toFixed(2)}
           </p>
         </div>
         <div className="flex justify-between my-2">
