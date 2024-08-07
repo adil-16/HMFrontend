@@ -69,7 +69,7 @@ export const LedgerTable = ({ tableHeader, data = [], setData }) => {
           <tbody>
             {currentItems.length === 0 ? (
               <tr>
-                <td colSpan={tableHeader.length} className="text-center py-4">
+                <td colSpan={6} className="text-center py-4">
                   No data available
                 </td>
               </tr>
