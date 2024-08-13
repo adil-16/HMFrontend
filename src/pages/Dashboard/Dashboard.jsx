@@ -113,6 +113,20 @@ const Dashboard = () => {
           >
             Add Currency Rate
           </button>
+
+          <button
+            onClick={() => navigate("/admin/wastage-collection-report")}
+            className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+          >
+            Show Wastage Collection
+          </button>
+
+          <button
+            onClick={() => navigate("/admin/pending-booking-report")}
+            className="bg-orange text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+          >
+            Pending Booking Report
+          </button>
         </div>
       </div>
 

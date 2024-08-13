@@ -18,22 +18,6 @@ const HotelCard = ({ data }) => {
   const [availableRooms, setAvailableRooms] = useState();
   const [bookedRooms, setBookedRooms] = useState();
 
-  useEffect(() => {
-    const fetchHotelDetails = async () => {
-      try {
-        const response = await axios.get(`/hotel/getHotel/${id}`);
-        console.log("ababa", response);
-        setAvailableRooms(response?.data?.data?.hotel?.availableRoomsCount);
-        console.log(availableRooms);
-        setBookedRooms(response?.data?.data?.hotel?.bookedRoomsCount);
-      } catch (error) {
-        console.error("Error fetching hotel details:", error);
-      }
-    };
-
-    fetchHotelDetails();
-  }, [id]);
-
   // if (!hotel) {
   //   return <div>Loading...</div>;
   // }
@@ -78,20 +62,7 @@ const HotelCard = ({ data }) => {
           Total Rooms: <span className="font-regular">{totalRooms}</span>
         </p>
         <p className="font-Nunitoo text-12 lg:text-16 font-bold text-orange">
-          Available Rooms:{" "}
-          <span className="font-regular">{availableRooms}</span>
-        </p>
-        <p className="font-Nunitoo text-12 lg:text-16 font-bold text-orange">
-          Booked Rooms: <span className="font-regular">{bookedRooms}</span>
-        </p>
-        <p className="font-Nunitoo text-12 lg:text-16 font-bold text-orange">
           Total Beds: <span className="font-regular">{totalBeds}</span>
-        </p>
-        <p className="font-Nunitoo text-12 lg:text-16 font-bold text-orange">
-          Available Beds: <span className="font-regular">{availableBeds}</span>
-        </p>
-        <p className="font-Nunitoo text-12 lg:text-16 font-bold text-orange">
-          Booked Beds: <span className="font-regular">{bookedBeds}</span>
         </p>
 
         {/* Room Details */}

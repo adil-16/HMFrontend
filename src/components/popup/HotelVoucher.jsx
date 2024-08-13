@@ -51,11 +51,13 @@ const CashVoucherPopup = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [rooms, setRooms] = useState([
     {
+      bookingType: "bed",
       hotel: "",
       roomType: "",
       checkin: "",
       checkout: "",
-      // bedRate: "",
+      bedRate: "",
+      noOfBeds: "",
       roomRate: "",
       totalRooms: "",
     },
@@ -128,25 +130,25 @@ const CashVoucherPopup = ({ onClose }) => {
 
       // console.log("rooms in hotel", rooms);
 
-      const isDefaultRoomValid = Object.values(rooms[0]).every(
-        (value) => !!value
-      );
-      if (!isDefaultRoomValid) {
-        toast.error("Please fill out all fields for the Hotel");
-        setLoading(false);
-        return;
-      }
+      // const isDefaultRoomValid = Object.values(rooms[0]).every(
+      //   (value) => !!value
+      // );
+      // if (!isDefaultRoomValid) {
+      //   toast.error("Please fill out all fields for the Hotel");
+      //   setLoading(false);
+      //   return;
+      // }
 
-      // Validate all entries in rooms array
-      const areAllRoomsValid = rooms.every((room) =>
-        Object.values(room).every((value) => !!value)
-      );
+      // // Validate all entries in rooms array
+      // const areAllRoomsValid = rooms.every((room) =>
+      //   Object.values(room).every((value) => !!value)
+      // );
 
-      if (!areAllRoomsValid) {
-        toast.error("Please fill out all fields for each hotel room");
-        setLoading(false);
-        return;
-      }
+      // if (!areAllRoomsValid) {
+      //   toast.error("Please fill out all fields for each hotel room");
+      //   setLoading(false);
+      //   return;
+      // }
 
       const data = {
         voucherNumber: latestVoucherNumber,

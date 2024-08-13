@@ -3,8 +3,8 @@ import axios from "../../axios";
 
 const HotelVoucherForm = ({ rooms, setRooms }) => {
   const roomTypes = ["Quint", "Quad", "Triple", "Double"];
+  const bookingTypes = ["bed", "room"]
   const [hotels, setHotels] = useState([]);
-
   // console.log("rooms", rooms);
 
   useEffect(() => {
@@ -29,15 +29,19 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
     setRooms(newRooms);
   };
 
+
+
   const addRoom = () => {
     setRooms([
       ...rooms,
       {
+        bookingType: "bed",
         hotel: "",
         roomType: "",
         checkin: "",
         checkout: "",
-        // bedRate: "",
+        bedRate: "",
+        noOfBeds: "",
         roomRate: "",
         totalRooms: "",
       },
@@ -112,8 +116,49 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
                 onChange={(e) => handleRoomChange(roomIndex, e)}
               />
             </div>
-
             <div className="flex gap-x-1 mt-2">
+              <select
+                className="border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14"
+                name="bookingType"
+                value={room.bookingType}
+                onChange={(e) => handleRoomChange(roomIndex, e)}
+              >
+                {bookingTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {
+              (room.bookingType=="bed")?
+              <div className="flex gap-x-1 mt-2">
+              <>
+                <input
+                  type="number"
+                  className={`border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
+                  placeholder="Bed Rate"
+                  name="bedRate"
+                  value={room.bedRate}
+                  onChange={(e) => handleRoomChange(roomIndex, e)}
+                />
+                <input
+                  type="number"
+                  className={`border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14`}
+                  placeholder="No of Beds"
+                  name="noOfBeds"
+                  value={room.noOfBeds}
+                  onChange={(e) => handleRoomChange(roomIndex, e)}
+                />
+              </>
+              <div
+                onClick={() => removeRoom(roomIndex)}
+                className="flex items-center justify-center h-6 w-6 rounded-full text-white cursor-pointer bg-red-500"
+              >
+                -
+              </div>
+              </div>:
+              <div className="flex gap-x-1 mt-2">
               <>
                 <input
                   type="number"
@@ -139,6 +184,7 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
                 -
               </div>
             </div>
+            }
           </div>
         ))}
         <button

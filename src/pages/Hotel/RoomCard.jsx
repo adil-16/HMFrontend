@@ -1,73 +1,71 @@
 import React, { useState } from "react";
-import BookBedPopup from "../../components/popup/BookBed"; 
 
-const RoomCard = ({ room, hotel, setRooms }) => { 
-  const [showPopup, setShowPopup] = useState(false);
-  const [selectedBed, setSelectedBed] = useState(null); 
-
-  const handleBookNow = (bed) => {
-    setSelectedBed(bed); 
-    setShowPopup(true);
-  // console.log("selected bed", selectedBed)
-
+const RoomCard = ({ room, hotel, setRooms }) => {
+  const convertDate = (stringDate) => {
+    return new Date(stringDate).toISOString().split("T")[0];
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
-  // console.log("selected bed ID", selectedBed?._id)
+  const [show, setShow] = new useState("Booked");
 
-  const onBedBooked = (bedId) => {
-    // Update the local state to mark the bed as booked
-    const updatedRoom = {
-      ...room,
-      beds: room.beds.map((bed) =>
-        bed._id === bedId ? { ...bed, isBooked: true } : bed
-      ),
-    };
-    
-    // Update the parent state with the modified rooms array
-    setRooms((prevRooms) =>
-      prevRooms.map((r) => (r._id === room._id ? updatedRoom : r))
-    );
-  };
+  const toggle = ()=>{
+    if(show == "Booked"){
+      setShow("Available");
+    }
+    else{
+      setShow("Booked");
+    }
+  }
 
   return (
     <div className="bg-black border border-white p-3 text-orange rounded-lg w-auto sm:w-80 font-Nunitoo">
-      <h3 className="text-lg font-semibold mb-6 text-center">
+      <h3 className="text-lg font-semibold mb-1 text-center">
         Room Number: {room.roomNumber}
-        <span className="text-white">| ({room.roomType})</span>
+        <span className="text-white"> | {room.roomType}</span>
       </h3>
-      
-      {room.beds?.map((bed, index) => (
-        <div key={index} className="flex justify-between items-center mb-2">
-          <p>
-            Bed No: <span className="text-white">{bed.bedNumber} |</span>{" "}
-            Rate: <span className="text-white">({bed.bedRate})</span>
-          </p>
-          {!bed.isBooked ? (
-            <button
-              onClick={() => handleBookNow(bed)} 
-              className="bg-orange text-white px-3 py-1 rounded-md hover:border-white"
-            >
-              Book Now
-            </button>
-          ) : (
-            <p className="text-white font-bold">Booked !</p>
-          )}
+      <div className = "flex justify-center mb-6 ">
+        <p>{`(${convertDate(room.checkinDate)} to ${convertDate(room.checkoutDate)})`}</p>
+      </div>
+      <div className="border rounded-lg">
+        {
+        (show == "Booked")?
+        <div className="flex">
+        
+          <button className="flex-1 py-2 rounded-b-none rounded-tr-none text-center font-bold bg-orange text-white">
+            Booked
+          </button>
+          <button onClick={toggle} className="flex-1 py-2 rounded-b-none rounded-tl-none  text-center font-bold  bg-orange-800">
+            Available
+          </button>
+        </div>:
+        <div className="flex">
+        
+          <button onClick={toggle} className="flex-1 py-2 rounded-b-none rounded-tr-none text-center font-bold bg-orange-800">
+            Booked
+          </button>
+          <button className="flex-1 py-2 rounded-b-none rounded-tl-none  text-center font-bold  bg-orange text-white">
+            Available
+          </button>
         </div>
-      ))}
-
-      {showPopup && selectedBed && (
-        <BookBedPopup
-          onClose={handleClosePopup}
-          roomNumber={room.roomNumber}
-          roomId ={room._id}
-          bed={selectedBed?._id}
-          hotelId={hotel} 
-          onBedBooked={onBedBooked}
-        />
-      )}
+        }
+        {
+        (show == "Booked")?
+        <div className="p-3">
+          {room.customersData?.map((customerData, index) => (
+            <div key={index} className="mb-2">
+              <p>{`${customerData.noOfBeds} Beds - (${convertDate(customerData.checkinDate)} to ${convertDate(customerData.checkoutDate)})`}</p>
+            </div>
+          ))}
+        </div>:
+        <div className="p-3">
+        {room.availability?.map((customerData, index) => (
+          <div key={index} className="mb-2">
+            <p>{`${customerData.noOfBeds} Beds - (${convertDate(customerData.checkinDate)} to ${convertDate(customerData.checkoutDate)})`}</p>
+          </div>
+        ))}
+      </div>
+        }
+        
+      </div>
     </div>
   );
 };

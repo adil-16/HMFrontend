@@ -12,8 +12,9 @@ const HotelDetails = () => {
   useEffect(() => {
     const fetchHotelDetails = async () => {
       try {
-        const response = await axios.get(`/hotel/getHotel/${id}`);
+        const response = await axios.get(`/hotel/getHotelDetails/${id}`);
         const hotelData = response.data.data.hotel;
+        console.log(hotelData);
         setHotel(hotelData);
         setRooms(hotelData.rooms || []); // Ensure rooms is an array
       } catch (error) {
