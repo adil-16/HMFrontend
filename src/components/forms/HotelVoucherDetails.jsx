@@ -3,7 +3,17 @@ import axios from "../../axios";
 
 const HotelVoucherForm = ({ rooms, setRooms }) => {
   const roomTypes = ["Quint", "Quad", "Triple", "Double"];
-  const bookingTypes = ["bed", "room"]
+  const bookingTypes = ["sharing", "nonSharing"]
+  const bookingSubType = {
+    "sharing": [
+      "male",
+      "female",
+      "family"
+    ],
+    "nonSharing": [
+      "room"
+    ]
+  }
   const [hotels, setHotels] = useState([]);
   // console.log("rooms", rooms);
 
@@ -21,7 +31,11 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
 
     fetchHotels();
   }, []);
-
+  const setRoomsData = (index, key, value) =>{
+    const newRoooms = [...rooms];
+    newRooms[index][key] = value;
+    setRooms(newRoooms);
+  }
   const handleRoomChange = (index, event) => {
     const { name, value } = event.target;
     const newRooms = [...rooms];
@@ -35,7 +49,8 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
     setRooms([
       ...rooms,
       {
-        bookingType: "bed",
+        bookingType: "sharing",
+        bookingSubType: "family",
         hotel: "",
         roomType: "",
         checkin: "",
@@ -121,7 +136,15 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
                 className="border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14"
                 name="bookingType"
                 value={room.bookingType}
-                onChange={(e) => handleRoomChange(roomIndex, e)}
+                onChange={(e) => {
+                  handleRoomChange(roomIndex, e)
+                  if(e.target.value == "sharing"){
+                    setRoomsData(roomIndex, "bookingSubType", "bed");
+                  }
+                  else{
+                    setRoomsData(roomIndex, "bookingSubType", "room");
+                  }
+                }}
               >
                 {bookingTypes.map((type) => (
                   <option key={type} value={type}>
@@ -129,9 +152,21 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
                   </option>
                 ))}
               </select>
+              <select
+                className="border border-blue3 bg-black text-white focus:outline-none rounded-md p-1 sm:p-2 px-2 w-full font-Nunitoo placeholder-blue2 text-14 placeholder-text-14"
+                name="bookingSubType"
+                value={room.bookingSubType}
+                onChange={(e) => handleRoomChange(roomIndex, e)}
+              >
+                {bookingSubType[room.bookingType].map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
             </div>
             {
-              (room.bookingType=="bed")?
+              (room.bookingType=="sharing")?
               <div className="flex gap-x-1 mt-2">
               <>
                 <input

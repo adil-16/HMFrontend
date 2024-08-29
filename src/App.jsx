@@ -22,6 +22,7 @@ import Bank from "./pages/Bank/Bank";
 import RoomLedgerReport from "./pages/RoomLedgerReport/RoomLedgerReport";
 import WastageReport from "./pages/WastageCollectionReport/WastageCollectionReport";
 import InventoryReport from "./pages/InventoryReport/InventoryReport";
+import HotelInsightReport from "./pages/HotelsInsightReport/HotelInsightReport";
 
 export const AuthContext = React.createContext();
 
@@ -117,6 +118,7 @@ const App = () => {
             <Route path="report" element={<ArrivalDepReport />} />
             <Route path="bank" element={<Bank />} />
             <Route path="pending-booking-report" element={<InventoryReport/>}/>
+            <Route path="hotel-insight" element={<HotelInsightReport/>}/>
           </Route>
         </Routes>
       </AuthContext.Provider>

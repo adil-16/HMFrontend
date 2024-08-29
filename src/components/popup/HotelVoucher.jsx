@@ -51,7 +51,8 @@ const CashVoucherPopup = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [rooms, setRooms] = useState([
     {
-      bookingType: "bed",
+      bookingType: "sharing",
+      bookingSubType: "family",
       hotel: "",
       roomType: "",
       checkin: "",
