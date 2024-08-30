@@ -4,16 +4,11 @@ import axios from "../../axios";
 const HotelVoucherForm = ({ rooms, setRooms }) => {
   const roomTypes = ["Quint", "Quad", "Triple", "Double"];
   const bookingTypes = ["sharing", "nonSharing"]
-  const bookingSubType = {
-    "sharing": [
+  const bookingSubType = [
       "male",
       "female",
       "family"
-    ],
-    "nonSharing": [
-      "room"
     ]
-  }
   const [hotels, setHotels] = useState([]);
   // console.log("rooms", rooms);
 
@@ -51,6 +46,7 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
       {
         bookingType: "sharing",
         bookingSubType: "family",
+        autoAdjust:false,
         hotel: "",
         roomType: "",
         checkin: "",
@@ -138,12 +134,6 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
                 value={room.bookingType}
                 onChange={(e) => {
                   handleRoomChange(roomIndex, e)
-                  if(e.target.value == "sharing"){
-                    setRoomsData(roomIndex, "bookingSubType", "bed");
-                  }
-                  else{
-                    setRoomsData(roomIndex, "bookingSubType", "room");
-                  }
                 }}
               >
                 {bookingTypes.map((type) => (
@@ -158,13 +148,22 @@ const HotelVoucherForm = ({ rooms, setRooms }) => {
                 value={room.bookingSubType}
                 onChange={(e) => handleRoomChange(roomIndex, e)}
               >
-                {bookingSubType[room.bookingType].map((type) => (
+                {bookingSubType.map((type) => (
                   <option key={type} value={type}>
                     {type}
                   </option>
                 ))}
               </select>
             </div>
+            {room.bookingType == "sharing" && (
+              
+            <div className=" gap-x-1 mt-2 text-white">
+              <label>Auto Adjust: </label>
+              <input type="checkbox" name="autoAdjust" value={room.autoAdjust} onChange={(e)=> handleRoomChange(roomIndex, e)}/>
+              <p className="text-xs">Auto Adjust Recommeneded, It adjusts bookings with same sub types (i.e. male withs males, females with females and family with family)</p>
+            
+              </div>
+            )}
             {
               (room.bookingType=="sharing")?
               <div className="flex gap-x-1 mt-2">

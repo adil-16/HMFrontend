@@ -53,6 +53,7 @@ const CashVoucherPopup = ({ onClose }) => {
     {
       bookingType: "sharing",
       bookingSubType: "family",
+      autoAdjust:false,
       hotel: "",
       roomType: "",
       checkin: "",
