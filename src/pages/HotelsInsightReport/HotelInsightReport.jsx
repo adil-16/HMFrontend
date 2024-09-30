@@ -34,7 +34,7 @@ const dayData = {"Date": "2024-08-13",
 const HotelDayCard = ({inventory, booking, remainingBooking, allBooking, wastage, paidWastage, roomType})=>{
     const islamicDate = new Date(inventory.Date).toHijri();
     return(
-        <div className="min-w-[170px] border-2 border-solid">
+        <div className="min-w-[170px] text-black border-2 border-solid">
             <CardComponent heading={"Date"} text={inventory.Date}/>
             <CardComponent heading="Islamic Date" text={`${islamicDate.getDate()}/${islamicDate.getMonth()}/${islamicDate.getFullYear()}`}/>
             <CardComponent heading="Day" text={islamicDate._dayName}/>
@@ -65,7 +65,7 @@ const HotelDayCard = ({inventory, booking, remainingBooking, allBooking, wastage
 const ShowHotel = ({hotel, roomType})=>{
     return (
         <div className="w-full">
-            <div className="text-center text-orange-500 bg-white">
+            <div className="text-center text-black bg-white">
                 {hotel.hotelName}({hotel.hotelLocation})
             </div>
             <div className="flex w-[1100px] overflow-x-auto bg-white">
